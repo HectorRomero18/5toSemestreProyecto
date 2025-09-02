@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mi cámara y lienzo</title>
+    <script>
+    // Función para obtener el token CSRF de las cookies
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+    </script>
+</head>
+<body>
+    <h1>Cámara y Lienzo de Dibujo</h1>
+    <div style="display:flex; gap:20px;">
+        <div>
+            <h2>Cámara</h2>
+            <img src="{% url 'video_feed_cam' %}" width="640" height="480">
+        </div>
+        <div>
+            <h2>Lienzo</h2>
+            <img src="{% url 'video_feed_canvas' %}" width="640" height="480" style="background:black;">
+        </div>
+    </div>
+
+    <!-- Botón para grabar audio -->
+    <button id="recordButton">Grabar Audio</button>
+    <p id="status"></p>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+
+        const recordButton = document.getElementById('recordButton');
+        const status = document.getElementById('status');
+
+        recordButton.onclick = async function() {
+            if (!mediaRecorder || mediaRecorder.state === "inactive") {
+                // Solicitar permiso para usar el micrófono
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = e => {
+                    audioChunks.push(e.data);
+                };
+
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const formData = new FormData();
+                    formData.append("audio", audioBlob, "comando.webm");
+
+                    status.innerText = "Enviando audio...";
+                    try {
+                        const response = await fetch("{% url 'transcribir_audio_api' %}", {
+                            method: "POST",
+                            body: formData,
+                            headers: {
+                                'X-CSRFToken': csrftoken
+                            }
+                        });
+                        const data = await response.json();
+                        status.textContent = "Comando: " + (data.comando || data.error);
+                    } catch (err) {
+                        status.innerText = "Error al enviar el audio.";
+                    }
+                };
+
+                mediaRecorder.start();
+                recordButton.textContent = "Detener Grabación";
+                status.innerText = "Grabando...";
+            } else if (mediaRecorder.state === "recording") {
+                mediaRecorder.stop();
+                recordButton.textContent = "Grabar Audio";
+            }
+        };
+    </script>
+</body>
+</html>
+
