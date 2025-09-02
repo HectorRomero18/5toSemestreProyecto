@@ -8,13 +8,13 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 # Forzar ruta de ffmpeg
-ffmpeg_path = r"C:\Users\Usuario\Downloads\ffmpeg-2025-09-01-git-3ea6c2fe25-full_build\bin"
+ffmpeg_path = r"C:\Users\Jorge\Downloads\ffmpeg-2025-09-01-git-3ea6c2fe25-full_build\bin"
 os.environ["PATH"] += os.pathsep + ffmpeg_path
 
 
 
 # Cargar modelo
-model = whisper.load_model("tiny")
+model = whisper.load_model("base")
 
 
 def convertir_a_wav16k(src_path: str) -> str:
