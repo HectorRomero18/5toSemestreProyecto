@@ -1,5 +1,5 @@
 import subprocess
-from core.views import comando_voz
+from core.views.trazos import comando_voz
 import tempfile
 import os
 import whisper
