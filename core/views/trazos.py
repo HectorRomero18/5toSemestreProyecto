@@ -5,8 +5,6 @@ import numpy as np
 import threading
 
 
-def home(request):
-    return render(request, 'home/home.html')
 
 def index(request):
     return render(request, 'index.html')
