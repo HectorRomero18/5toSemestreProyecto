@@ -1,5 +1,5 @@
 import subprocess
-from core.views.trazos import comando_voz
+from airwrite.interfaces.django_views.trazos import set_voice_command
 import tempfile
 import os
 import whisper
@@ -57,7 +57,7 @@ def transcribir_audio(request):
             os.remove(tmp_path)
             os.remove(wav_path)
 
-            comando_voz["valor"] = comando
+            set_voice_command(comando)
 
             return JsonResponse({"comando": comando})
 

@@ -354,7 +354,13 @@
             <button id="recordButton" class="record-button">
                 <span id="buttonText">🎤 Iniciar Grabación</span>
             </button>
+
+            <button id="ocrButton" class="record-button" style="margin-left: 12px;">
+                🔍 Reconocer texto del lienzo
+            </button>
+
             <div id="status" class="status"></div>
+            <div id="ocrResult" class="status" style="margin-top: 0.75rem;"></div>
         </div>
     </div>
 
@@ -429,6 +435,36 @@
                 mediaRecorder.stream.getTracks().forEach(track => track.stop());
             }
         };
+
+        // OCR del canvas
+        const ocrBtn = document.getElementById('ocrButton');
+        const ocrBox = document.getElementById('ocrResult');
+        ocrBtn.addEventListener('click', async () => {
+            ocrBtn.disabled = true;
+            ocrBtn.textContent = '⏳ Reconociendo...';
+            ocrBox.className = 'status processing';
+            ocrBox.textContent = 'Procesando OCR del lienzo...';
+            try {
+                const res = await fetch('{% url "ocr_canvas" %}');
+                const data = await res.json();
+                if (!data.ok) {
+                    ocrBox.className = 'status error';
+                    ocrBox.textContent = 'Error: ' + (data.error || 'desconocido');
+                } else if (data.empty) {
+                    ocrBox.className = 'status';
+                    ocrBox.textContent = 'Canvas vacío. Escribe primero y vuelve a intentar.';
+                } else {
+                    ocrBox.className = 'status success';
+                    ocrBox.textContent = 'Texto reconocido: ' + (data.text || '(vacío)');
+                }
+            } catch (e) {
+                ocrBox.className = 'status error';
+                ocrBox.textContent = 'Error al llamar al OCR: ' + e;
+            } finally {
+                ocrBtn.disabled = false;
+                ocrBtn.textContent = '🔍 Reconocer texto del lienzo';
+            }
+        });
     </script>
 </body>
 </html>
