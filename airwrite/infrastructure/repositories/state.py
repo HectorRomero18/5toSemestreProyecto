@@ -56,6 +56,13 @@ class OpenCVCamera:
             if self._cap is None:
                 import cv2
                 self._cap = cv2.VideoCapture(self._index)
+                # Reducir resolución para mejorar rendimiento
+                try:
+                    self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+                    self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+                    self._cap.set(cv2.CAP_PROP_FPS, 30)
+                except Exception:
+                    pass
 
     def read(self) -> tuple[bool, Optional[np.ndarray]]:
         self.start()

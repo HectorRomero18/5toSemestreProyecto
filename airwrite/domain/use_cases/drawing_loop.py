@@ -61,11 +61,11 @@ class DrawingLoop:
         cv2.rectangle(frame, (590, 0), (640, 50), (0, 0, 0), self.state.grosor_grande)
         cv2.circle(frame, (615, 25), 11, (0, 0, 0), -1)
 
-        # Deteccion del marcador color celeste
+        # Deteccion del marcador color celeste (más ligero)
         mask = cv2.inRange(frame_hsv, self.cfg.celeste_low, self.cfg.celeste_high)
         mask = cv2.erode(mask, None, iterations=1)
-        mask = cv2.dilate(mask, None, iterations=2)
-        mask = cv2.medianBlur(mask, 13)
+        mask = cv2.dilate(mask, None, iterations=1)  # menos iteraciones
+        mask = cv2.GaussianBlur(mask, (9, 9), 0)     # blur más barato que median con k=13
         cnts, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:1]
 
