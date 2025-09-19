@@ -19,6 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('core.urls')),
-    path('voice/', include('voice_assistant.urls')),
+    # Rutas migradas a airwrite (hexagonal interfaces)
+    path('', include('airwrite.interfaces.django_views.urls_core')),
+    path('voice/', include('airwrite.interfaces.django_views.urls_voice')),
 ]
