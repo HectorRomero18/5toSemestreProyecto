@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AirWrite - Sistema de Escritura Aérea</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'airwrite/css/home.css' %}">
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <div class="logo">AirWrite</div>
+            <nav>
+                <div class="nav-item active">
+                    <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+                    Dashboard
+                </div>
+                <div class="nav-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    Menu
+                </div>
+                <div class="nav-item">
+                    <svg viewBox="0 0 24 24"><path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.1 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z"/></svg>
+                    Menu
+                </div>
+                <div class="nav-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    Menu
+                </div>
+                <div class="nav-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+                    Menu
+                </div>
+            </nav>
+        </div>
+
+        <div class="main-content">
+            <div class="header">
+                <div class="search-container">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-bar" placeholder="Buscar módulos...">
+                </div>
+            </div>
+
+            <div class="modules-grid">
+                {% for module in modules %}
+                <div class="module-card" data-module-id="{{ module.order }}" data-url="/{{ module.url }}/">
+                    <div class="module-number">{{ module.order|stringformat:"02d" }}</div>
+                    <div class="module-icon">
+                        {% if module.order == 1 %}✏️{% elif module.order == 2 %}📝{% elif module.order == 3 %}🧮{% else %}⚡{% endif %}
+                    </div>
+                    <div class="module-title">{{ module.name }}</div>
+                    <p>{{ module.description }}</p>
+                </div>
+                {% empty %}
+                <div class="module-card">
+                    <div class="module-icon">❌</div>
+                    <div class="module-title">Sin módulos</div>
+                    <p>No hay módulos disponibles</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            {% for module in modules %}
+            <div class="current-module" id="current-module-{{ module.order }}" style="display: none;">
+                <div class="section-header">
+                    <h3 class="section-title">Módulo {{ module.order }}</h3>
+                    <a href="/{{ module.url }}/" class="see-all">Ver detalles</a>
+                </div>
+
+                <div class="module-progress">
+                    <div class="progress-header">
+                        <div>
+                            <h4>Módulo {{ module.order }} - {{ module.name }}</h4>
+                            <p style="color: #888; font-size: 14px;">{{ module.description }}</p>
+                        </div>
+                    </div>
+                    <div class="progress-bar"><div class="progress-fill"></div></div>
+                    <ul class="features-list">
+                        <li class="feature-item">
+                            <div class="feature-icon">
+                                {% if module.order == 1 %}✏️{% elif module.order == 2 %}📝{% elif module.order == 3 %}🧮{% else %}⚡{% endif %}
+                            </div>
+                            <div class="feature-content">
+                                <h4>{{ module.name }}</h4>
+                                <p>{{ module.description }}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script src="{% static 'airwrite/js/home.js' %}"></script>
+</body>
+</html>

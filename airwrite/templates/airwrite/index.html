@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cámara y Lienzo - Interfaz Moderna</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'airwrite/css/index.css' %}">
+    <script>
+      // Rutas dinámicas usadas por el JS externo
+      window.urls = { transcribir_audio_api: "{% url 'transcribir_audio_api' %}" };
+    </script>
+    <script src="{% static 'airwrite/js/index.js' %}" defer></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sistema de Visión y Audio</h1>
+            <p>Interfaz para captura y procesamiento en tiempo real</p>
+        </div>
+
+        <div class="video-grid">
+            <div class="video-card">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 2v-7l-4 2z"/>
+                    </svg>
+                    Cámara Principal
+                </h2>
+                <div class="video-frame">
+                    <img src="{% url 'video_feed_cam' %}" alt="Feed de cámara principal">
+                </div>
+            </div>
+            
+            <div class="video-card">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M3 3h18v18H3V3zm16 16V5H5v14h14zM11 7h2v2h-2V7zm0 4h2v6h-2v-6z"/>
+                    </svg>
+                    Lienzo de Procesamiento
+                </h2>
+                <div class="video-frame">
+                    <img src="{% url 'video_feed_canvas' %}" alt="Canvas de procesamiento">
+                </div>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <button id="recordButton" class="record-button">
+                <span id="buttonText">🎤 Iniciar Grabación</span>
+            </button>
+
+            <button id="ocrButton" class="record-button" style="margin-left: 12px;">
+                🔍 Reconocer texto del lienzo
+            </button>
+
+            <div id="status" class="status"></div>
+            <div id="ocrResult" class="status" style="margin-top: 0.75rem;"></div>
+        </div>
+    </div>
+</body>
+</html>

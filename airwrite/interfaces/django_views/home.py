@@ -10,7 +10,8 @@ from airwrite.infrastructure.repositories.django_module_repository import (
 
 
 class ModuleListView(TemplateView):
-    template_name = 'home/home.html'
+    # Usar plantilla en airwrite/templates/airwrite/home/home.html
+    template_name = 'airwrite/home/home.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
