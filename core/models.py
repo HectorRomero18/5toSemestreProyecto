@@ -1,13 +1,2 @@
-from django.db import models
-
-# Create your models here.
-
-class Module(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
-    url = models.CharField(max_length=200, unique=True)
-    order = models.IntegerField()
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.name
+# Deprecated: models moved to airwrite.infrastructure.models to satisfy hexagonal layering
+from airwrite.infrastructure.models.module import Module  # noqa: F401
