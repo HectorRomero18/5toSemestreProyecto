@@ -1,0 +1,1 @@
+# AirWrite package for hexagonal architecture

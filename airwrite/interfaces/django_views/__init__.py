@@ -1,0 +1,1 @@
+# Django views for delivery layer
