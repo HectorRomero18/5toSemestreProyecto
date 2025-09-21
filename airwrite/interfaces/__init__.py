@@ -1,0 +1,1 @@
+# Delivery adapters (Django views, templates, APIs)
