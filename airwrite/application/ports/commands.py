@@ -8,5 +8,4 @@ class CommandPort(ABC):
 
     @abstractmethod
     def consume(self) -> str | None:
-        """Get and clear current command atomically."""
         raise NotImplementedError
