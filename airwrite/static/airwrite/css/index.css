@@ -1,36 +1,301 @@
 /* Estilos extraidos de index.html inline */
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; color: #333; overflow-x: hidden; }
-.container { max-width: 1400px; margin: 0 auto; padding: 2rem; }
-.header { text-align: center; margin-bottom: 3rem; }
-.header h1 { font-size: 3rem; font-weight: 300; color: white; margin-bottom: 0.5rem; text-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: fadeInDown 1s ease-out; }
-.header p { color: rgba(255,255,255,0.8); font-size: 1.2rem; font-weight: 300; }
-.video-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 3rem; animation: fadeInUp 1s ease-out 0.3s both; }
-.video-card { background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-radius: 24px; padding: 1.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); position: relative; overflow: hidden; }
-.video-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #667eea, #764ba2); border-radius: 24px 24px 0 0; }
-.video-card:hover { transform: translateY(-8px); box-shadow: 0 30px 60px rgba(0,0,0,0.15); }
-.video-card h2 { font-size: 1.5rem; font-weight: 600; margin-bottom: 1rem; color: #2d3748; display: flex; align-items: center; gap: 0.5rem; }
-.video-card h2::before { content: ''; width: 8px; height: 8px; background: #48bb78; border-radius: 50%; animation: pulse 2s infinite; }
-.video-frame { position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.15); background: #1a202c; }
-.video-frame img { width: 100%; height: auto; max-width: 100%; display: block; transition: transform 0.3s ease; }
-.video-frame:hover img { transform: scale(1.02); }
-.video-frame::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(45deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%); opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
-.video-frame:hover::after { opacity: 1; }
-.controls-section { background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-radius: 24px; padding: 2rem; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.2); animation: fadeInUp 1s ease-out 0.6s both; }
-.record-button { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 1rem 2.5rem; font-size: 1.1rem; font-weight: 600; border-radius: 50px; cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3); position: relative; overflow: hidden; min-width: 180px; }
-.record-button::before { content: ''; position: absolute; top: 50%; left: 50%; width: 0; height: 0; background: rgba(255,255,255,0.2); border-radius: 50%; transition: all 0.3s ease; transform: translate(-50%, -50%); }
-.record-button:hover { transform: translateY(-2px); box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4); }
-.record-button:hover::before { width: 300px; height: 300px; }
-.record-button:active { transform: translateY(0); }
-.record-button.recording { background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%); box-shadow: 0 8px 25px rgba(229, 62, 62, 0.3); animation: recordPulse 1.5s infinite; }
-.status { margin-top: 1.5rem; font-size: 1.1rem; font-weight: 500; min-height: 1.5rem; padding: 0.5rem; border-radius: 12px; transition: all 0.3s ease; }
-.status.recording { color: #e53e3e; background: rgba(229, 62, 62, 0.1); }
-.status.processing { color: #3182ce; background: rgba(49, 130, 206, 0.1); }
-.status.success { color: #38a169; background: rgba(56, 161, 105, 0.1); }
-.status.error { color: #e53e3e; background: rgba(229, 62, 62, 0.1); }
-@keyframes fadeInDown { from { opacity: 0; transform: translateY(-30px);} to { opacity: 1; transform: translateY(0);} }
-@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px);} to { opacity: 1; transform: translateY(0);} }
-@keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.5;} }
-@keyframes recordPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
-@media (max-width: 768px) { .container{padding:1rem;} .header h1{font-size:2rem;} .video-grid{grid-template-columns:1fr; gap:1.5rem;} .video-card{padding:1rem;} .controls-section{padding:1.5rem;} }
-.icon { display:inline-block; width:20px; height:20px; margin-right:8px; vertical-align: middle; }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.header h1 {
+    font-size: 3rem;
+    font-weight: 300;
+    color: white;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    animation: fadeInDown 1s ease-out;
+}
+
+.header p {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 1.2rem;
+    font-weight: 300;
+}
+
+.video-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    margin-bottom: 3rem;
+    animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+.video-card {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 1.5rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.video-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    border-radius: 24px 24px 0 0;
+}
+
+.video-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+}
+
+.video-card h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #2d3748;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.video-card h2::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: #48bb78;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+.video-frame {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    background: #1a202c;
+}
+
+.video-frame img {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.video-frame:hover img {
+    transform: scale(1.02);
+}
+
+.video-frame::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, transparent 0%, rgba(255, 255, 255, 0.1) 50%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.video-frame:hover::after {
+    opacity: 1;
+}
+
+.controls-section {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 24px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: fadeInUp 1s ease-out 0.6s both;
+}
+
+.record-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+    position: relative;
+    overflow: hidden;
+    min-width: 180px;
+}
+
+.record-button::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    transform: translate(-50%, -50%);
+}
+
+.record-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+}
+
+.record-button:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.record-button:active {
+    transform: translateY(0);
+}
+
+.record-button.recording {
+    background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+    box-shadow: 0 8px 25px rgba(229, 62, 62, 0.3);
+    animation: recordPulse 1.5s infinite;
+}
+
+.status {
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    min-height: 1.5rem;
+    padding: 0.5rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.status.recording {
+    color: #e53e3e;
+    background: rgba(229, 62, 62, 0.1);
+}
+
+.status.processing {
+    color: #3182ce;
+    background: rgba(49, 130, 206, 0.1);
+}
+
+.status.success {
+    color: #38a169;
+    background: rgba(56, 161, 105, 0.1);
+}
+
+.status.error {
+    color: #e53e3e;
+    background: rgba(229, 62, 62, 0.1);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes recordPulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .header h1 {
+        font-size: 2rem;
+    }
+
+    .video-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .video-card {
+        padding: 1rem;
+    }
+
+    .controls-section {
+        padding: 1.5rem;
+    }
+}
+
+.icon {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    margin-right: 8px;
+    vertical-align: middle;
+}

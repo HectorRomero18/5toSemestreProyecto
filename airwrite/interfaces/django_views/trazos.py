@@ -8,7 +8,6 @@ from airwrite.infrastructure.repositories.state import OpenCVCamera, CanvasState
 from airwrite.infrastructure.repositories.adapters import CameraAdapter, CanvasAdapter, CommandAdapter
 
 
-# Singletons (simple module-level composition, no side-effects until used)
 _camera = OpenCVCamera(index=1)
 _canvas_state = CanvasState()
 _cmd_state = CommandState()
@@ -71,9 +70,6 @@ def video_feed_canvas(request):
             yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
     return StreamingHttpResponse(gen(), content_type='multipart/x-mixed-replace; boundary=frame')
 
-
-# API para voz (integración actual):
-# desde voice_assistant, haz: from airwrite.interfaces.django_views.trazos import set_voice_command
 
 def set_voice_command(text: str | None):
     _cmd_port.set(text)

@@ -1,8 +1,0 @@
-# DEPRECATED: Rutas migradas a airwrite.interfaces.django_views.urls_voice
-# Se mantiene este archivo para no romper referencias, pero delega en el nuevo módulo.
-from django.urls import path
-from airwrite.interfaces.django_views.voice import transcribir_audio
-
-urlpatterns = [
-    path("transcribir-api/", transcribir_audio, name="transcribir_audio_api"),
-]
