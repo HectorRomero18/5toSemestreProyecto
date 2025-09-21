@@ -1,0 +1,1 @@
+# Django models living under infrastructure layer

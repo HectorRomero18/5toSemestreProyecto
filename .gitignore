@@ -41,7 +41,9 @@ TestResults.xml
 .DS_Store
 Thumbs.db
 
+
 ### Python / env ###
+
 # Virtual environments
 .env/
 venv/
@@ -50,17 +52,86 @@ env/
 
 # Python compiled files
 __pycache__/
-*.py[cod]
+*.pyc
+*.pyo
+*.pyd
 
 # Python logs
 *.log
 
 # Python test outputs
-*.pytest_cache/
 .pytest_cache/
+*.pytest_cache/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
 
 # Environment variables
 *.env
 
-# Jupyter notebooks checkpoints
-.ipynb_checkpoints/
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+
+# mypy type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# PyInstaller
+*.manifest
+*.spec
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# poetry
+poetry.lock
+
+# celery beat schedule file
+celerybeat-schedule
+
+# django stuff:
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+
+# VS Code workspace
+*.code-workspace
+
+# macOS files
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Windows image file cache
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# IDEs
+.idea/
+*.iml
