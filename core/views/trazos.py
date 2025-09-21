@@ -11,7 +11,7 @@ def index(request):
 
 # Cámara
 # Cambiar el 1 por el numero donde se encuentre su camara
-cap = cv2.VideoCapture(1)
+cap = cv2.VideoCapture(0)
 
 # Configuración del color
 celesteBajo = np.array([75, 185, 88], np.uint8)
