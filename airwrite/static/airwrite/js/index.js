@@ -19,8 +19,6 @@ let mediaRecorder;
 let audioChunks = [];
 
 const recordButton = document.getElementById('recordButton');
-const buttonText = document.getElementById('buttonText');
-const statusEl = document.getElementById('status');
 
 recordButton.onclick = async function() {
   if (!mediaRecorder || mediaRecorder.state === "inactive") {
@@ -38,8 +36,8 @@ recordButton.onclick = async function() {
         const formData = new FormData();
         formData.append("audio", audioBlob, "comando.webm");
 
-        statusEl.className = "status processing";
-        statusEl.innerText = "⏳ Procesando audio...";
+        // Mostrar alerta de procesamiento
+        showTranscriptionAlert();
 
         try {
           const response = await fetch(window.urls.transcribir_audio_api, {
@@ -49,33 +47,87 @@ recordButton.onclick = async function() {
           });
           const data = await response.json();
           if (data.comando) {
-            statusEl.className = "status success";
-            statusEl.textContent = "✅ Comando: " + data.comando;
+            showTranscriptionSuccess(data.comando);
           } else {
-            statusEl.className = "status error";
-            statusEl.textContent = "❌ " + (data.error || "Error desconocido");
+            showTranscriptionError(data.error || "Error desconocido");
           }
         } catch (err) {
-          statusEl.className = "status error";
-          statusEl.innerText = "❌ Error al procesar el audio";
+          showTranscriptionError("Error al procesar el audio");
         }
       };
 
       mediaRecorder.start();
       recordButton.classList.add('recording');
-      buttonText.textContent = "⏹️ Detener Grabación";
-      statusEl.className = "status recording";
-      statusEl.innerText = "🔴 Grabando...";
     } catch (err) {
-      statusEl.className = "status error";
-      statusEl.innerText = "❌ Error al acceder al micrófono";
+      console.error("Error al acceder al micrófono:", err);
+      // Could show an alert here if needed
     }
   } else if (mediaRecorder.state === "recording") {
     mediaRecorder.stop();
     recordButton.classList.remove('recording');
-    buttonText.textContent = "🎤 Iniciar Grabación";
-    statusEl.className = "status";
-    statusEl.innerText = "";
     mediaRecorder.stream.getTracks().forEach(track => track.stop());
   }
 };
+
+function showTranscriptionAlert() {
+    const alert = document.getElementById('transcriptionAlert');
+    const timerIcon = alert.querySelector('.timer-icon');
+    const checkIcon = alert.querySelector('.check-icon');
+    const errorIcon = alert.querySelector('.error-icon');
+    const message = document.getElementById('alertMessage');
+    const result = document.getElementById('alertResult');
+    
+    // Resetear estado
+    timerIcon.classList.remove('hidden');
+    checkIcon.classList.add('hidden');
+    errorIcon.classList.add('hidden');
+    message.textContent = 'Transcribiendo...';
+    result.classList.remove('show');
+    result.textContent = '';
+    
+    alert.classList.add('show');
+}
+
+function showTranscriptionSuccess(transcribedText) {
+    const alert = document.getElementById('transcriptionAlert');
+    const timerIcon = alert.querySelector('.timer-icon');
+    const checkIcon = alert.querySelector('.check-icon');
+    const message = document.getElementById('alertMessage');
+    const result = document.getElementById('alertResult');
+    
+    timerIcon.classList.add('hidden');
+    checkIcon.classList.remove('hidden');
+    message.textContent = '¡Transcripción exitosa!';
+    result.textContent = transcribedText;
+    result.classList.add('show');
+    
+    // Cerrar automáticamente después de 3 segundos
+    setTimeout(() => {
+        hideTranscriptionAlert();
+    }, 3000);
+}
+
+function showTranscriptionError(errorMessage) {
+    const alert = document.getElementById('transcriptionAlert');
+    const timerIcon = alert.querySelector('.timer-icon');
+    const errorIcon = alert.querySelector('.error-icon');
+    const message = document.getElementById('alertMessage');
+    const result = document.getElementById('alertResult');
+    
+    timerIcon.classList.add('hidden');
+    errorIcon.classList.remove('hidden');
+    message.textContent = 'Error en la transcripción';
+    result.textContent = errorMessage;
+    result.classList.add('show');
+    
+    // Cerrar automáticamente después de 4 segundos
+    setTimeout(() => {
+        hideTranscriptionAlert();
+    }, 4000);
+}
+
+function hideTranscriptionAlert() {
+    const alert = document.getElementById('transcriptionAlert');
+    alert.classList.remove('show');
+}
+

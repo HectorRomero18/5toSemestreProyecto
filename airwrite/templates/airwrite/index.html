@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cámara y Lienzo - Interfaz Moderna</title>
+    <title>AirWrite Soft - Sistema de Escritura Aérea</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     {% load static %}
     <link rel="stylesheet" href="{% static 'airwrite/css/index.css' %}">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
       // Rutas dinámicas usadas por el JS externo
       window.urls = { transcribir_audio_api: "{% url 'transcribir_audio_api' %}" };
@@ -13,50 +15,151 @@
     <script src="{% static 'airwrite/js/index.js' %}" defer></script>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Sistema de Visión y Audio</h1>
-            <p>Interfaz para captura y procesamiento en tiempo real</p>
-        </div>
-
-        <div class="video-grid">
-            <div class="video-card">
-                <h2>
-                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M17 10.5V7a1 1 0 0 0-1-1H4a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-3.5l4 2v-7l-4 2z"/>
-                    </svg>
-                    Cámara Principal
-                </h2>
-                <div class="video-frame">
-                    <img src="{% url 'video_feed_cam' %}" alt="Feed de cámara principal">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <div class="logo-text">
+                    <span class="main">AIRWRITE</span>
+                    <span class="sub">SOFT</span>
                 </div>
             </div>
+
+            <div class="section-title">GENERAL</div>
             
-            <div class="video-card">
-                <h2>
-                    <svg class="icon" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M3 3h18v18H3V3zm16 16V5H5v14h14zM11 7h2v2h-2V7zm0 4h2v6h-2v-6z"/>
+            <div class="menu-item active">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
                     </svg>
-                    Lienzo de Procesamiento
-                </h2>
-                <div class="video-frame">
-                    <img src="{% url 'video_feed_canvas' %}" alt="Canvas de procesamiento">
+                </div>
+                <span>Home</span>
+            </div>
+
+            <div class="menu-item">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="currentColor" d="M20 6h-2.18c.11-.31.18-.65.18-1a2.996 2.996 0 0 0-5.5-1.65l-.5.67-.5-.68C10.96 2.54 10.05 2 9 2 7.34 2 6 3.34 6 5c0 .35.07.69.18 1H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-5-2c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zM9 4c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm11 15H4v-2h16v2zm0-5H4V8h5.08L7 10.83 8.62 12 12 7.4l3.38 4.6L17 10.83 14.92 8H20v6z"/>
+                    </svg>
+                </div>
+                <span>Herramientas</span>
+            </div>
+
+            <div class="menu-item">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="currentColor" d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+                    </svg>
+                </div>
+                <span>Comando de Voz</span>
+            </div>
+
+            <div class="menu-item">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="currentColor" d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
+                    </svg>
+                </div>
+                <span>Galería</span>
+            </div>
+
+            <div class="menu-item">
+                <div class="menu-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path fill="currentColor" d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92 1.61 0 2.92-1.31 2.92-2.92s-1.31-2.92-2.92-2.92z"/>
+                    </svg>
+                </div>
+                <span>Compartir</span>
+            </div>
+
+            <div class="camera-preview">
+                <img src="{% url 'video_feed_cam' %}" alt="Vista previa de cámara">
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn btn-primary">Escribir</button>
+                <button class="btn btn-secondary">Dibujar</button>
+            </div>
+
+            <div class="config-section">
+                <div class="section-title">CONFIGURACIÓN</div>
+                <div class="menu-item">
+                    <div class="menu-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor" d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+                        </svg>
+                    </div>
+                    <span>Ajustes</span>
+                </div>
+                <div class="menu-item">
+                    <div class="menu-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20">
+                            <path fill="currentColor" d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                        </svg>
+                    </div>
+                    <span>Home</span>
                 </div>
             </div>
-        </div>
+        </aside>
 
-        <div class="controls-section">
-            <button id="recordButton" class="record-button">
-                <span id="buttonText">🎤 Iniciar Grabación</span>
-            </button>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="canvas-container">
+                <img src="{% url 'video_feed_canvas' %}" alt="Canvas de procesamiento" class="canvas-feed">
+            </div>
 
-            <button id="ocrButton" class="record-button" style="margin-left: 12px;">
-                🔍 Reconocer texto del lienzo
-            </button>
+            <div class="toolbar">
+                <button class="tool-btn" title="Guardar">
+                    <span class="material-icons">save</span>
+                </button>
+                        
 
-            <div id="status" class="status"></div>
-            <div id="ocrResult" class="status" style="margin-top: 0.75rem;"></div>
-        </div>
+                <button class="tool-btn" title="Color">
+                <span class="material-icons">format_color_fill</span>
+                </button>
+
+
+                <button class="tool-btn" title="Editar">
+                    <span class="material-icons">edit</span>
+                </button>
+
+                <button class="tool-btn" title="limpiar pantalla">
+                    <span class="material-icons">delete</span>
+                </button>
+
+                <button id="recordButton" class="mic-btn" title="Grabar audio">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Status Messages -->
+            <div id="transcriptionAlert" class="transcription-alert">
+                <div class="alert-content">
+                    <div class="alert-icon" id="alertIcon">
+                        <!-- Ícono de temporizador mientras procesa -->
+                        <svg class="timer-icon" viewBox="0 0 24 24">
+                            <path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                        </svg>
+                        <!-- Ícono de check para éxito -->
+                        <svg class="check-icon hidden" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                        </svg>
+                        <!-- Ícono de error -->
+                        <svg class="error-icon hidden" viewBox="0 0 24 24">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                        </svg>
+                    </div>
+                    <div class="alert-message" id="alertMessage">Transcribiendo...</div>
+                    <div class="alert-result" id="alertResult"></div>
+                </div>
+            </div>
+        </main>
     </div>
 </body>
 </html>
