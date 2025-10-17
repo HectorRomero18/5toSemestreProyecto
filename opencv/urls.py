@@ -16,10 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+# from django.http import HttpResponse
+
 
 urlpatterns = [
+    # path('', lambda request: HttpResponse("Bienvenido a Django 🚀"), name='home'),
     path('admin/', admin.site.urls),
     # Rutas migradas a airwrite (hexagonal interfaces)
     path('', include('airwrite.interfaces.django_views.urls_core')),
     path('voice/', include('airwrite.interfaces.django_views.urls_voice')),
+    path('accounts/', include('allauth.urls')),
 ]
