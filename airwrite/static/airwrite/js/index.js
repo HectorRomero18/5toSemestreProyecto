@@ -19,6 +19,29 @@ let mediaRecorder;
 let audioChunks = [];
 
 const recordButton = document.getElementById('recordButton');
+const clearButton = document.getElementById('clearButton');
+
+if (!clearButton) {
+  alert("Clear button not found");
+} else {
+  clearButton.onclick = async function() {
+  try {
+    const response = await fetch(window.urls.clear_canvas, {
+      method: "POST",
+      headers: { 'X-CSRFToken': csrftoken }
+    });
+    const data = await response.json();
+    if (data.status === "ok") {
+      // Force refresh the canvas feed
+      const canvasImg = document.querySelector('.canvas-feed');
+      if (canvasImg) {
+        canvasImg.src = canvasImg.src.split('?')[0] + '?t=' + Date.now();
+      }
+    }
+  } catch (err) {
+    console.error("Error clearing canvas:", err);
+  }
+};
 
 recordButton.onclick = async function() {
   if (!mediaRecorder || mediaRecorder.state === "inactive") {
@@ -131,3 +154,4 @@ function hideTranscriptionAlert() {
     alert.classList.remove('show');
 }
 
+}

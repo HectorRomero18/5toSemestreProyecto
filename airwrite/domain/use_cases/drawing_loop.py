@@ -40,11 +40,23 @@ class DrawingLoop:
     def step(self) -> None:
         ok, frame = self.cam.read()
         if not ok or frame is None:
-            return
+            frame = None
+        else:
+            frame = cv2.flip(frame, 1)
+            frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        frame = cv2.flip(frame, 1)
-        frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-        self.canvas.ensure_shape(frame.shape)
+        default_shape = (480, 640, 3)
+        current_shape = frame.shape if frame is not None else default_shape
+        self.canvas.ensure_shape(current_shape)
+        self.current_shape = current_shape
+
+        # comandos por voz
+        cmd = self.commands.consume()
+        if cmd:
+            self._apply_voice_command(cmd)
+
+        if frame is None:
+            return
 
         # UI buttons
         cv2.rectangle(frame, (0, 0), (50, 50), self.cfg.color_amarillo, self.state.grosor_amarillo)
@@ -83,6 +95,9 @@ class DrawingLoop:
                     self._set_color(self.cfg.color_verde, (2, 2, 6, 2))
                 if 150 < x2 < 200 and 0 < y2 < 50:
                     self._set_color(self.cfg.color_celeste, (2, 2, 2, 6))
+                # Clear button
+                if 300 < x2 < 400 and 0 < y2 < 50:
+                    self.canvas.clear(self.current_shape)
                 # Thickness
                 if 490 < x2 < 540 and 0 < y2 < 50:
                     self._set_thickness(3, (6, 1, 1))
@@ -90,20 +105,12 @@ class DrawingLoop:
                     self._set_thickness(7, (1, 6, 1))
                 if 590 < x2 < 640 and 0 < y2 < 50:
                     self._set_thickness(11, (1, 1, 6))
-                # limpiar pantalla
-                if 300 < x2 < 400 and 0 < y2 < 50:
-                    self.canvas.clear(frame.shape)
                 # dibujar
                 if self.state.x1 is not None and self.state.y1 is not None and not (0 < y2 < 60):
                     self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
                 self.state.x1, self.state.y1 = x2, y2
             else:
                 self.state.x1, self.state.y1 = None, None
-
-        # comandos por voz
-        cmd = self.commands.consume()
-        if cmd:
-            self._apply_voice_command(cmd)
 
         # Store last frame for streaming
         self._last_frame_cam = frame.copy()
@@ -122,7 +129,9 @@ class DrawingLoop:
 
     def _apply_voice_command(self, cmd: str) -> None:
         c = cmd.lower()
-        if 'amarillo' in c:
+        if 'limpiar' in c or 'clear' in c:
+            self.canvas.clear(self.current_shape)
+        elif 'amarillo' in c:
             self._set_color(self.cfg.color_amarillo, (6, 2, 2, 2))
         elif 'rosa' in c:
             self._set_color(self.cfg.color_rosa, (2, 6, 2, 2))
