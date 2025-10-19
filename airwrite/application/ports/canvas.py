@@ -9,7 +9,7 @@ class CanvasPort(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def clear(self, shape: Tuple[int, int, int]) -> None:
+    def clear(self) -> None:
         raise NotImplementedError
 
     @abstractmethod
