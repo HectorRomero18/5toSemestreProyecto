@@ -1,4 +1,4 @@
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, JsonResponse
 from django.shortcuts import render
 import cv2
 import time
@@ -73,3 +73,8 @@ def video_feed_canvas(request):
 
 def set_voice_command(text: str | None):
     _cmd_port.set(text)
+
+
+def clear_canvas(request):
+    _cmd_port.set("limpiar pantalla")
+    return JsonResponse({"status": "ok"})
