@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
 # from django.http import HttpResponse
 
 
@@ -26,4 +27,9 @@ urlpatterns = [
     path('', include('airwrite.interfaces.django_views.urls_core')),
     path('voice/', include('airwrite.interfaces.django_views.urls_voice')),
     path('accounts/', include('allauth.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),  # produce /accounts/logout/ con name='logout'
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    
+
 ]
+

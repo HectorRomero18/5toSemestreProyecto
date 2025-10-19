@@ -1,94 +1,42 @@
-// Datos de progreso por módulo (puedes ajustar estos valores)
-const moduleProgress = {
-  1: 45,
-  2: 65,
-  3: 30
-};
+document.addEventListener("DOMContentLoaded", () => {
+  const greeting = document.querySelector(".p");
+  const username = greeting.dataset.username;
 
-let clickTimeout;
-let selectedModuleId = null;
+  // 🔹 Frases en un array
+  const frases = [
+    `Hola, ${username}! 👋`, // ← primera frase personalizada
+    (() => {
+      const hour = new Date().getHours();
+      if (hour >= 5 && hour < 12) return "Buenos días ☀️";
+      else if (hour >= 12 && hour < 18) return "Buenas tardes 🌤️";
+      else return "Buenas noches 🌙";
+    })(),
+    "Vamos a trazar",
+    "Notas que flotan",
+    "Inspírate y crea",
+    "Flota con tus ideas",
+    "Imagina y hazlo",
+  ];
 
-// Funcionalidad de click simple y doble click
-document.addEventListener('DOMContentLoaded', () => {
-  document.querySelectorAll('.module-card').forEach(card => {
-    card.addEventListener('click', function (e) {
-      e.preventDefault();
+  let index = 0;
 
-      const moduleId = parseInt(this.dataset.moduleId);
-      const moduleUrl = this.dataset.url;
+  const mostrarFrase = () => {
+    greeting.classList.remove("fade-in", "fade-out");
+    greeting.textContent = frases[index];
+    greeting.classList.add("fade-in");
 
-      if (!moduleId) return;
-
-      if (clickTimeout) {
-        // Doble click
-        clearTimeout(clickTimeout);
-        clickTimeout = null;
-        window.location.href = moduleUrl;
-      } else {
-        // Click simple
-        clickTimeout = setTimeout(() => {
-          clickTimeout = null;
-          document.querySelectorAll('.module-card').forEach(c => c.classList.remove('selected'));
-          this.classList.add('selected');
-          selectedModuleId = moduleId;
-          showModuleInfo(moduleId);
-        }, 250);
-      }
-    });
-  });
-
-  // Funcionalidad de búsqueda
-  const searchBar = document.querySelector('.search-bar');
-  if (searchBar) {
-    searchBar.addEventListener('input', function (e) {
-      const searchTerm = e.target.value.toLowerCase();
-      const moduleCards = document.querySelectorAll('.module-card');
-
-      moduleCards.forEach(card => {
-        const titleElement = card.querySelector('.module-title');
-        const descriptionElement = card.querySelector('p');
-        if (titleElement && descriptionElement) {
-          const title = titleElement.textContent.toLowerCase();
-          const description = descriptionElement.textContent.toLowerCase();
-          card.style.display = (title.includes(searchTerm) || description.includes(searchTerm) || searchTerm === '') ? '' : 'none';
-        }
-      });
-    });
-  }
-
-  // Navegación del sidebar
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.addEventListener('click', () => {
-      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-    });
-  });
-
-  // Animación de progreso inicial
-  setTimeout(() => {
-    document.querySelectorAll('.progress-fill').forEach(fill => {
-      fill.style.width = '0%';
-    });
-  }, 100);
-});
-
-function showModuleInfo(moduleId) {
-  document.querySelectorAll('.current-module').forEach(module => {
-    module.style.display = 'none';
-    module.classList.remove('show');
-  });
-
-  const currentModule = document.getElementById(`current-module-${moduleId}`);
-  if (currentModule) {
-    currentModule.style.display = 'block';
-    const progressFill = currentModule.querySelector('.progress-fill');
-    if (progressFill) {
-      setTimeout(() => {
-        progressFill.style.width = `${moduleProgress[moduleId] || 50}%`;
-      }, 100);
-    }
     setTimeout(() => {
-      currentModule.classList.add('show');
-    }, 50);
-  }
-}
+      greeting.classList.remove("fade-in");
+      greeting.classList.add("fade-out");
+
+      setTimeout(() => {
+        index++;
+        if (index < frases.length) {
+          mostrarFrase();
+        }
+      }, 730); // duración fade-out
+    }, 3000); // duración frase visible
+  };
+
+  mostrarFrase();
+});

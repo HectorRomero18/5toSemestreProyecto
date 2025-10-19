@@ -1,11 +1,11 @@
-<!-- {% load static %}
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="utf-8" />
     <title>AirWrite Soft - Login</title>
-    <link rel="stylesheet" href="{% static 'airwrite/login/css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'airwrite/css/login.css' %}">
 </head>
 <body>
     <div class="login-jorge">
@@ -16,10 +16,10 @@
           <span class="span" onclick="switchToRegister()" id="registerLink">Registrarte aquí.</span>
         </p>
         <div class="div"></div>
-      </div> -->
+      </div>
 
       <!-- FORMULARIO DE LOGIN -->
-      <!-- <div id="loginForm" class="form-container">
+      <div id="loginForm" class="form-container">
         <form method="POST" action="#">
           {% csrf_token %}
           <input type="hidden" name="login_submit" value="1">
@@ -46,10 +46,10 @@
             </svg>
           </div>
         </form>
-      </div> -->
+      </div>
 
       <!-- FORMULARIO DE REGISTRO -->
-      <!-- <div id="registerForm" class="form-container hidden">
+      <div id="registerForm" class="form-container hidden">
         <form method="POST" action="#">
           {% csrf_token %}
           <input type="hidden" name="register_submit" value="1">
@@ -85,10 +85,10 @@
             </svg>
           </div>
         </form>
-      </div> -->
+      </div>
 
       <!-- BOTÓN DE ENVÍO Y REDES SOCIALES -->
-      <!-- <div class="forms">
+      <div class="forms">
         <button type="button" class="bouton-sign-in" onclick="handleSubmit()">
           <div class="rectangle"></div>
           <div class="text-wrapper-2" id="btnText">Ingresar</div>
@@ -108,10 +108,10 @@
         <a href="{% provider_login_url 'google' %}" style="text-decoration: none;">
            <img class="google" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/google.png" alt="Google" />
         </a>
-      </div> -->
+      </div>
 
       <!-- MENÚ SUPERIOR -->
-      <!-- <div class="top-side">
+      <div class="top-side">
         <div class="main-menu">
           <a href="#" style="text-decoration: none;">
             <div class="text-wrapper-4" id="menuInicio">Inicio</div>
@@ -140,17 +140,17 @@
       </div>
 
       <!-- ELEMENTOS VISUALES -->
-      <!-- <div class="virtual-meeting">AIRWRITE SOFT</div> -->
+      <div class="virtual-meeting">AIRWRITE SOFT</div>
       
       <!-- GIF 1 - Mantiene el static de Django -->
-      <!-- <img class="output" src="{% static 'airwrite/login/img/VectorPrincipalAnimado.gif' %}" alt="Vector Principal" />
+      <img class="output" src="{% static 'airwrite/img/VectorPrincipalAnimado.gif' %}" alt="Vector Principal" />
       
       <p class="bienvenido-al-blog" id="welcomeText">Bienvenido al blog de notas<br />donde las ideas flotan!</p>
-      <div class="ellipse-2"></div> -->
+      <div class="ellipse-2"></div>
       
       <!-- GIF 2 - Mantiene el static de Django -->
-      <!-- <img class="output-2" src="{% static 'airwrite/login/img/FlechaCorazonLogin.gif' %}" alt="Flecha Corazon" />
-    </div>  -->
+      <img class="output-2" src="{% static 'airwrite/img/FlechaCorazonLogin.gif' %}" alt="Flecha Corazon" />
+    </div>
 
     <!-- Mensajes de Django
     {% if messages %}
@@ -162,7 +162,7 @@
     {% endif %} -->
 
     <!-- Scripts -->
-    <!-- <script src="{% static 'airwrite/login/js/script.js' %}"></script>
+    <script src="{% static 'airwrite/js/login.js' %}"></script>
     <script>
       // Función para manejar el envío de formularios
       function handleSubmit() {
@@ -174,4 +174,4 @@
       }
     </script>
 </body>
-</html> -->
+</html>
