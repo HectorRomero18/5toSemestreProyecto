@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
       // Rutas dinámicas usadas por el JS externo
-      window.urls = { transcribir_audio_api: "{% url 'transcribir_audio_api' %}" };
+      window.urls = { transcribir_audio_api: "{% url 'transcribir_audio_api' %}", clear_canvas: "{% url 'clear_canvas' %}" };
     </script>
     <script src="{% static 'airwrite/js/index.js' %}" defer></script>
 </head>
@@ -126,7 +126,7 @@
                     <span class="material-icons">edit</span>
                 </button>
 
-                <button class="tool-btn" title="limpiar pantalla">
+                <button id="clearButton" class="tool-btn" title="limpiar pantalla">
                     <span class="material-icons">delete</span>
                 </button>
 

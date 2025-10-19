@@ -13,6 +13,81 @@ body {
     overflow: hidden;
 }
 
+/* ============================================
+   LOGIN SECTION STYLES
+   ============================================ */
+.login-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 40px;
+    text-align: center;
+}
+
+.login-header h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.login-header p {
+    font-size: 1.2rem;
+    color: #b0b0b0;
+    margin-bottom: 40px;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 40px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    max-width: 400px;
+    width: 100%;
+}
+
+.login-card h2 {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+    color: white;
+}
+
+.login-card p {
+    color: #b0b0b0;
+    margin-bottom: 30px;
+    font-size: 1rem;
+}
+
+.google-login-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    color: #333;
+    padding: 14px 24px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.google-login-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+}
+
+.google-login-btn svg {
+    flex-shrink: 0;
+}
+
 .container {
     display: flex;
     height: 100vh;
