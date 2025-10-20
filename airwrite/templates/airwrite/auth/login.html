@@ -105,9 +105,13 @@
           <img class="apple" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/apple.png" alt="Apple" />
         </a>
         {% load socialaccount %}
-        <a href="{% provider_login_url 'google' %}" style="text-decoration: none;">
-           <img class="google" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/google.png" alt="Google" />
-        </a>
+-        <a href="{% provider_login_url 'google' %}" style="text-decoration: none;">
++        <form id="googleLoginForm" method="POST" action="/accounts/google/login/" style="display: none;">
++          {% csrf_token %}
++        </form>
++        <a href="javascript:void(0)" onclick="document.getElementById('googleLoginForm').submit();" style="text-decoration: none;">
+            <img class="google" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/google.png" alt="Google" />
+         </a>
       </div>
 
       <!-- MENÚ SUPERIOR -->

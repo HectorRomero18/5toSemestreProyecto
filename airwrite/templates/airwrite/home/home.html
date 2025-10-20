@@ -18,9 +18,11 @@
     <div class="tus-ideas">TUS IDEAS</div>
     <img class="line" src="https://c.animaapp.com/mgr7itvqEOaRcZ/img/line-1.svg" />
     <p class="text-wrapper">Notas rápidas, ideas claras. Escribe lo que quieras, donde quieras, sin complicarte.</p>
-    <div class="frame">
-      <div class="text-wrapper-2">Comencemos!</div>
-    </div>
+      <a href="{% url 'trazos' %}">
+        <div class="frame">
+          <div class="text-wrapper-2">Comencemos!</div>
+        </div>   
+      </a>
     <div class="como-usar-bloque">
       <div class="text-wrapper-3">Como usar?</div>
       <div class="frame-2">
@@ -32,7 +34,7 @@
     <div class="text-wrapper-4">AIRWRITE SOFT</div>
     
         {% load socialaccount %}
-    <a href="{% url 'account_logout' %}" class="div-wrapper" >
+    <a href="{% url 'logout' %}" class="div-wrapper" >
       <div class="text-wrapper-5">Cerrar Sesión</div>
       <div class="register-line"></div>
     </a>

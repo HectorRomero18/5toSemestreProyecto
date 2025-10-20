@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
 from django.views.generic import View
+from django.contrib.auth import logout
 
 class LoginView(View):
     template_name = 'airwrite/auth/login.html'
@@ -18,3 +19,8 @@ class LoginView(View):
             login(request, user)
             return redirect('home')
         return render(request, self.template_name, {'error': 'Credenciales inválidas'})
+    
+class CustomLogoutView(View):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('/login/')
