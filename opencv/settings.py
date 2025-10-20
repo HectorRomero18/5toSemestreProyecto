@@ -83,9 +83,10 @@ SOCIALACCOUNT_EMAIL_VERIFICATION = "optional"
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_SIGNUP_ENABLED = False
 
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/accounts/login/'
+LOGIN_URL = '/login/'         
+LOGIN_REDIRECT_URL = '/home/'  
+LOGOUT_REDIRECT_URL = '/login/' 
+
 
 SITE_ID = 1
 

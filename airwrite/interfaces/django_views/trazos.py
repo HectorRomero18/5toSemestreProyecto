@@ -1,5 +1,6 @@
 from django.http import StreamingHttpResponse, JsonResponse
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 import cv2
 import time
 
@@ -8,7 +9,7 @@ from airwrite.infrastructure.repositories.state import OpenCVCamera, CanvasState
 from airwrite.infrastructure.repositories.adapters import CameraAdapter, CanvasAdapter, CommandAdapter
 
 
-_camera = OpenCVCamera(index=0)
+_camera = OpenCVCamera(index=1)
 _canvas_state = CanvasState()
 _cmd_state = CommandState()
 
@@ -29,6 +30,7 @@ _state = DrawingState()
 _loop = DrawingLoop(_cam_port, _canvas_port, _cmd_port, _cfg, _state)
 
 
+@login_required
 def index(request):
     # Usar plantilla en airwrite/templates/airwrite/index.html
     return render(request, 'airwrite/index.html')

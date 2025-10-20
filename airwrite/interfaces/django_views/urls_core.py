@@ -1,6 +1,6 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
-from airwrite.interfaces.django_views.auth import LoginView
+from airwrite.interfaces.django_views.auth import LoginView, CustomLogoutView
 from airwrite.interfaces.django_views.home import ModuleListView
 from airwrite.interfaces.django_views.trazos import index, video_feed_cam, video_feed_canvas, clear_canvas
 #from core.views.login import login_view
@@ -13,10 +13,12 @@ urlpatterns = [
 
     # mostrar login al abrir la raíz
     path('', LoginView.as_view(), name='login'),
-    # pagina home (asegúrate que ModuleListView use LoginRequiredMixin)
+    path('login/', LoginView.as_view(), name='login'), 
+
     path('home/', ModuleListView.as_view(), name='home'),
     # logout (usa POST o LogoutView)
-    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('logout/', CustomLogoutView.as_view(), name='logout'),
+
     
     path('trazos/', index, name='trazos'),
     path('video/cam/', video_feed_cam, name='video_feed_cam'),
