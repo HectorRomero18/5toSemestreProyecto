@@ -66,6 +66,7 @@ def video_feed_canvas(request):
             if canvas is None:
                 time.sleep(0.01)
                 continue
+            cv2.putText(canvas, "A", (100, 300),cv2.FONT_HERSHEY_SIMPLEX, 10, (255,255,255), 10, cv2.LINE_AA)
             ret, jpeg = cv2.imencode('.jpg', canvas)
             if not ret:
                 continue
