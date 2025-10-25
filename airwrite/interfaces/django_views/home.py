@@ -1,12 +1,12 @@
 from django.views.generic import TemplateView
 
-from airwrite.domain.use_cases.list_modules import (
-    ListModulesUseCase,
-    ListModulesQuery,
-)
-from airwrite.infrastructure.repositories.django_module_repository import (
-    DjangoModuleRepository,
-)
+# from airwrite.domain.use_cases.list_modules import (
+#     ListModulesUseCase,
+#     ListModulesQuery,
+# )
+# from airwrite.infrastructure.repositories.django_module_repository import (
+#     DjangoModuleRepository,
+# )
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 

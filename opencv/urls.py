@@ -24,8 +24,8 @@ urlpatterns = [
     # path('', lambda request: HttpResponse("Bienvenido a Django 🚀"), name='home'),
     path('admin/', admin.site.urls),
     # Rutas migradas a airwrite (hexagonal interfaces)
-    path('', include('airwrite.interfaces.django_views.urls_core')),
-    path('voice/', include('airwrite.interfaces.django_views.urls_voice')),
+    path('', include('airwrite.interfaces.urls.urls_core')),
+    path('voice/', include('airwrite.interfaces.urls.urls_voice')),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('django.contrib.auth.urls')),  # produce /accounts/logout/ con name='logout'
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
