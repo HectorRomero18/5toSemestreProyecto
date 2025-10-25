@@ -38,7 +38,7 @@ class CanvasState:
     def draw_line(self, p1, p2, color, thickness) -> None:
         import cv2
         with self._lock:
-            self._canvas = cv2.line(self._canvas, p1, p2, color, thickness)
+            self._canvas = cv2.line(self._canvas, p1, p2, color, thickness, cv2.LINE_AA)
 
     def get(self) -> np.ndarray:
         with self._lock:
@@ -60,7 +60,7 @@ class OpenCVCamera:
                 try:
                     self._cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
                     self._cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-                    self._cap.set(cv2.CAP_PROP_FPS, 30)
+                    self._cap.set(cv2.CAP_PROP_FPS, 60)
                 except Exception:
                     pass
 
