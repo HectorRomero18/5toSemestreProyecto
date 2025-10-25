@@ -25,9 +25,5 @@ urlpatterns = [
     path('video/canvas/', video_feed_canvas, name='video_feed_canvas'),
     path('clear/', clear_canvas, name='clear_canvas'),
 
-    # Alias legacy para compatibilidad con rutas antiguas
-    path('core/trazos/', index, name='trazos_legacy'),
-    path('core/video/cam/', video_feed_cam, name='video_feed_cam_legacy'),
-    path('core/video/canvas/', video_feed_canvas, name='video_feed_canvas_legacy'),
     
 ]
