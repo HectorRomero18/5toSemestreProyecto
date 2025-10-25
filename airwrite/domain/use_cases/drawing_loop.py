@@ -45,7 +45,7 @@ class DrawingLoop:
             frame = cv2.flip(frame, 1)
             frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        default_shape = (480, 640, 3)
+        default_shape = (180, 240, 3)
         current_shape = frame.shape if frame is not None else default_shape
         self.canvas.ensure_shape(current_shape)
         self.current_shape = current_shape
@@ -77,7 +77,7 @@ class DrawingLoop:
         mask = cv2.inRange(frame_hsv, self.cfg.celeste_low, self.cfg.celeste_high)
         mask = cv2.erode(mask, None, iterations=1)
         mask = cv2.dilate(mask, None, iterations=1)
-        mask = cv2.GaussianBlur(mask, (9, 9), 0)    
+        mask = cv2.GaussianBlur(mask, (15, 15), 0)    
         cnts, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:1]
 
