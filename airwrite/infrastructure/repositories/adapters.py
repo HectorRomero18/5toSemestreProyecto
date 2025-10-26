@@ -1,6 +1,6 @@
-from airwrite.application.ports.camera import CameraPort
-from airwrite.application.ports.canvas import CanvasPort
-from airwrite.application.ports.commands import CommandPort
+from airwrite.domain.ports.camera import CameraPort
+from airwrite.domain.ports.canvas import CanvasPort
+from airwrite.domain.ports.commands import CommandPort
 from .state import OpenCVCamera, CanvasState, CommandState
 
 
