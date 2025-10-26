@@ -9,7 +9,7 @@ from airwrite.infrastructure.repositories.state import OpenCVCamera, CanvasState
 from airwrite.infrastructure.repositories.adapters import CameraAdapter, CanvasAdapter, CommandAdapter
 
 
-_camera = OpenCVCamera(index=1)
+_camera = OpenCVCamera(index=0)
 _canvas_state = CanvasState()
 _cmd_state = CommandState()
 
