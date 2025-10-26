@@ -43,11 +43,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
 ]
-<<<<<<< HEAD
-
-
-=======
->>>>>>> 37f2fe6cd3ad099b11b1492d537cd6cc942a6078
 
 ASGI_APPLICATION = "opencv.asgi.application"
 
