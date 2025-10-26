@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 import cv2
 import time
 
-from airwrite.domain.use_cases.drawing_loop import DrawingLoop, DrawingConfig, DrawingState
+from airwrite.application.use_cases.drawing_loop import DrawingLoop, DrawingConfig, DrawingState
 from airwrite.infrastructure.repositories.state import OpenCVCamera, CanvasState, CommandState
 from airwrite.infrastructure.repositories.adapters import CameraAdapter, CanvasAdapter, CommandAdapter
 
