@@ -43,8 +43,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
 ]
-INSTALLED_APPS += ["channels"]
-
 
 ASGI_APPLICATION = "opencv.asgi.application"
 
