@@ -10,7 +10,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
       // Rutas dinámicas usadas por el JS externo
-      window.urls = { transcribir_audio_api: "{% url 'transcribir_audio_api' %}", clear_canvas: "{% url 'clear_canvas' %}" };
+      {% comment %} window.urls = { transcribir_audio_api: "{% url 'transcribir_audio_api' %}", clear_canvas: "{% url 'clear_canvas' %}" }; {% endcomment %}
     </script>
     <script src="{% static 'airwrite/js/index.js' %}" defer></script>
 </head>
@@ -132,16 +132,16 @@
                     <span class="material-icons">delete</span>
                 </button>
 
-                <button id="recordButton" class="mic-btn" title="Hablar">
+                {% comment %} <button id="recordButton" class="mic-btn" title="Hablar">
                     <svg viewBox="0 0 24 24">
                         <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
                         <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
                     </svg>
-                </button>
+                </button> {% endcomment %}
             </div>
 
             <!-- Status Messages -->
-            <div id="transcriptionAlert" class="transcription-alert">
+            {% comment %} <div id="transcriptionAlert" class="transcription-alert">
                 <div class="alert-content">
                     <div class="alert-icon" id="alertIcon">
                         <!-- Ícono de temporizador mientras procesa -->
@@ -160,7 +160,7 @@
                     <div class="alert-message" id="alertMessage">Transcribiendo...</div>
                     <div class="alert-result" id="alertResult"></div>
                 </div>
-            </div>
+            </div> {% endcomment %}
         </main>
     </div>
 </body>

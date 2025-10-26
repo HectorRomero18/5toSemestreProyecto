@@ -1,73 +1,73 @@
-import subprocess
-import tempfile
-import os
-from io import BytesIO
+# import subprocess
+# import tempfile
+# import os
+# from io import BytesIO
 
-import whisper
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
+# import whisper
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
 
-from airwrite.interfaces.django_views.trazos import set_voice_command
+# from airwrite.interfaces.django_views.trazos import set_voice_command
 
-# Forzar ruta de ffmpeg si es necesario (mantener compatibilidad con implementación previa)
-ffmpeg_path = r"C:\Users\Usuario\Downloads\ffmpeg-2025-09-01-git-3ea6c2fe25-full_build\bin"
-os.environ["PATH"] += os.pathsep + ffmpeg_path
+# # Forzar ruta de ffmpeg si es necesario (mantener compatibilidad con implementación previa)
+# ffmpeg_path = r"C:\Users\Usuario\Downloads\ffmpeg-2025-09-01-git-3ea6c2fe25-full_build\bin"
+# os.environ["PATH"] += os.pathsep + ffmpeg_path
 
-# Cargar modelo Whisper (mismo tamaño que antes para compat)
-_model = whisper.load_model("tiny")
-
-
-def _convertir_a_wav16k(src_path: str) -> str:
-    wav_path = src_path + ".wav"
-    cmd = [
-        "ffmpeg", "-y", "-i", src_path,
-        "-ar", "16000", "-ac", "1",
-        "-vn", "-sn", "-dn",
-        wav_path
-    ]
-    subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
-    return wav_path
+# # Cargar modelo Whisper (mismo tamaño que antes para compat)
+# _model = whisper.load_model("tiny")
 
 
-@csrf_exempt
-def transcribir_audio(request):
-    try:
-        if request.method == "POST" and request.FILES.get("audio"):
-            audio_file = request.FILES["audio"]
-            audio_bytes = BytesIO(audio_file.read())
+# def _convertir_a_wav16k(src_path: str) -> str:
+#     wav_path = src_path + ".wav"
+#     cmd = [
+#         "ffmpeg", "-y", "-i", src_path,
+#         "-ar", "16000", "-ac", "1",
+#         "-vn", "-sn", "-dn",
+#         wav_path
+#     ]
+#     subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+#     return wav_path
 
-            # Archivo temporal seguro
-            with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as tmp_file:
-                tmp_file.write(audio_bytes.getbuffer())
-                tmp_path = tmp_file.name
-            wav_path = _convertir_a_wav16k(tmp_path)
 
-            # Transcribir
-            result = _model.transcribe(
-                wav_path,
-                language="es",
-                initial_prompt="Comandos: rosa, verde, celeste, amarillo",
-                temperature=0.0,
-                condition_on_previous_text=False,
-                fp16=False,
-            )
-            comando = result.get("text", "").lower()
+# @csrf_exempt
+# def transcribir_audio(request):
+#     try:
+#         if request.method == "POST" and request.FILES.get("audio"):
+#             audio_file = request.FILES["audio"]
+#             audio_bytes = BytesIO(audio_file.read())
 
-            # Borrar temporal
-            try:
-                os.remove(tmp_path)
-            except Exception:
-                pass
-            try:
-                os.remove(wav_path)
-            except Exception:
-                pass
+#             # Archivo temporal seguro
+#             with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as tmp_file:
+#                 tmp_file.write(audio_bytes.getbuffer())
+#                 tmp_path = tmp_file.name
+#             wav_path = _convertir_a_wav16k(tmp_path)
 
-            set_voice_command(comando)
+#             # Transcribir
+#             result = _model.transcribe(
+#                 wav_path,
+#                 language="es",
+#                 initial_prompt="Comandos: rosa, verde, celeste, amarillo",
+#                 temperature=0.0,
+#                 condition_on_previous_text=False,
+#                 fp16=False,
+#             )
+#             comando = result.get("text", "").lower()
 
-            return JsonResponse({"comando": comando})
+#             # Borrar temporal
+#             try:
+#                 os.remove(tmp_path)
+#             except Exception:
+#                 pass
+#             try:
+#                 os.remove(wav_path)
+#             except Exception:
+#                 pass
 
-        return JsonResponse({"error": "Método no permitido"}, status=405)
+#             set_voice_command(comando)
 
-    except Exception as e:
-        return JsonResponse({"error": str(e)}, status=500)
+#             return JsonResponse({"comando": comando})
+
+#         return JsonResponse({"error": "Método no permitido"}, status=405)
+
+#     except Exception as e:
+#         return JsonResponse({"error": str(e)}, status=500)
