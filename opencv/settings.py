@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
 ]
-INSTALLED_APPS += ["channels"]
+
 
 
 ASGI_APPLICATION = "opencv.asgi.application"
@@ -117,10 +117,15 @@ WSGI_APPLICATION = 'opencv.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'airwrite',
+        'USER': 'hector',
+        'PASSWORD': 'hector1234',
+        'HOST': 'localhost',  
+        'PORT': '5432',     
     }
 }
+
 
 
 # Password validation
