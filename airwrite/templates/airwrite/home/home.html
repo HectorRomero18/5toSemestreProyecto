@@ -61,17 +61,19 @@
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8" />
   <title>AIRWRITE SOFT - Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  
+
   <!-- Fuentes y estilos -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Roboto:wght@700&family=Manrope:wght@400;500;600;700&display=swap"
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Roboto:wght@700&family=Manrope:wght@400;500;600;700&display=swap"
     rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <!-- Estilos locales -->
   <link rel="stylesheet" href="{% static 'airwrite/css/home.css' %}">
@@ -107,10 +109,10 @@
         </button>
 
         {% load socialaccount %}
-<a href="{% url 'logout' %}" class="nav-item logout-link">
-  <i class="fa-solid fa-right-from-bracket nav-icon" style="color: red;"></i>
-  <span class="nav-label">Cerrar Sesión</span>
-</a>
+        <a href="{% url 'logout' %}" class="nav-item logout-link">
+          <i class="fa-solid fa-right-from-bracket nav-icon" style="color: red;"></i>
+          <span class="nav-label">Cerrar Sesión</span>
+        </a>
       </nav>
 
       <div class="sidebar-footer">
@@ -140,14 +142,17 @@
         </div>
 
         <div class="courses-grid">
-          <div class="course-card course-card-1">
-            <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png" alt="Abecedario" class="course-bg" />
-            <div class="course-content">
-              <h3 class="course-title">Abecedario</h3>
-              <p class="course-lessons">27 lecciones</p>
+          <a href="{% url 'trazos' %}" class="course-link">
+            <div class="course-card course-card-1">
+              <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png" alt="Abecedario" class="course-bg" />
+              <div class="course-content">
+                <h3 class="course-title">Abecedario</h3>
+                <p class="course-lessons">27 lecciones</p>
+              </div>
+              <img src="{% static 'airwrite/img/abecedario_home.png' %}" alt="abecedario_home"
+                class="course-decoration-1" />
             </div>
-            <img src="{% static 'airwrite/img/abecedario_home.png' %}" alt="abecedario_home" class="course-decoration-1" />
-          </div>
+          </a>
 
           <div class="course-card course-card-2">
             <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/group-2.png" alt="Números" class="course-bg" />
@@ -267,4 +272,5 @@
   <!-- Scripts -->
   <script src="{% static 'airwrite/js/home.js' %}"></script>
 </body>
+
 </html>
