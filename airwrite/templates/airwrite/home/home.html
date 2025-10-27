@@ -1,4 +1,4 @@
-{% load static %}
+<!-- {% load static %}
 <!DOCTYPE html>
 <html>
 
@@ -56,4 +56,215 @@
   <script src="{% static 'airwrite/js/home.js' %}"></script>
 </body>
 
+</html> -->
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AIRWRITE SOFT - Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  
+  <!-- Fuentes y estilos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@800&family=Roboto:wght@700&family=Manrope:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+  <!-- Estilos locales -->
+  <link rel="stylesheet" href="{% static 'airwrite/css/home.css' %}">
+</head>
+
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <header class="sidebar-header">
+        <h1 class="logo">AIRWRITE SOFT</h1>
+      </header>
+
+      <nav class="navigation">
+        <button class="nav-item active">
+          <i class="fa-solid fa-house nav-icon"></i>
+          <span class="nav-label">Inicio</span>
+        </button>
+
+        <button class="nav-item">
+          <i class="fa-solid fa-book nav-icon"></i>
+          <span class="nav-label">Cursos</span>
+        </button>
+
+        <button class="nav-item">
+          <i class="fa-solid fa-folder-open nav-icon"></i>
+          <span class="nav-label">Recursos</span>
+        </button>
+
+        <button class="nav-item">
+          <i class="fa-solid fa-gear nav-icon"></i>
+          <span class="nav-label">Configuración</span>
+        </button>
+
+        {% load socialaccount %}
+<a href="{% url 'logout' %}" class="nav-item logout-link">
+  <i class="fa-solid fa-right-from-bracket nav-icon" style="color: red;"></i>
+  <span class="nav-label">Cerrar Sesión</span>
+</a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <img src="{% static 'airwrite/img/output-onlinegiftools (5).gif' %}" alt="Letra-home" class="sidebar-image" />
+      </div>
+    </aside>
+
+    <div class="divider"></div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="main-header">
+        <h2 class="welcome-title">Hola {{ user.first_name }} {{ user.last_name }}, bienvenido de nuevo!</h2>
+      </header>
+
+      <!-- My Courses Section -->
+      <section class="my-courses-section">
+        <div class="section-header">
+          <h2 class="section-title">Mis Cursos</h2>
+          <div class="search-box">
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input type="text" placeholder="Buscar..." class="search-input" />
+          </div>
+        </div>
+
+        <div class="courses-grid">
+          <div class="course-card course-card-1">
+            <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png" alt="Abecedario" class="course-bg" />
+            <div class="course-content">
+              <h3 class="course-title">Abecedario</h3>
+              <p class="course-lessons">27 lecciones</p>
+            </div>
+            <img src="{% static 'airwrite/img/abecedario_home.png' %}" alt="abecedario_home" class="course-decoration-1" />
+          </div>
+
+          <div class="course-card course-card-2">
+            <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/group-2.png" alt="Números" class="course-bg" />
+            <div class="course-content">
+              <h3 class="course-title">Números</h3>
+              <p class="course-lessons">10 lecciones</p>
+            </div>
+            <img src="{% static 'airwrite/img/numeros_home.png' %}" alt="numeros_home" class="course-decoration-2" />
+          </div>
+
+          <div class="course-card course-card-3">
+            <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png" alt="Course" class="course-bg" />
+            <div class="course-content">
+              <h3 class="course-title">xxxxxx</h3>
+              <p class="course-lessons">20 lecciones</p>
+            </div>
+          </div>
+
+          <div class="course-card course-card-4">
+            <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png" alt="Course" class="course-bg" />
+            <div class="course-content">
+              <h3 class="course-title">xxxxxx</h3>
+              <p class="course-lessons">40 lecciones</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Favorites Section -->
+      <section class="favorites-section">
+        <div class="section-header">
+          <div class="favorites-title-wrapper">
+            <h2 class="section-title">Favoritos</h2>
+            <img src="{% static 'airwrite/img/favorito icono.png' %}" alt="Favorite" class="favorite-icon" />
+          </div>
+          <button class="view-all-btn">Ver todos</button>
+        </div>
+      </section>
+
+      <!-- Course Planning Section -->
+      <section class="course-planning-section">
+        <div class="planning-grid">
+          {% for curso in cursos %}
+          <div class="planning-card">
+            <div class="planning-icon">
+              <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/edit-2.svg" alt="Edit" />
+            </div>
+            <div class="planning-content">
+              <div class="planning-title">{{ curso.nombre }}</div>
+              <div class="planning-subtitle">Última vez abierto: {{ curso.fecha|date:"d F Y" }}</div>
+            </div>
+            <button class="planning-menu">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="1"></circle>
+                <circle cx="12" cy="5" r="1"></circle>
+                <circle cx="12" cy="19" r="1"></circle>
+              </svg>
+            </button>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+    </main>
+
+    <div class="divider"></div>
+
+    <!-- Right Sidebar -->
+    <aside class="right-sidebar">
+      <section class="statistics-section">
+        <h2 class="section-title">Estadísticas</h2>
+        <div class="statistics-grid">
+          <div class="stat-card">
+            <div class="stat-label">Cursos<br />Completados</div>
+            <div class="stat-value">{{ stats.cursos_completados }}</div>
+            <div class="stat-bar"></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Total de Puntos<br />de Experiencia</div>
+            <div class="stat-value">{{ stats.experiencia_total }}</div>
+            <div class="stat-bar"></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Cursos en<br />Progreso</div>
+            <div class="stat-value">{{ stats.cursos_progreso }}</div>
+            <div class="stat-bar"></div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Niveles<br />Finalizados</div>
+            <div class="stat-value">{{ stats.niveles_finalizados }}</div>
+            <div class="stat-bar"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="activity-section">
+        <div class="activity-header">
+          <h2 class="section-title">Actividad</h2>
+          <div class="activity-tabs">
+            <button class="activity-tab" data-period="day">Día</button>
+            <button class="activity-tab active" data-period="week">Semana</button>
+            <button class="activity-tab" data-period="month">Mes</button>
+          </div>
+        </div>
+
+        <div class="activity-chart-wrapper">
+          <div class="activity-chart" id="activityChart">
+            <!-- Las barras se generarán con JS -->
+          </div>
+        </div>
+      </section>
+    </aside>
+  </div>
+
+  <!-- Scripts -->
+  <script src="{% static 'airwrite/js/home.js' %}"></script>
+</body>
 </html>
