@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
+    'airwrite.infrastructure.apps.InfrastructureConfig',
 ]
 
 ASGI_APPLICATION = "opencv.asgi.application"
@@ -117,8 +118,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'airwrite',
-        'USER': 'postgres',
-        'PASSWORD': 'mibd',
+        'USER': 'hector',
+        'PASSWORD': 'hector1234',
         'HOST': 'localhost',  
         'PORT': '5432',     
     }
