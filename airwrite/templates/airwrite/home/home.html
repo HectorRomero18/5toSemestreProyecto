@@ -137,49 +137,42 @@
               <circle cx="11" cy="11" r="8"></circle>
               <path d="m21 21-4.35-4.35"></path>
             </svg>
-            <input type="text" placeholder="Buscar..." class="search-input" />
+            <!-- Barra de búsqueda -->
+            <form method="get" class="p-4 flex justify-center">
+              <input type="text" name="q" placeholder="Buscar..." 
+                    value="{{ request.GET.q }}" class="search-input"
+                    style="padding: 0.5rem; width: 100%; max-width: 400px; text-align: center; border-radius: 0.5rem; border: 1px solid #ccc;" />
+            </form>
           </div>
         </div>
 
         <div class="courses-grid">
-          <a href="{% url 'trazos' %}" class="course-link">
-            <div class="course-card course-card-1">
-              <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png" alt="Abecedario" class="course-bg" />
-              <div class="course-content">
-                <h3 class="course-title">Abecedario</h3>
-                <p class="course-lessons">27 lecciones</p>
+          {% for module in modules %}
+            <a href="{% url 'trazos' %}" class="course-link">
+              <div class="course-card 
+                {% if forloop.counter == 1 %}bg-red
+                {% elif forloop.counter == 2 %}bg-blue
+                {% elif forloop.counter == 3 %}bg-green
+                {% else %}bg-yellow{% endif %}">
+                
+                <img src="{% if forloop.counter == 1 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png
+                          {% elif forloop.counter == 2 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-2.png
+                          {% elif forloop.counter == 3 %}https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png
+                          {% else %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png{% endif %}" 
+                    alt="{{ module.name }}" class="course-bg" />
+
+                <div class="course-content">
+                  <h3 class="course-title">{{ module.name }}</h3>
+                  <p class="course-lessons">{{ module.description }}</p>
+                </div>
               </div>
-              <img src="{% static 'airwrite/img/abecedario_home.png' %}" alt="abecedario_home"
-                class="course-decoration-1" />
-            </div>
-          </a>
-
-          <div class="course-card course-card-2">
-            <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/group-2.png" alt="Números" class="course-bg" />
-            <div class="course-content">
-              <h3 class="course-title">Números</h3>
-              <p class="course-lessons">10 lecciones</p>
-            </div>
-            <img src="{% static 'airwrite/img/numeros_home.png' %}" alt="numeros_home" class="course-decoration-2" />
-          </div>
-
-          <div class="course-card course-card-3">
-            <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png" alt="Course" class="course-bg" />
-            <div class="course-content">
-              <h3 class="course-title">xxxxxx</h3>
-              <p class="course-lessons">20 lecciones</p>
-            </div>
-          </div>
-
-          <div class="course-card course-card-4">
-            <img src="https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png" alt="Course" class="course-bg" />
-            <div class="course-content">
-              <h3 class="course-title">xxxxxx</h3>
-              <p class="course-lessons">40 lecciones</p>
-            </div>
-          </div>
+            </a>
+          {% empty %}
+            <p>No hay cursos disponibles.</p>
+          {% endfor %}
         </div>
       </section>
+
 
       <!-- Favorites Section -->
       <section class="favorites-section">
