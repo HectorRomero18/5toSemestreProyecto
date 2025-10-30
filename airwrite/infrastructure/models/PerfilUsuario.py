@@ -1,20 +1,24 @@
 from django.db import models
 from django.conf import settings
-from airwrite.infrastructure.models.letra import Letra
 
 
 class PerfilUsuario(models.Model):
-    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    user_id = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    nombre = models.CharField(max_length=100)
     xp = models.PositiveIntegerField(default=0)
-    letras_desbloqueadas = models.ManyToManyField(Letra, blank=True)
+    nivel = models.PositiveIntegerField(default=1)
+    letras_practicadas = models.ManyToManyField('Letra', blank=True)
 
-
-    def desbloquear_letra(self, letra: Letra):
-        if letra not in self.letras_desbloqueadas.all():
-            self.letras_desbloqueadas.add(letra)
-            self.save()
-            return True
-        return False
+    # def to_entity(self):
+    #     from airwrite.domain.entities.usuario import Usuario
+    #     return Usuario(
+    #         id=self.pk,
+    #         user_id=self.user_id,
+    #         nombre=self.nombre,
+    #         xp=self.xp,
+    #         nivel=self.nivel,
+    #         letras_practicadas=list(self.letras_practicadas.all())
+    #         )
 
     def __str__(self):
-        return f"Perfil de {self.user.username} - XP: {self.xp}"
+        return f"Perfil de {self.user_id.username} - XP: {self.xp}"
