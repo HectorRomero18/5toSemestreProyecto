@@ -1,9 +1,10 @@
 from django.db import models
+from django.conf import settings
 from airwrite.infrastructure.models.letra import Letra
 
 
 class PerfilUsuario(models.Model):
-    user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     xp = models.PositiveIntegerField(default=0)
     letras_desbloqueadas = models.ManyToManyField(Letra, blank=True)
 
