@@ -81,3 +81,6 @@ def set_voice_command(text: str | None):
 def clear_canvas(request):
     _cmd_port.set("limpiar pantalla")
     return JsonResponse({"status": "ok"})
+def set_cplor(request):
+    _cmd_port.set("cambiar color")
+    return JsonResponse({"status": "ok"})

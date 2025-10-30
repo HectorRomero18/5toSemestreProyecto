@@ -206,6 +206,63 @@ body {
     gap: 16px;
 }
 
+.tool-dropdown {
+    position: relative;
+}
+
+.dropup-menu {
+    position: absolute;
+    bottom: 64px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    background: white;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    z-index: 50;
+}
+
+.tool-dropdown.open .dropup-menu {
+    display: flex;
+}
+
+.color-option {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.color-option:hover {
+    transform: translateY(-2px);
+}
+
+.color-option.active {
+    border-color: #2196F3;
+}
+
+.color-amarillo {
+    background: #ffde59;
+}
+
+.color-rosa {
+    background: #ff0080;
+}
+
+.color-verde {
+    background: #24ff00;
+}
+
+.color-celeste {
+    background: #5271ff;
+}
+
 .tool-btn {
     width: 56px;
     height: 56px;
@@ -578,4 +635,66 @@ body {
 
 .sidebar::-webkit-scrollbar-thumb:hover {
     background: #bbb;
+}
+
+
+
+.tool-dropdown {
+    position: relative; /* súper importante */
+    display: inline-block;
+}
+
+.dropup-menu {
+    display: none;           /* oculto por defecto */
+    position: absolute;      /* se posiciona respecto al padre */
+    bottom: 40px;            /* ajusta para que salga arriba */
+    left: 0;
+    background: white;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    flex-direction: row;
+    gap: 8px;
+    z-index: 9999;
+}
+
+.dropup-menu.show {
+    display: flex;
+}
+
+.color-option {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+.grosor-option {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+}
+
+.grosor-circle {
+    display: block;
+    background: black;
+    border-radius: 50%;
+}
+
+.grosor-circle.peque {
+    width: 6px;
+    height: 6px;
+}
+
+.grosor-circle.medio {
+    width: 12px;
+    height: 12px;
+}
+
+.grosor-circle.grande {
+    width: 18px;
+    height: 18px;
 }
