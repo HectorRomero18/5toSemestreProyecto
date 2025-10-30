@@ -8,7 +8,9 @@ import uuid
 @dataclass
 class Usuario:
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
+    user_id: str = ""
     nombre: str = ""
+    xp: int = 0
     nivel: int=1
     letras_practicadas: List[Letra] = field(default_factory=list)
     
