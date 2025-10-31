@@ -118,9 +118,9 @@ WSGI_APPLICATION = 'opencv.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
+        'NAME': 'airwrite',
+        'USER': 'hector',
+        'PASSWORD': 'hector1234',
         'HOST': 'localhost',  
         'PORT': '5432',     
     }
