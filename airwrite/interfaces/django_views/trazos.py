@@ -3,13 +3,16 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 import cv2
 import time
+import json
+
+from django.views.decorators.http import require_POST
 
 from airwrite.application.use_cases.drawing_loop import DrawingLoop, DrawingConfig, DrawingState
 from airwrite.infrastructure.repositories.state import OpenCVCamera, CanvasState, CommandState
 from airwrite.infrastructure.repositories.adapters import CameraAdapter, CanvasAdapter, CommandAdapter
 
 
-_camera = OpenCVCamera(index=0)
+_camera = OpenCVCamera(index=1)
 _canvas_state = CanvasState()
 _cmd_state = CommandState()
 
@@ -81,6 +84,48 @@ def set_voice_command(text: str | None):
 def clear_canvas(request):
     _cmd_port.set("limpiar pantalla")
     return JsonResponse({"status": "ok"})
-def set_cplor(request):
-    _cmd_port.set("cambiar color")
-    return JsonResponse({"status": "ok"})
+
+
+@require_POST
+def set_color(request):
+    try:
+        payload = json.loads(request.body.decode("utf-8") or "{}")
+    except json.JSONDecodeError:
+        return JsonResponse({"status": "error", "error": "invalid_payload"}, status=400)
+    color = payload.get("color")
+    if not color:
+        return JsonResponse({"status": "error", "error": "color_required"}, status=400)
+    if _loop.set_color(color):
+        return JsonResponse({"status": "ok"})
+    return JsonResponse({"status": "error", "error": "color_invalid"}, status=400)
+
+
+@require_POST
+def set_grosor(request):
+    try:
+        payload = json.loads(request.body.decode("utf-8") or "{}")
+    except json.JSONDecodeError:
+        return JsonResponse({"status": "error", "error": "invalid_payload"}, status=400)
+    grosor = payload.get("grosor")
+    if not grosor:
+        return JsonResponse({"status": "error", "error": "grosor_required"}, status=400)
+
+    # Intentar aplicar cambio directamente en _loop si existe una API
+    ok = False
+    try:
+        if hasattr(_loop, "set_thickness"):
+            ok = _loop.set_thickness(grosor)
+        elif hasattr(_loop, "set_brush_size"):
+            ok = _loop.set_brush_size(grosor)
+        elif hasattr(_loop, "set_grosor"):
+            ok = _loop.set_grosor(grosor)
+        else:
+            # Fallback: enviar comando de voz al loop (si el loop procesa comandos de texto)
+            _cmd_port.set(f"grosor {grosor}")
+            ok = True
+    except Exception:
+        ok = False
+
+    if ok:
+        return JsonResponse({"status": "ok"})
+    return JsonResponse({"status": "error", "error": "grosor_invalid"}, status=400)

@@ -99,14 +99,15 @@
         </button>
 
         <button class="nav-item">
-          <i class="fa-solid fa-folder-open nav-icon"></i>
-          <span class="nav-label">Recursos</span>
+          <i class="fa-solid fa-store nav-icon"></i>
+          <span class="nav-label">Tienda</span>
         </button>
 
-        <button class="nav-item">
+
+        {% comment %} <button class="nav-item">
           <i class="fa-solid fa-gear nav-icon"></i>
           <span class="nav-label">Configuración</span>
-        </button>
+        </button> {% endcomment %}
 
         {% load socialaccount %}
         <a href="{% url 'logout' %}" class="nav-item logout-link">
@@ -219,25 +220,25 @@
         <div class="statistics-grid">
           <div class="stat-card">
             <div class="stat-label">Cursos<br />Completados</div>
-            <div class="stat-value">{{ stats.cursos_completados }}</div>
+            <div class="stat-value">{{ module|length }}</div>
             <div class="stat-bar"></div>
           </div>
 
           <div class="stat-card">
             <div class="stat-label">Total de Puntos<br />de Experiencia</div>
-            <div class="stat-value">{{ stats.experiencia_total }}</div>
+            <div class="stat-value">{{ user_xp }}</div>
             <div class="stat-bar"></div>
           </div>
 
           <div class="stat-card">
             <div class="stat-label">Cursos en<br />Progreso</div>
-            <div class="stat-value">{{ stats.cursos_progreso }}</div>
+              <div class="stat-value">{{ modules|length}}</div>
             <div class="stat-bar"></div>
           </div>
 
           <div class="stat-card">
             <div class="stat-label">Niveles<br />Finalizados</div>
-            <div class="stat-value">{{ stats.niveles_finalizados }}</div>
+            <div class="stat-value">{{ module|length }}</div>
             <div class="stat-bar"></div>
           </div>
         </div>

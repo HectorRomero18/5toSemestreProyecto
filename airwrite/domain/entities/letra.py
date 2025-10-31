@@ -12,7 +12,7 @@ from airwrite.domain.constants.xp_reward import XP_DEFAULT
 
 BASE_IMG_PATH = "airwrite/static/img"
 @dataclass
-class Letra:
+class LetraEntity:
     caracter: str
     imagen: Optional[str] = None  # Ruta o URL de la imagen de la letra
     contorno: List[Tuple[int ,int]] = field(default_factory=list)
