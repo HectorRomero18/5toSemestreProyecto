@@ -10,7 +10,11 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script>
       // Rutas dinámicas usadas por el JS externo
-        window.urls = { clear_canvas: "{% url 'clear_canvas' %}" };
+  window.urls = {
+    clear_canvas: "{% url 'clear_canvas' %}",
+    set_color: "{% url 'set_color' %}",
+    set_grosor: "{% url 'set_grosor' %}"
+  };
     </script>
     <script src="{% static 'airwrite/js/index.js' %}" defer></script>
 </head>
@@ -182,6 +186,106 @@
                     <div class="alert-result" id="alertResult"></div>
                 </div>
             </div> {% endcomment %}
+
+            <!-- reemplazar/eliminar el <div id="color-palette"> añadido previamente -->
+<script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  const postSetColor = (color) => {
+    fetch(window.urls.set_color, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ color })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        console.log('Color cambiado a', color);
+      } else {
+        console.error('Error al cambiar color', data);
+      }
+    })
+    .catch(err => console.error('Fetch error', err));
+  };
+
+  // Vincular los botones dentro de #colorMenu (dropup existente)
+  document.querySelectorAll('#colorMenu .color-option').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const color = btn.dataset.color;
+      if (!color) return;
+      postSetColor(color);
+
+      // feedback visual opcional: marcar seleccionado
+      document.querySelectorAll('#colorMenu .color-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+</script>
+<script>
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  const postSetGrosor = (grosor) => {
+    fetch(window.urls.set_grosor, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ grosor })
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === 'ok') {
+        console.log('Grosor cambiado a', grosor);
+      } else {
+        console.error('Error al cambiar grosor', data);
+      }
+    })
+    .catch(err => console.error('Fetch error', err));
+  };
+
+  // Vincular los botones dentro de #grosorMenu
+  document.querySelectorAll('#grosorMenu .grosor-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const grosor = btn.dataset.grosor;
+      if (!grosor) return;
+      postSetGrosor(grosor);
+
+      // feedback visual opcional
+      document.querySelectorAll('#grosorMenu .grosor-option').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+    });
+  });
+</script>
         </main>
     </div>
 </body>
