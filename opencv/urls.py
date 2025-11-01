@@ -31,6 +31,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('django.contrib.auth.urls')),  # produce /accounts/logout/ con name='logout'
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('abecedario/', include('airwrite.interfaces.urls.abecedario_urls')),
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

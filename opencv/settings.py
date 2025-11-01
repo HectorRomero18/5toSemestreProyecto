@@ -16,6 +16,13 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# -----------------------------
+# Google Cloud TTS Credentials
+# -----------------------------
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = config(
+    "GOOGLE_APPLICATION_CREDENTIALS",
+    default=r"C:\Users\Jorge\5toSemestreProyecto\airwrite\airwrite-tts-c49efee304cc.json"
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
