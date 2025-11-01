@@ -429,6 +429,149 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 34,
+  "fields": {
+    "action_time": "2025-10-31T02:36:07.287Z",
+    "user": 2,
+    "content_type": 15,
+    "object_id": "1",
+    "object_repr": "Perfil de xhector - XP: 2000",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 35,
+  "fields": {
+    "action_time": "2025-10-31T22:24:54.401Z",
+    "user": 2,
+    "content_type": 16,
+    "object_id": "1",
+    "object_repr": "Numero 0",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 36,
+  "fields": {
+    "action_time": "2025-10-31T22:25:07.248Z",
+    "user": 2,
+    "content_type": 16,
+    "object_id": "2",
+    "object_repr": "Numero 1",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 37,
+  "fields": {
+    "action_time": "2025-10-31T22:25:23.120Z",
+    "user": 2,
+    "content_type": 16,
+    "object_id": "3",
+    "object_repr": "Numero 2",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 38,
+  "fields": {
+    "action_time": "2025-10-31T22:25:36.956Z",
+    "user": 2,
+    "content_type": 16,
+    "object_id": "4",
+    "object_repr": "Numero 3",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 39,
+  "fields": {
+    "action_time": "2025-10-31T22:25:55.401Z",
+    "user": 2,
+    "content_type": 16,
+    "object_id": "5",
+    "object_repr": "Numero 4",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 40,
+  "fields": {
+    "action_time": "2025-10-31T22:26:14.037Z",
+    "user": 2,
+    "content_type": 16,
+    "object_id": "6",
+    "object_repr": "Numero 5",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 41,
+  "fields": {
+    "action_time": "2025-10-31T22:26:32.010Z",
+    "user": 2,
+    "content_type": 16,
+    "object_id": "7",
+    "object_repr": "Numero 6",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 42,
+  "fields": {
+    "action_time": "2025-10-31T22:26:44.869Z",
+    "user": 2,
+    "content_type": 16,
+    "object_id": "8",
+    "object_repr": "Numero 7",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 43,
+  "fields": {
+    "action_time": "2025-10-31T22:27:05.517Z",
+    "user": 2,
+    "content_type": 16,
+    "object_id": "9",
+    "object_repr": "Numero 8",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 44,
+  "fields": {
+    "action_time": "2025-10-31T22:27:19.502Z",
+    "user": 2,
+    "content_type": 16,
+    "object_id": "10",
+    "object_repr": "Numero 9",
+    "action_flag": 1,
+    "change_message": "[{\"added\": {}}]"
+  }
+},
+{
   "model": "auth.permission",
   "pk": 1,
   "fields": {
@@ -969,11 +1112,47 @@
   }
 },
 {
+  "model": "auth.permission",
+  "pk": 61,
+  "fields": {
+    "name": "Can add numero",
+    "content_type": 16,
+    "codename": "add_numero"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 62,
+  "fields": {
+    "name": "Can change numero",
+    "content_type": 16,
+    "codename": "change_numero"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 63,
+  "fields": {
+    "name": "Can delete numero",
+    "content_type": 16,
+    "codename": "delete_numero"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 64,
+  "fields": {
+    "name": "Can view numero",
+    "content_type": 16,
+    "codename": "view_numero"
+  }
+},
+{
   "model": "auth.user",
   "pk": 1,
   "fields": {
     "password": "!82WxgeryJExwlMjbTcPcf4dNV02IfgsZTwI9UYr6",
-    "last_login": "2025-10-28T01:04:21.300Z",
+    "last_login": "2025-10-31T04:46:57.855Z",
     "is_superuser": false,
     "username": "hector_raul",
     "first_name": "HECTOR RAUL",
@@ -991,7 +1170,7 @@
   "pk": 2,
   "fields": {
     "password": "pbkdf2_sha256$1000000$0Jz8Y3Sk03Sx1LqcwuvXce$rhzz7W4831BOkCwpYurWrRBM7id9Ej0qTyb8RvJCc9A=",
-    "last_login": "2025-10-28T22:58:01.108Z",
+    "last_login": "2025-10-31T04:47:33.901Z",
     "is_superuser": true,
     "username": "xhector",
     "first_name": "",
@@ -1125,11 +1304,19 @@
   }
 },
 {
-  "model": "sessions.session",
-  "pk": "j7p8vccmzvgki3bjek7jzatgtulsn9d6",
+  "model": "contenttypes.contenttype",
+  "pk": 16,
   "fields": {
-    "session_data": ".eJxVjM0OwiAQhN-FsyGw4U-P3n0GssuCVA0kpT0Z39026UGPM9838xYR16XGdeQ5TiwuAsTptyNMz9x2wA9s9y5Tb8s8kdwVedAhb53z63q4fwcVR93WNjEo9tqCs7gFBUorQ3g2waZs2WdyxWlfNDsugFoFMgQueCTDpYjPF9nOOCE:1vDsdd:XIDGPUYlN-ec5bTDT235ICXpaF-1Kpz_UBwtpSFOs6I",
-    "expire_date": "2025-11-11T22:58:01.115Z"
+    "app_label": "infrastructure",
+    "model": "numero"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "au2gefclebna25rfhvw8omigc4un3l94",
+  "fields": {
+    "session_data": ".eJxVjM0OwiAQhN-FsyGw4U-P3n0GssuCVA0kpT0Z39026UGPM9838xYR16XGdeQ5TiwuAsTptyNMz9x2wA9s9y5Tb8s8kdwVedAhb53z63q4fwcVR93WNjEo9tqCs7gFBUorQ3g2waZs2WdyxWlfNDsugFoFMgQueCTDpYjPF9nOOCE:1vEh2z:2y4x6NkWDFd9izwZWKyjno6JB2dWm_arnl5Rh8ZgH-Q",
+    "expire_date": "2025-11-14T04:47:33.905Z"
   }
 },
 {
@@ -1149,19 +1336,19 @@
     "user": 1,
     "provider": "google",
     "uid": "101535377331724796628",
-    "last_login": "2025-10-28T01:04:21.226Z",
+    "last_login": "2025-10-31T04:46:57.828Z",
     "date_joined": "2025-10-25T20:46:56.738Z",
     "extra_data": {
       "hd": "unemi.edu.ec",
       "aud": "115518650954-pgcbmukl44occk9qgcr4ts30382jf0v8.apps.googleusercontent.com",
       "azp": "115518650954-pgcbmukl44occk9qgcr4ts30382jf0v8.apps.googleusercontent.com",
-      "exp": 1761617062,
-      "iat": 1761613462,
+      "exp": 1761889619,
+      "iat": 1761886019,
       "iss": "https://accounts.google.com",
       "sub": "101535377331724796628",
       "name": "HECTOR RAUL ROMERO GONZALON",
       "email": "hromerog@unemi.edu.ec",
-      "at_hash": "HFqDPnPP37xUNVOEdAiaug",
+      "at_hash": "Krc-kCrI97tc-xpDEf2ATQ",
       "picture": "https://lh3.googleusercontent.com/a/ACg8ocLpmZfqJQVpNutO_PswmRxGzBvv8ysN_mcV59Za8cRul4GE_YY=s96-c",
       "given_name": "HECTOR RAUL",
       "family_name": "ROMERO GONZALON",
@@ -1211,6 +1398,17 @@
     "url": "/",
     "order": 4,
     "is_active": true
+  }
+},
+{
+  "model": "infrastructure.perfilusuario",
+  "pk": 1,
+  "fields": {
+    "user_id": 2,
+    "nombre": "Xhector",
+    "xp": 2000,
+    "nivel": 1,
+    "letras_practicadas": []
   }
 },
 {
@@ -1546,6 +1744,126 @@
     "categoria": "C",
     "dificultad": "F",
     "imagen": "letras/letra_Z.png",
+    "contorno": [],
+    "trazos": [],
+    "precio_xp": 100
+  }
+},
+{
+  "model": "infrastructure.numero",
+  "pk": 1,
+  "fields": {
+    "nombre": "Numero 0",
+    "dificultad": "F",
+    "imagen": "numeros/numero_0-.png",
+    "contorno": [],
+    "trazos": [],
+    "precio_xp": 100
+  }
+},
+{
+  "model": "infrastructure.numero",
+  "pk": 2,
+  "fields": {
+    "nombre": "Numero 1",
+    "dificultad": "F",
+    "imagen": "numeros/numero_1.png",
+    "contorno": [],
+    "trazos": [],
+    "precio_xp": 100
+  }
+},
+{
+  "model": "infrastructure.numero",
+  "pk": 3,
+  "fields": {
+    "nombre": "Numero 2",
+    "dificultad": "M",
+    "imagen": "numeros/numero_2.png",
+    "contorno": [],
+    "trazos": [],
+    "precio_xp": 150
+  }
+},
+{
+  "model": "infrastructure.numero",
+  "pk": 4,
+  "fields": {
+    "nombre": "Numero 3",
+    "dificultad": "D",
+    "imagen": "numeros/numero_3.png",
+    "contorno": [],
+    "trazos": [],
+    "precio_xp": 300
+  }
+},
+{
+  "model": "infrastructure.numero",
+  "pk": 5,
+  "fields": {
+    "nombre": "Numero 4",
+    "dificultad": "D",
+    "imagen": "numeros/numero_4.png",
+    "contorno": [],
+    "trazos": [],
+    "precio_xp": 300
+  }
+},
+{
+  "model": "infrastructure.numero",
+  "pk": 6,
+  "fields": {
+    "nombre": "Numero 5",
+    "dificultad": "D",
+    "imagen": "numeros/numero_5.png",
+    "contorno": [],
+    "trazos": [],
+    "precio_xp": 300
+  }
+},
+{
+  "model": "infrastructure.numero",
+  "pk": 7,
+  "fields": {
+    "nombre": "Numero 6",
+    "dificultad": "M",
+    "imagen": "numeros/numero_6.png",
+    "contorno": [],
+    "trazos": [],
+    "precio_xp": 150
+  }
+},
+{
+  "model": "infrastructure.numero",
+  "pk": 8,
+  "fields": {
+    "nombre": "Numero 7",
+    "dificultad": "F",
+    "imagen": "numeros/numero_7.png",
+    "contorno": [],
+    "trazos": [],
+    "precio_xp": 100
+  }
+},
+{
+  "model": "infrastructure.numero",
+  "pk": 9,
+  "fields": {
+    "nombre": "Numero 8",
+    "dificultad": "M",
+    "imagen": "numeros/numero_8.png",
+    "contorno": [],
+    "trazos": [],
+    "precio_xp": 150
+  }
+},
+{
+  "model": "infrastructure.numero",
+  "pk": 10,
+  "fields": {
+    "nombre": "Numero 9",
+    "dificultad": "F",
+    "imagen": "numeros/numero_9.png",
     "contorno": [],
     "trazos": [],
     "precio_xp": 100

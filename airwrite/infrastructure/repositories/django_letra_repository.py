@@ -6,7 +6,7 @@ from airwrite.infrastructure.models.letra import Letra as DjangoLetra
 
 class DjangoLetraRepository(LetraRepositoryPort):
     def list(self, q: Optional[str] = None) -> List[LetraEntity]:
-        qs = DjangoLetra.objects.all().order_by('-id')
+        qs = DjangoLetra.objects.all().order_by('id')
         if q:
             qs = qs.filter(caracter__icontains=q)
         
