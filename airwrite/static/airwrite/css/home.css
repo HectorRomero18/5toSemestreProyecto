@@ -18,7 +18,7 @@ body {
   width: 100%;
 }
 
-/* Sidebar */
+/* ========== SIDEBAR CORREGIDO ========== */
 .sidebar {
   width: 238px;
   height: 100vh;
@@ -26,22 +26,17 @@ body {
   display: flex;
   flex-direction: column;
   flex-shrink: 0;
-  transition: transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
 .sidebar-header {
-  padding: 38px 0 0 44px;
+  padding: 30px 0 0 44px; /* Reducido de 38px a 30px */
+  flex-shrink: 0;
+  z-index: 10;
 }
 
 .logo {
-  position: absolute;
-  right: 1089px;
-  bottom: 765px;
-  width: 199px;
-  height: 42px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-family: "Rubik", Helvetica;
   font-weight: 800;
   color: #1c8cff;
@@ -49,19 +44,20 @@ body {
   letter-spacing: 0;
   line-height: normal;
   animation: fadeIn 0.6s 0.2s ease forwards;
-  left: 60px;
-  top: 40px;
 }
 
+/* ========== NAVEGACIÓN MÁS ARRIBA ========== */
 .navigation {
   flex: 1;
   display: flex;
   flex-direction: column;
   padding-left: 30px;
-  gap: 32px;
-  padding-top: 140px;
+  gap: 25px; /* Reducido de 32px a 25px */
+  padding-top: 60px; /* Reducido significativamente de 140px a 60px */
   animation: fadeIn 0.6s 0.2s ease forwards;
   opacity: 0;
+  z-index: 10;
+  position: relative;
 }
 
 .nav-item {
@@ -74,6 +70,8 @@ body {
   cursor: pointer;
   position: relative;
   transition: opacity 0.3s ease;
+  text-decoration: none;
+  color: inherit;
 }
 
 .nav-item:hover {
@@ -102,19 +100,32 @@ body {
   color: #369eff;
 }
 
+/* ========== SIDEBAR FOOTER (IMAGEN SIN CAMBIOS) ========== */
 .sidebar-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 45%;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
   animation: fadeIn 0.6s 0.4s ease forwards;
   opacity: 0;
+  z-index: 5;
 }
 
 .sidebar-image {
-  width: 175px;
-  height: 175px;
-  margin-left: 31px;
-  margin-top: -30px;
+  width: 350px;
+  height: 320px;
+  object-fit: cover;
+  object-position: center top;
+  display: block;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Divider */
+/* ========== RESTO DEL CSS (SIN CAMBIOS) ========== */
 .divider {
   width: 2px;
   height: 100vh;
@@ -122,7 +133,6 @@ body {
   flex-shrink: 0;
 }
 
-/* Main Content */
 .main-content {
   flex: 1;
   height: 100vh;
@@ -144,7 +154,6 @@ body {
   color: #303030;
 }
 
-/* My Courses Section */
 .my-courses-section {
   margin-bottom: 18px;
   animation: fadeIn 0.6s 0.4s ease forwards;
@@ -214,7 +223,6 @@ body {
   cursor: pointer;
   transition: transform 0.3s ease;
 }
-
 
 .course-card:hover {
   transform: translateY(-4px);
@@ -309,7 +317,6 @@ body {
   object-fit: cover;
 }
 
-/* Favorites Section */
 .favorites-section {
   margin-bottom: 14px;
   animation: fadeIn 0.6s 0.6s ease forwards;
@@ -344,7 +351,6 @@ body {
   opacity: 0.8;
 }
 
-/* Course Planning Section */
 .course-planning-section {
   animation: fadeIn 0.6s 0.8s ease forwards;
   opacity: 0;
@@ -438,7 +444,6 @@ body {
   height: 100%;
 }
 
-/* Right Sidebar */
 .right-sidebar {
   width: 472px;
   height: 100vh;
@@ -469,7 +474,6 @@ body {
   opacity: 0.7;
 }
 
-/* Statistics Section */
 .statistics-section {
   margin-bottom: 35px;
   animation: fadeIn 0.6s 0.4s ease forwards;
@@ -529,7 +533,6 @@ body {
   border-radius: 20px;
 }
 
-/* Activity Section */
 .activity-section {
   flex: 1;
   display: flex;
@@ -610,7 +613,6 @@ body {
   color: #303030;
 }
 
-/* Animations */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -622,7 +624,6 @@ body {
   }
 }
 
-/* Scrollbar */
 .main-content::-webkit-scrollbar {
   width: 6px;
 }
@@ -709,28 +710,25 @@ body {
   }
 
   .sidebar-header {
-    padding: 30px 0 0 30px;
+    padding: 25px 0 0 30px; /* Ajustado para tablets */
   }
 
   .logo {
     font-size: 22px;
-    left: 45px;
   }
 
   .navigation {
     padding-left: 20px;
-    padding-top: 100px;
-    gap: 25px;
+    padding-top: 40px; /* Ajustado para tablets */
+    gap: 20px; /* Reducido para tablets */
   }
 
   .nav-icon {
     margin-left: 20px;
   }
 
-  .sidebar-image {
-    width: 140px;
-    height: 140px;
-    margin-left: 30px;
+  .sidebar-footer {
+    height: 40%;
   }
 }
 
@@ -753,22 +751,18 @@ body {
   }
 
   .sidebar-header {
-    padding: 20px 20px 0;
+    padding: 15px 20px 0; /* Ajustado para móviles */
   }
 
   .logo {
     position: relative;
-    left: 0;
-    top: 0;
-    right: auto;
-    bottom: auto;
   }
 
   .navigation {
     flex-direction: row;
-    padding: 20px;
-    padding-top: 30px;
-    gap: 20px;
+    padding: 15px; /* Ajustado para móviles */
+    padding-top: 25px; /* Ajustado para móviles */
+    gap: 15px; /* Reducido para móviles */
     overflow-x: auto;
   }
 
@@ -880,8 +874,8 @@ body {
   }
 
   .navigation {
-    padding: 15px;
-    gap: 15px;
+    padding: 10px; /* Más ajustado para móviles pequeños */
+    gap: 12px; /* Más ajustado para móviles pequeños */
   }
 
   .nav-label {
