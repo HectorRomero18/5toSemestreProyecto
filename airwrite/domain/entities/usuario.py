@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 import json
 from typing import List, Optional
-from domain.entities.letra import Letra
+from airwrite.domain.entities.letra import LetraEntity
 import uuid
 
 
@@ -12,12 +12,12 @@ class Usuario:
     nombre: str = ""
     xp: int = 0
     nivel: int=1
-    letras_practicadas: List[Letra] = field(default_factory=list)
+    letras_practicadas: List[LetraEntity] = field(default_factory=list)
     
-    def agregar_letra(self, letra:Letra):
+    def agregar_letra(self, letra:LetraEntity):
         self.letras_practicadas.append(letra)
         
-    def get_letra(self, caracter : str) -> Optional[Letra]:
+    def get_letra(self, caracter : str) -> Optional[LetraEntity]:
         for letra in self.letras_practicadas:
             if letra.caracter == caracter:
                 return letra

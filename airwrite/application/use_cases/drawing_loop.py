@@ -86,6 +86,8 @@ class DrawingLoop:
             if area > 1000:
                 x, y, w, h = cv2.boundingRect(c)
                 x2, y2 = x + w // 2, y + h // 2
+                
+
                 # Color botones
                 # if 0 < x2 < 50 and 0 < y2 < 50:
                 #     self._set_color(self.cfg.color_amarillo, (6, 2, 2, 2))
@@ -109,6 +111,13 @@ class DrawingLoop:
                 if self.state.x1 is not None and self.state.y1 is not None and not (0 < y2 < 60):
                     self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
                 self.state.x1, self.state.y1 = x2, y2
+                
+                cv2.circle(frame, (x2, y2), self.state.thickness, self.state.color, 3)
+
+                self.state.x1, self.state.y1 = x2, y2
+                # dibujar puntero en canvas
+                self.canvas.draw_temp_pointer((x2, y2), self.state.color, self.state.thickness*2)
+
             else:
                 self.state.x1, self.state.y1 = None, None
 
