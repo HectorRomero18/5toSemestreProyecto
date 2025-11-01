@@ -119,8 +119,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'airwrite',
-        'USER': 'hector',
-        'PASSWORD': 'hector1234',
+        'USER': 'postgres',
+        'PASSWORD': 'mibd',
         'HOST': 'localhost',  
         'PORT': '5432',     
     }
