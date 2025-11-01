@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
-class ModuleListView( LoginRequiredMixin, TemplateView):
+class AbecedarioListView( LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/modules/abecedario.html'
 
     def get_context_data(self, **kwargs):

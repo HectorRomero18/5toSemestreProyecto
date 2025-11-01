@@ -11,7 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
-class ModuleListView( LoginRequiredMixin, TemplateView):
+class SilabaListView( LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/modules/silaba.html'
 
     def get_context_data(self, **kwargs):
