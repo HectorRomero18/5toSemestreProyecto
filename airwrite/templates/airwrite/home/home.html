@@ -149,7 +149,7 @@
 
         <div class="courses-grid">
           {% for module in modules %}
-            <a href="{% url 'trazos' %}" class="course-link">
+            <a href="{% if module.name == 'Abecedario' %}{% url 'abecedario' %}{% else %}{% url 'trazos' %}{% endif %}" class="course-link"">
               <div class="course-card 
                 {% if forloop.counter == 1 %}bg-red
                 {% elif forloop.counter == 2 %}bg-blue
