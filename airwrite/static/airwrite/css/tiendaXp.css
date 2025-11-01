@@ -256,7 +256,13 @@ body {
 }
 
 .featured-price {
-  font-size: clamp(18px, 3vw, 24px);
+  font-size: 19px;
+  color: white;
+  margin-bottom: 20px;
+  transition: all 0.3s ease;
+}
+.featured-categoria {
+  font-size: 19px;
   color: white;
   margin-bottom: 20px;
   transition: all 0.3s ease;

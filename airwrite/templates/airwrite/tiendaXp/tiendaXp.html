@@ -6,6 +6,7 @@
   <title>Tienda - AIRWRITE SOFT</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   {% load static %}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="{% static 'airwrite/css/tiendaXp.css' %}">
 </head>
 <body>
@@ -61,8 +62,9 @@
         <div class="featured-card" id="featuredCard">
           <div class="featured-letter" id="featuredLetter">A</div>
           <div class="featured-info" id="featuredInfo">
-            <h2 class="featured-title">Letra A</h2>
-            <p class="featured-price">Precio 120 Xp</p>
+            <h2 class="featured-title"></h2>
+            <p class="featured-categoria"></p>
+            <p class="featured-price"></p>
             <div class="featured-actions">
               <button class="btn-buy">Comprar</button>
               <button class="btn-favorite active" id="featuredFavorite">
@@ -88,6 +90,10 @@
       </section>
     </main>
   </div>
+
+  <!-- Pasar datos del contexto Django a JavaScript -->
+  {{ modules|json_script:"modules-data" }}
+
 
   <script src="{% static 'airwrite/js/tiendaXp.js' %}"></script>
 </body>
