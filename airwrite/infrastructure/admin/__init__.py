@@ -6,6 +6,7 @@ from airwrite.infrastructure.models import PerfilUsuario
 from airwrite.infrastructure.models import Letra
 from airwrite.infrastructure.models import Favorito
 from airwrite.infrastructure.models import Numero
+from airwrite.infrastructure.models import LetraCompra
 
 @admin.register(Module)
 class ModuleAdmin(admin.ModelAdmin):
@@ -38,3 +39,8 @@ class NumeroAdmin(admin.ModelAdmin):
     list_filter = ('dificultad',)
     ordering = ('nombre',)
 
+@admin.register(LetraCompra)
+class LetraCompraAdmin(admin.ModelAdmin):
+    list_display = ('letra', 'usuario', 'fecha')
+    search_fields = ('letra__nombre', 'usuario__nombre')
+    ordering = ('-fecha',)
