@@ -166,6 +166,9 @@ body {
   justify-content: center;
 }
 
+.sidebar-item {
+  text-decoration: none;
+}
 /* Featured Card - MÁS ANCHO Y CON COLORES */
 .featured-card {
   flex: 1;
