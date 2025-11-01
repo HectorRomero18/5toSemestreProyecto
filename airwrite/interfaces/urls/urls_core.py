@@ -1,7 +1,10 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from airwrite.interfaces.django_views.auth import LoginView, CustomLogoutView
-from airwrite.interfaces.django_views.home import ModuleListView
+from airwrite.interfaces.django_views.home import ModuleListView as HomeModuleListView
+from airwrite.interfaces.django_views.abecedario import ModuleListView as AbecedarioModuleListView
+from airwrite.interfaces.django_views.tiendaXp import ModuleListView as TiendaXpModuleListView
+from airwrite.interfaces.django_views.silaba import ModuleListView as SilabaModuleListView
 from airwrite.interfaces.django_views.trazos import index, video_feed_cam, video_feed_canvas, clear_canvas, set_color, set_grosor
 #from core.views.login import login_view
 
@@ -15,11 +18,11 @@ urlpatterns = [
     path('', LoginView.as_view(), name='login'),
     path('login/', LoginView.as_view(), name='login'), 
 
-    path('home/', ModuleListView.as_view(), name='home'),
+    path('home/', HomeModuleListView.as_view(), name='home'),
     # logout (usa POST o LogoutView)
     path('logout/', CustomLogoutView.as_view(), name='logout'),
 
-    
+
     path('trazos/', index, name='trazos'),
     path('video/cam/', video_feed_cam, name='video_feed_cam'),
     path('video/canvas/', video_feed_canvas, name='video_feed_canvas'),
@@ -27,6 +30,10 @@ urlpatterns = [
     path('set_grosor/', set_grosor, name='set_grosor'),
 
     path('color/', set_color, name='set_color'),
+
+    path('abecedario/', AbecedarioModuleListView.as_view(), name='abecedario'),
+    path('tienda/', TiendaXpModuleListView.as_view(), name='tienda'),
+    path('silaba/', SilabaModuleListView.as_view(), name='silaba'),
 
     
 ]

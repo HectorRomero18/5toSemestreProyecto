@@ -1,0 +1,3 @@
+- [x] Cambiar imports en urls_core.py para usar ModuleListView de abecedario.py para la ruta 'abecedario'
+- [x] Modificar home.html para usar enlaces dinámicos basados en module.url
+- [x] Verificar que la configuración funcione (servidor corriendo, pero hay problema con venv)
