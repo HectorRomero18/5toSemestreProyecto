@@ -32,9 +32,13 @@ class DjangoLetraCompraRepository(LetraCompraRepositoryPort):
         User = get_user_model()
         user_model = User.objects.get(id=usuario.id)  # usuario.id es el id de User
 
+        # Obtener la instancia de Letra
+        from airwrite.infrastructure.models.letra import Letra
+        letra_instance = Letra.objects.get(nombre=letra)
+
         # Crear la compra
         LetraCompra.objects.create(
             usuario=user_model,  # FK correcta al User
-            letra=letra,
+            letra=letra_instance,
             precio=precio
         )
