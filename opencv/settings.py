@@ -11,10 +11,19 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+import dj_database_url
 
+# -----------------------------
+# Google Cloud TTS Credentials
+# -----------------------------
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = config(
+    "GOOGLE_APPLICATION_CREDENTIALS",
+    default=r"C:\Users\Jorge\5toSemestreProyecto\airwrite\airwrite-tts-c49efee304cc.json"
+)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
@@ -42,6 +51,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
+    'airwrite.infrastructure.apps.InfrastructureConfig',
 ]
 
 ASGI_APPLICATION = "opencv.asgi.application"
@@ -113,14 +123,16 @@ WSGI_APPLICATION = 'opencv.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'airwrite',
-        'USER': 'postgres',
-        'PASSWORD': '123',
-        'HOST': 'localhost',  
-        'PORT': '5432',     
+        'NAME': config('DB_NAME', default='airwrite_db'),
+        'USER': config('DB_USER', default='airwrite_db_user'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': config('DB_HOST', default='dpg-d436q53ipnbc73bidmj0-a.oregon-postgres.render.com'),
+        'PORT': config('DB_PORT', default='5432'),
+
     }
 }
 
@@ -164,6 +176,9 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'airwrite' / 'static',  # estáticos de airwrite
 ]
+
+MEDIA_URL = '/media/'  # URL pública para acceder a los archivos
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Carpeta física donde se guardan los archivos
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

@@ -8,8 +8,6 @@ class Module(models.Model):
     order = models.IntegerField()
     is_active = models.BooleanField(default=True)
 
-    class Meta:
-        app_label = 'core'  # keep migrations and DB table under 'core'
 
     def __str__(self):
         return self.name

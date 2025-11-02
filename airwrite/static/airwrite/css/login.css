@@ -107,7 +107,7 @@ a {
   width: 322px;
   height: 62px;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
   border: none;
   background: none;
   padding: 0;
@@ -115,6 +115,10 @@ a {
 
 .login-jorge .bouton-sign-in:hover {
   transform: translateY(-2px);
+}
+
+.login-jorge .bouton-sign-in:active {
+  transform: translateY(0);
 }
 
 .login-jorge .rectangle {
@@ -126,6 +130,11 @@ a {
   box-shadow: 0px 10px 17px 3px #4461f226;
   position: absolute;
   left: 0;
+  transition: box-shadow 0.3s;
+}
+
+.login-jorge .bouton-sign-in:hover .rectangle {
+  box-shadow: 0px 12px 20px 4px #4461f233;
 }
 
 .login-jorge .text-wrapper-2 {
@@ -184,11 +193,13 @@ a {
   left: 227px;
   width: 94px;
   height: 48px;
-  transition: transform 0.2s;
+  transition: transform 0.2s, opacity 0.2s;
+  cursor: pointer;
 }
 
 .login-jorge .facebook:hover {
   transform: scale(1.05);
+  opacity: 0.9;
 }
 
 .login-jorge .apple {
@@ -197,11 +208,13 @@ a {
   left: 103px;
   width: 114px;
   height: 69px;
-  transition: transform 0.2s;
+  transition: transform 0.2s, opacity 0.2s;
+  cursor: pointer;
 }
 
 .login-jorge .apple:hover {
   transform: scale(1.05);
+  opacity: 0.9;
 }
 
 .login-jorge .google {
@@ -210,11 +223,13 @@ a {
   left: 0;
   width: 94px;
   height: 48px;
-  transition: transform 0.2s;
+  transition: transform 0.2s, opacity 0.2s;
+  cursor: pointer;
 }
 
 .login-jorge .google:hover {
   transform: scale(1.05);
+  opacity: 0.9;
 }
 
 .login-jorge .forms a {
@@ -442,6 +457,13 @@ a {
   left: 0;
   background-color: #eaf0f7;
   border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.login-jorge .enter-name:focus-within .rectangle-3,
+.login-jorge .password:focus-within .rectangle-3 {
+  background-color: #e3ecf5;
+  box-shadow: 0 0 0 2px rgba(68, 97, 242, 0.2);
 }
 
 .login-jorge .enter-email {
@@ -482,11 +504,12 @@ a {
   cursor: pointer;
   z-index: 10;
   color: #667085;
-  transition: color 0.3s;
+  transition: color 0.3s, transform 0.2s;
 }
 
 .login-jorge .toggle-password:hover {
   color: #4461f2;
+  transform: scale(1.1);
 }
 
 .login-jorge .password {
@@ -659,4 +682,360 @@ a {
 
 .register-field.field-3 {
   top: 416px;
+}
+
+/* ========== RESPONSIVE STYLES ========== */
+
+/* Desktop grande (1440px y menor) */
+@media screen and (max-width: 1440px) {
+  .login-jorge {
+    min-width: 1200px;
+  }
+
+  .login-jorge .output {
+    left: 350px;
+    width: 500px;
+    height: 500px;
+  }
+
+  .login-jorge .forms,
+  .login-jorge .enter-name,
+  .login-jorge .password,
+  .login-jorge .register-field {
+    left: 900px;
+  }
+
+  .login-jorge .top-side {
+    left: 580px;
+    width: 700px;
+  }
+}
+
+/* Laptop (1280px y menor) */
+@media screen and (max-width: 1280px) {
+  .login-jorge {
+    min-width: 1024px;
+  }
+
+  .login-jorge .output {
+    left: 280px;
+    width: 450px;
+    height: 450px;
+  }
+
+  .login-jorge .forms,
+  .login-jorge .enter-name,
+  .login-jorge .password,
+  .login-jorge .register-field {
+    left: 750px;
+  }
+
+  .login-jorge .top-side {
+    left: 480px;
+    width: 600px;
+  }
+
+  .login-jorge .bienvenido-al-blog {
+    font-size: 40px;
+    line-height: 54px;
+  }
+
+  .login-jorge .background {
+    left: 80px;
+  }
+}
+
+/* Tablets (1024px y menor) */
+@media screen and (max-width: 1024px) {
+  .login-jorge {
+    min-width: 768px;
+    min-height: 100vh;
+  }
+
+  .login-jorge .output,
+  .login-jorge .output-2,
+  .login-jorge .ellipse-2,
+  .login-jorge .background,
+  .login-jorge .ellipse {
+    display: none;
+  }
+
+  .login-jorge .bienvenido-al-blog {
+    top: 150px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 36px;
+    line-height: 48px;
+    width: 90%;
+  }
+
+  .login-jorge .no-tienes-una-cuenta {
+    top: 240px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: auto;
+  }
+
+  .login-jorge .forms,
+  .login-jorge .enter-name,
+  .login-jorge .password,
+  .login-jorge .register-field {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .login-jorge .forms {
+    top: 500px;
+  }
+
+  .login-jorge .enter-name {
+    top: 320px;
+  }
+
+  .login-jorge .password {
+    top: 390px;
+  }
+
+  .login-jorge .register-field.field-1 {
+    top: 320px;
+  }
+
+  .login-jorge .register-field.field-2 {
+    top: 390px;
+  }
+
+  .login-jorge .register-field.field-3 {
+    top: 460px;
+  }
+
+  .login-jorge .top-side {
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 700px;
+  }
+
+  .login-jorge .virtual-meeting {
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+    bottom: auto;
+    top: 60px;
+  }
+}
+
+/* Tablets pequeñas (768px y menor) */
+@media screen and (max-width: 768px) {
+  .login-jorge {
+    min-width: 100%;
+    padding: 20px;
+  }
+
+  .login-jorge .virtual-meeting {
+    top: 30px;
+    font-size: 24px;
+  }
+
+  .login-jorge .top-side {
+    top: 80px;
+    flex-wrap: wrap;
+    height: auto;
+    gap: 20px;
+  }
+
+  .login-jorge .main-menu {
+    width: 100%;
+    justify-content: center;
+    margin-top: 0;
+  }
+
+  .login-jorge .language {
+    margin-left: 0;
+    margin-top: 0;
+  }
+
+  .login-jorge .sign-in,
+  .login-jorge .register {
+    margin-left: 0;
+    margin-top: 0;
+  }
+
+  .login-jorge .bienvenido-al-blog {
+    top: 180px;
+    font-size: 32px;
+    line-height: 42px;
+  }
+
+  .login-jorge .no-tienes-una-cuenta {
+    top: 280px;
+    font-size: 16px;
+  }
+
+  .login-jorge .enter-name {
+    top: 360px;
+  }
+
+  .login-jorge .password {
+    top: 430px;
+  }
+
+  .login-jorge .register-field.field-1 {
+    top: 360px;
+  }
+
+  .login-jorge .register-field.field-2 {
+    top: 430px;
+  }
+
+  .login-jorge .register-field.field-3 {
+    top: 500px;
+  }
+
+  .login-jorge .forms {
+    top: 540px;
+  }
+
+  .login-jorge .forms,
+  .login-jorge .enter-name,
+  .login-jorge .password,
+  .login-jorge .register-field,
+  .login-jorge .bouton-sign-in {
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .login-jorge .rectangle {
+    width: 100%;
+  }
+}
+
+/* Móviles (480px y menor) */
+@media screen and (max-width: 480px) {
+  .login-jorge {
+    padding: 15px;
+  }
+
+  .login-jorge .virtual-meeting {
+    font-size: 20px;
+    top: 20px;
+  }
+
+  .login-jorge .top-side {
+    top: 70px;
+  }
+
+  .login-jorge .main-menu {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .login-jorge .text-wrapper-4,
+  .login-jorge .text-wrapper-5,
+  .login-jorge .text-wrapper-6 {
+    margin-left: 0;
+    width: auto;
+  }
+
+  .login-jorge .bienvenido-al-blog {
+    top: 220px;
+    font-size: 26px;
+    line-height: 36px;
+    padding: 0 10px;
+  }
+
+  .login-jorge .no-tienes-una-cuenta {
+    top: 320px;
+    font-size: 14px;
+    width: 90%;
+  }
+
+  .login-jorge .enter-name {
+    top: 400px;
+  }
+
+  .login-jorge .password {
+    top: 470px;
+  }
+
+  .login-jorge .register-field.field-1 {
+    top: 400px;
+  }
+
+  .login-jorge .register-field.field-2 {
+    top: 470px;
+  }
+
+  .login-jorge .register-field.field-3 {
+    top: 540px;
+  }
+
+  .login-jorge .forms {
+    top: 580px;
+  }
+
+  .login-jorge .forms,
+  .login-jorge .enter-name,
+  .login-jorge .password,
+  .login-jorge .register-field {
+    max-width: 300px;
+  }
+
+  .login-jorge .enter-email,
+  .login-jorge .text-wrapper-10 {
+    font-size: 13px;
+    letter-spacing: 0.8px;
+  }
+
+  .login-jorge .text-wrapper-2 {
+    font-size: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .login-jorge .facebook,
+  .login-jorge .google {
+    width: 80px;
+    height: 42px;
+  }
+
+  .login-jorge .apple {
+    width: 100px;
+    height: 60px;
+  }
+
+  .login-jorge .facebook {
+    left: 190px;
+  }
+
+  .login-jorge .apple {
+    left: 90px;
+  }
+}
+
+/* Móviles muy pequeños (360px y menor) */
+@media screen and (max-width: 360px) {
+  .login-jorge .bienvenido-al-blog {
+    font-size: 22px;
+    line-height: 32px;
+  }
+
+  .login-jorge .forms,
+  .login-jorge .enter-name,
+  .login-jorge .password,
+  .login-jorge .register-field {
+    max-width: 280px;
+  }
+
+  .login-jorge .virtual-meeting {
+    font-size: 18px;
+  }
+
+  .login-jorge .text-wrapper-4,
+  .login-jorge .text-wrapper-5,
+  .login-jorge .text-wrapper-6 {
+    font-size: 12px;
+  }
 }

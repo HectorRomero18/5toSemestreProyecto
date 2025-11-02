@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SÍLABAS - AIRWRITE SOFT</title>
+  {% load static %}
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'airwrite/css/silaba.css' %}">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-text">AIRWRITE</div>
+      <div class="logo-text">SOFT</div>
+    </div>
+    
+    <div class="title-section">
+      <h1 class="main-title">SÍLABAS</h1>
+      <p class="subtitle">combina y practica</p>
+    </div>
+    
+    <div class="search-container">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <input type="text" class="search-input" placeholder="Buscar sílaba..." id="searchInput">
+    </div>
+    
+    <a href="{% url 'tienda' %}" class="cart-container">
+            <svg class="cart-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                    stroke="#3B9EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span class="cart-text">Tienda</span>
+        </a>
+
+        <a href="javascript:window.history.back()" class="cart-container">
+            <svg class="cart-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                <path d="M19 12H5M12 19l-7-7 7-7" stroke="#3B9EFF" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round" />
+            </svg>
+
+            <span class="cart-text">Regresar</span>
+        </a>
+
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Todas las sílabas en una sola sección -->
+    <section class="section">
+      <h2 class="section-title">TODAS LAS SÍLABAS</h2>
+      <div class="letters-grid" id="silabasGrid">
+        <!-- Las sílabas se generarán con JavaScript -->
+      </div>
+    </section>
+  </main>
+
+  <script src="{% static 'airwrite/js/silaba.js' %}"></script>
+</body>
+</html>
