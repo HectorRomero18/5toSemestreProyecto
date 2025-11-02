@@ -9,6 +9,7 @@ from airwrite.infrastructure.repositories.django_letra_repository import (
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
 from airwrite.domain.constants.xp_reward import DIFICULTADES
+from airwrite.domain.services.bloquear import esta_bloqueada
 
 
 
@@ -29,17 +30,21 @@ class AbecedarioListView(LoginRequiredMixin, TemplateView):
         modules = use_case.execute(ListLetrasQuery(q=q))
         
         # Convertir cada LetraEntity a dict
-        modules_serializable = [
-            {
+        modules_serializable = []
+
+        for m in modules:
+            caracter_real = m.caracter[-1]  # toma solo la letra al final
+            # print("Caracter real:", caracter_real)
+
+            modules_serializable.append({
                 'letter': m.caracter,
+                'bloqueada': esta_bloqueada(user, m.caracter),  
                 'categoria': getattr(m, 'categoria', ''),
                 'dificultad': DIFICULTADES_DICT.get(m.dificultad, ''),
-                'price': getattr(m, 'price', 100),  # si tienes un precio
-                'simbolo': m.caracter[-1]
+                'price': getattr(m, 'price', 100),
+                'simbolo': m.caracter[-1]  # para mostrar solo la letra
+            })
 
-            }
-            for m in modules
-        ]
 
         perfil = getattr(user, 'perfilusuario', None)
         user_xp = perfil.xp if perfil else 0

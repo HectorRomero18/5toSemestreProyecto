@@ -18,17 +18,8 @@ class LetraEntity:
     contorno: List[Tuple[int ,int]] = field(default_factory=list)
     precio_xp: int =  XP_DEFAULT
     trazos: List[Trazo]= field(default_factory=list)
-    dificultad: int = DIFICULTADES[0][0]  # Valor por defecto 'F' (Fácil)
-    categoria: int = CATEGORIAS_LETRAS[0][0]  # Valor por defecto 'V' (Vocales)
-
-
-    # Asignar imagen automáticamente si no se proporcionó
-    def __post_init__(self):
-        if not self.imagen:
-            carpeta = "vocales" if self.categoria == "V" else "consonantes"
-            filename = f"{self.caracter.lower()}.png"  # ahora en minúscula
-            self.imagen = os.path.join(BASE_IMG_PATH, carpeta, filename)
-
+    dificultad: int = 1 #Nivel inicial
+    
     # Agrega nuevo trazo realizado por el usuario
     def agregar_trazo(self, trazo: Trazo):
         self.trazos.append(trazo)
@@ -41,7 +32,8 @@ class LetraEntity:
     
     def numero_trazos(self) -> int:
         return len(self.trazos)
-    # Convierte la letra y sus trazos a JSON para almacenamiento temporal o análisis
+    
+    """ Convierte la letra y sus trazos a JSON para almacenamiento temporal o análisis """
     def to_json(self) -> str:
         letra_dict = {
             "caracter":self.caracter,

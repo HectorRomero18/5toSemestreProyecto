@@ -28,7 +28,7 @@ class Trazo:
             "coordenadas": self.coordenadas,
             "color": self.color,
             "grosor": self.grosor,
-            "duracion": self.duracion,
+            "duracion": self.duracion(),
         }
         return json.dumps(trazo_dict)
 

@@ -26,6 +26,30 @@ function createLetterCard(item) {
     'Difícil': '#F44336'
   };
 
+  // Decide el botón de escribir según si está bloqueada
+  let escribirBtn = '';
+  if (!item.bloqueada) {
+    // Desbloqueada → lápiz
+    console.log("Letra desbloqueada:", item.bloqueada);
+    escribirBtn = `
+      <button class="action-btn" title="Escribir">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+        </svg>
+      </button>
+    `;
+  } else {
+    // Bloqueada → candado
+    escribirBtn = `
+      <button class="action-btn bloqueada" title="Bloqueada">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </button>
+    `;
+  }
+
   card.innerHTML = `
     <div class="letter-display">
       <img src="${bg}" alt="${item.simbolo}" class="letter-bg" />
@@ -45,11 +69,7 @@ function createLetterCard(item) {
             <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
           </svg>
         </button>
-        <button class="action-btn" title="Escribir">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
-          </svg>
-        </button>
+        ${escribirBtn}
         <button class="action-btn" title="Comprar">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <circle cx="9" cy="21" r="1"/>
@@ -60,8 +80,10 @@ function createLetterCard(item) {
       </div>
     </div>
   `;
+
   return card;
 }
+
 
 // 5️⃣ Renderizar letras y agregar eventos
 function renderLetters() {
@@ -76,30 +98,46 @@ function renderLetters() {
 
   // Eventos botones
   document.querySelectorAll('.action-btn').forEach(button => {
-    button.addEventListener('click', async (e) => {
-      e.stopPropagation();
-      const title = button.getAttribute('title');
-      const letter = button.closest('.letter-card').querySelector('.letter-name').textContent;
+      button.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const title = button.getAttribute('title');
+          const letter = button.closest('.letter-card').querySelector('.letter-name').textContent;
 
-      if (title === 'Comprar') {
-        alert(`Comprar ${letter}`);
-      } else if (title === 'Escribir') {
-        alert(`Abrir pantalla de escritura para ${letter}`);
-      } else if (title === 'Escuchar') {
-        try {
-          const response = await fetch(`/abecedario/letters/play/${letter}/`);
-          if (!response.ok) throw new Error('Error en TTS');
-          const blob = await response.blob();
-          const audioUrl = URL.createObjectURL(blob);
-          const audio = new Audio(audioUrl);
-          audio.play();
-        } catch (err) {
-          console.error('Error TTS:', err);
-          alert('No se pudo reproducir el audio de la letra');
-        }
-      }
-    });
+          if (title === 'Escuchar') {
+              playLetter(letter);
+          } else if (title === 'Comprar') {
+              Swal.fire({
+                  icon: 'info',
+                  title: `Comprar letra ${letter}`,
+                  text: '¿Deseas comprar esta letra?',
+                  showCancelButton: true,
+                  confirmButtonText: 'Comprar',
+                  cancelButtonText: 'Cancelar'
+              }).then(result => {
+                  if (result.isConfirmed) {
+                      // Aquí puedes llamar a tu endpoint para comprar la letra
+                      console.log(`Comprando letra ${letter}`);
+                  }
+              });
+          } else if (title === 'Escribir') {
+              // Desbloqueada → abrir pantalla de escritura
+              Swal.fire({
+                  icon: 'success',
+                  title: `Escribir ${letter}`,
+                  text: '¡Preparando pantalla de escritura!',
+              });
+          } else if (title === 'Bloqueada') {
+              // Letra bloqueada → mensaje SweetAlert
+              Swal.fire({
+                  icon: 'warning',
+                  title: `${letter} bloqueada`,
+                  text: 'Desbloquea o compra esta letra para poder usarla',
+                  confirmButtonText: 'Aceptar'
+              });
+          }
+      });
   });
+
 }
 
 // 6️⃣ Búsqueda

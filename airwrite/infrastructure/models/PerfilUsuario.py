@@ -8,6 +8,7 @@ class PerfilUsuario(models.Model):
     xp = models.PositiveIntegerField(default=0)
     nivel = models.PositiveIntegerField(default=1)
     letras_practicadas = models.ManyToManyField('Letra', blank=True)
+    letras_desbloqueadas = models.ManyToManyField('Letra', related_name='usuarios_desbloqueados', blank=True)
 
     # def to_entity(self):
     #     from airwrite.domain.entities.usuario import Usuario
