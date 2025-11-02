@@ -8,6 +8,7 @@ class Letra(models.Model):
     nombre = models.CharField(max_length=10)
     categoria = models.CharField(max_length=1, choices=CATEGORIAS_LETRAS)
     dificultad = models.CharField(max_length=1, choices=DIFICULTADES)
+    bloqueada = models.BooleanField(default=True, blank=True)
     imagen = models.ImageField(upload_to='letras/')
     contorno = models.JSONField(default=list, blank=True)
     trazos = models.JSONField(default=list, blank=True)
