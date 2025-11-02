@@ -39,6 +39,6 @@ class DjangoLetraCompraRepository(LetraCompraRepositoryPort):
         # Crear la compra
         LetraCompra.objects.create(
             usuario=user_model,  # FK correcta al User
-            letra=letra_instance,
+            letra=letra,
             precio=precio
         )

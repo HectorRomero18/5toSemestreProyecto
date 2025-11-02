@@ -5,9 +5,8 @@ const modules = JSON.parse(document.getElementById('modules-data').textContent);
 const vocales = modules.filter(item => item.categoria === 'V');
 const consonantes = modules.filter(item => item.categoria === 'C');
 
-// 3️⃣ Función para obtener imagen según categoría o dificultad
+// 3️⃣ Función para obtener imagen según categoría
 function obtenerFondo(letra) {
-  // Puedes personalizar esto como quieras:
   if (letra.categoria === 'V') {
     return 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png';
   } else {
@@ -15,16 +14,16 @@ function obtenerFondo(letra) {
   }
 }
 
-// 4️⃣ Función para crear una tarjeta de letra (tu mismo diseño)
+// 4️⃣ Crear tarjeta de letra
 function createLetterCard(item) {
   const card = document.createElement('div');
   card.className = 'letter-card';
-  
+
   const bg = obtenerFondo(item);
   const dificultadColors = {
-    'Fácil': '#4CAF50',   // verde
-    'Media': '#FFC107',   // amarillo / ámbar
-    'Difícil': '#F44336'  // rojo
+    'Fácil': '#4CAF50',
+    'Media': '#FFC107',
+    'Difícil': '#F44336'
   };
 
   card.innerHTML = `
@@ -33,17 +32,13 @@ function createLetterCard(item) {
       <span class="letter-text">${item.simbolo}</span>
     </div>
     <div class="letter-footer">
-      <!-- Wrapper vertical para letra y dificultad -->
       <div class="letter-info">
         <span class="letter-name">${item.letter}</span>
-          <span class="letter-name">Dificultad: </span>
-          <span class="letter-name" style="color: ${dificultadColors[item.dificultad]}; font-size: 0.8rem;">
-            ${item.dificultad}
-          </span>
-
+        <span class="letter-name">Dificultad: </span>
+        <span class="letter-name" style="color: ${dificultadColors[item.dificultad]}; font-size: 0.8rem;">
+          ${item.dificultad}
+        </span>
       </div>
-
-      <!-- Botones de acción -->
       <div class="letter-actions">
         <button class="action-btn" title="Escuchar">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -65,12 +60,10 @@ function createLetterCard(item) {
       </div>
     </div>
   `;
-
   return card;
 }
 
-
-// 5️⃣ Renderizar todas las letras
+// 5️⃣ Renderizar letras y agregar eventos
 function renderLetters() {
   const vocalesGrid = document.getElementById('vocalesGrid');
   const consonantesGrid = document.getElementById('consonantesGrid');
@@ -81,19 +74,29 @@ function renderLetters() {
   vocales.forEach(item => vocalesGrid.appendChild(createLetterCard(item)));
   consonantes.forEach(item => consonantesGrid.appendChild(createLetterCard(item)));
 
-  // Acciones de botones
+  // Eventos botones
   document.querySelectorAll('.action-btn').forEach(button => {
-    button.addEventListener('click', (e) => {
+    button.addEventListener('click', async (e) => {
       e.stopPropagation();
       const title = button.getAttribute('title');
       const letter = button.closest('.letter-card').querySelector('.letter-name').textContent;
 
       if (title === 'Comprar') {
         alert(`Comprar ${letter}`);
-      } else if (title === 'Escuchar') {
-        alert(`Escuchar ${letter}`);
       } else if (title === 'Escribir') {
         alert(`Abrir pantalla de escritura para ${letter}`);
+      } else if (title === 'Escuchar') {
+        try {
+          const response = await fetch(`/abecedario/letters/play/${letter}/`);
+          if (!response.ok) throw new Error('Error en TTS');
+          const blob = await response.blob();
+          const audioUrl = URL.createObjectURL(blob);
+          const audio = new Audio(audioUrl);
+          audio.play();
+        } catch (err) {
+          console.error('Error TTS:', err);
+          alert('No se pudo reproducir el audio de la letra');
+        }
       }
     });
   });
@@ -108,5 +111,37 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
   });
 });
 
-// 7️⃣ Inicializar al cargar
+// Función para reproducir letra con fetch
+async function playLetter(letter) {
+    try {
+        const response = await fetch(`/abecedario/letters/play/${letter}/`);
+        if (!response.ok) throw new Error("Error generando audio");
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audio.play();
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+// Modificar el listener de botones "Escuchar"
+document.querySelectorAll('.action-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const title = button.getAttribute('title');
+        const letter = button.closest('.letter-card').querySelector('.letter-name').textContent;
+
+        if (title === 'Escuchar') {
+            playLetter(letter);
+        } else if (title === 'Comprar') {
+            alert(`Comprar ${letter}`);
+        } else if (title === 'Escribir') {
+            alert(`Abrir pantalla de escritura para ${letter}`);
+        }
+    });
+});
+
+
+// 7️⃣ Inicializar
 document.addEventListener('DOMContentLoaded', renderLetters);
