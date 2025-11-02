@@ -21,13 +21,13 @@ class Usuario:
                 return letra
         return None
     
-    """Calcula el promedio del tiempo total de todas las letras practicadas."""
+    """Calcula el promedio del tiempo total de todas las letras practicadas"""
     def promedio_tiempo(self) -> float:
         if not self.letras_practicadas:
             return 0.0
         return sum(l.tiempo_total()for l in self.letras_practicadas) / len(self.letras_practicadas)
     
-    """Convierte el usuario y sus letras a JSON."""
+    """Convierte el usuario y sus letras a JSON"""
     def to_json(self) -> str:
         data = {
             "id":self.id,
