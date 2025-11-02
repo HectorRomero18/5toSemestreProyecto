@@ -19,7 +19,8 @@ class LetraEntity:
     precio_xp: int =  XP_DEFAULT
     trazos: List[Trazo]= field(default_factory=list)
     dificultad: int = 1 #Nivel inicial
-    
+    categoria: Optional[str] = None
+    dificultad_label: Optional[str] = None   
     # Agrega nuevo trazo realizado por el usuario
     def agregar_trazo(self, trazo: Trazo):
         self.trazos.append(trazo)
