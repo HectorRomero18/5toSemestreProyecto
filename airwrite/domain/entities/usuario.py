@@ -4,7 +4,7 @@ from typing import List, Optional
 from domain.entities.letra import Letra
 import uuid
 
-
+""""""
 @dataclass
 class Usuario:
     id: str = field(default_factory=lambda: str(uuid.uuid4()))

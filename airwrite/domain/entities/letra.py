@@ -10,7 +10,7 @@ class Letra:
     trazos: List[Trazo]= field(default_factory=list)
     dificultad: int = 1 #Nivel inicial
     
-    """ Agrega nuevo trazo realizado por el usuario"""
+    """ Agrega nuevo trazo realizado por el usuario """
     def agregar_trazo(self, trazo: Trazo):
         self.trazos.append(trazo)
     

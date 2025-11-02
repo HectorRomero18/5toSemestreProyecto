@@ -10,7 +10,7 @@ class Trazo:
     grosor: int = 2
     tiempo_inicio: float = field(default_factory=time.time)
     tiempo_fin: float = None
-
+    """ """
     def agregar_punto(self, x: int, y: int):
         self.coordenadas.append((x, y))
 
