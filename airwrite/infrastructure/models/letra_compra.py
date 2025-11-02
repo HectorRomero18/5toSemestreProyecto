@@ -4,6 +4,7 @@ from django.conf import settings
 
 class LetraCompra(models.Model):
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+
     letra = models.ForeignKey('Letra', on_delete=models.CASCADE)
     precio = models.IntegerField()
     fecha = models.DateTimeField(auto_now_add=True)

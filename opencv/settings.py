@@ -17,6 +17,14 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 import dj_database_url
 
+# -----------------------------
+# Google Cloud TTS Credentials
+# -----------------------------
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = config(
+    "GOOGLE_APPLICATION_CREDENTIALS",
+    default=r"C:\Users\Jorge\5toSemestreProyecto\airwrite\airwrite-tts-c49efee304cc.json"
+)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
@@ -124,8 +132,10 @@ DATABASES = {
         'PASSWORD': config('DB_PASSWORD'),
         'HOST': config('DB_HOST', default='dpg-d436q53ipnbc73bidmj0-a.oregon-postgres.render.com'),
         'PORT': config('DB_PORT', default='5432'),
+
     }
 }
+
 
 
 # Password validation

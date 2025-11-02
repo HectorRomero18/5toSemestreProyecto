@@ -98,11 +98,11 @@
           <span class="nav-label">Cursos</span>
         </button>
 
-        <button class="nav-item">
+
+        <a href="{% url 'tienda' %}" class="nav-item" style="text-decoration: none;">
           <i class="fa-solid fa-store nav-icon"></i>
           <span class="nav-label">Tienda</span>
-        </button>
-
+        </a>
 
         {% comment %} <button class="nav-item">
           <i class="fa-solid fa-gear nav-icon"></i>
@@ -117,7 +117,7 @@
       </nav>
 
       <div class="sidebar-footer">
-        <img src="{% static 'airwrite/img/output-onlinegiftools (5).gif' %}" alt="Letra-home" class="sidebar-image" />
+        <img src="{% static 'airwrite/img/niñosNav.png' %}" alt="Letra-home" class="sidebar-image" />
       </div>
     </aside>
 
@@ -140,36 +140,44 @@
             </svg>
             <!-- Barra de búsqueda -->
             <form method="get" class="p-4 flex justify-center">
-              <input type="text" name="q" placeholder="Buscar..." 
-                    value="{{ request.GET.q }}" class="search-input"
-                    style="padding: 0.5rem; width: 100%; max-width: 400px; text-align: center; border-radius: 0.5rem; border: 1px solid #ccc;" />
+              <input type="text" name="q" placeholder="Buscar..." value="{{ request.GET.q }}" class="search-input"
+                style="padding: 0.5rem; width: 100%; max-width: 400px; text-align: center; border-radius: 0.5rem; border: 1px solid #ccc;" />
             </form>
           </div>
         </div>
 
         <div class="courses-grid">
           {% for module in modules %}
-            <a href="{% if module.name == 'Abecedario' %}{% url 'abecedario' %}{% else %}{% url 'trazos' %}{% endif %}" class="course-link"">
-              <div class="course-card 
+          <a href="{% if module.name == 'Abecedario' %}
+             {% url 'abecedario' %}
+          {% elif module.name == 'Numeros' %}
+             {% url 'numeros' %}
+          {% elif module.name == 'Silabas' %}
+             {% url 'silaba' %}
+          {% else %}
+             {% url 'trazos' %}
+          {% endif %}" class="course-link">
+
+            <div class="course-card 
                 {% if forloop.counter == 1 %}bg-red
                 {% elif forloop.counter == 2 %}bg-blue
                 {% elif forloop.counter == 3 %}bg-green
                 {% else %}bg-yellow{% endif %}">
-                
-                <img src="{% if forloop.counter == 1 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png
+
+              <img src="{% if forloop.counter == 1 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png
                           {% elif forloop.counter == 2 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-2.png
                           {% elif forloop.counter == 3 %}https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png
-                          {% else %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png{% endif %}" 
-                    alt="{{ module.name }}" class="course-bg" />
+                          {% else %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png{% endif %}"
+                alt="{{ module.name }}" class="course-bg" />
 
-                <div class="course-content">
-                  <h3 class="course-title">{{ module.name }}</h3>
-                  <p class="course-lessons">{{ module.description }}</p>
-                </div>
+              <div class="course-content">
+                <h3 class="course-title">{{ module.name }}</h3>
+                <p class="course-lessons">{{ module.description }}</p>
               </div>
-            </a>
+            </div>
+          </a>
           {% empty %}
-            <p>No hay cursos disponibles.</p>
+          <p>No hay cursos disponibles.</p>
           {% endfor %}
         </div>
       </section>
@@ -232,7 +240,7 @@
 
           <div class="stat-card">
             <div class="stat-label">Cursos en<br />Progreso</div>
-              <div class="stat-value">{{ modules|length}}</div>
+            <div class="stat-value">{{ modules|length}}</div>
             <div class="stat-bar"></div>
           </div>
 
