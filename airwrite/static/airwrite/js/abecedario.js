@@ -106,19 +106,7 @@ function renderLetters() {
           if (title === 'Escuchar') {
               playLetter(letter);
           } else if (title === 'Comprar') {
-              Swal.fire({
-                  icon: 'info',
-                  title: `Comprar letra ${letter}`,
-                  text: '¿Deseas comprar esta letra?',
-                  showCancelButton: true,
-                  confirmButtonText: 'Comprar',
-                  cancelButtonText: 'Cancelar'
-              }).then(result => {
-                  if (result.isConfirmed) {
-                      // Aquí puedes llamar a tu endpoint para comprar la letra
-                      console.log(`Comprando letra ${letter}`);
-                  }
-              });
+              window.location.href = '/tienda/'
           } else if (title === 'Escribir') {
               // Desbloqueada → abrir pantalla de escritura
               Swal.fire({

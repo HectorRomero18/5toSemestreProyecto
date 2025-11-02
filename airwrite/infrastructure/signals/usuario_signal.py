@@ -12,7 +12,7 @@ print("✅ Signals de PerfilUsuario cargados correctamente")
 def crear_perfil_al_crear_usuario(sender, instance, created, **kwargs):
     """Crea el perfil automáticamente al crear el usuario"""
     if created:
-        PerfilUsuario.objects.get_or_create(user=instance)
+        PerfilUsuario.objects.get_or_create(user_id=instance)
         print(f"🟢 Perfil creado para {instance.username} (post_save)")
 
 @receiver(user_logged_in)
