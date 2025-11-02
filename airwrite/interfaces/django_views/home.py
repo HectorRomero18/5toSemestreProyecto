@@ -21,10 +21,12 @@ class ModuleListView( LoginRequiredMixin, TemplateView):
         repo = DjangoModuleRepository()
         use_case = ListModulesUseCase(repo)
         user = self.request.user
+        user_favoritos = [f.letra for f in user.perfilusuario.favoritos.all()],
+
         
         modules = use_case.execute(ListModulesQuery(q=q))
         perfil = getattr(user, 'perfilusuario', None)
 
         user_xp = perfil.xp if perfil else 0
-        context.update({'modules': modules, 'title': 'Module List', 'user': user, 'user_xp': user_xp})
+        context.update({'modules': modules, 'title': 'Module List', 'user': user, 'user_xp': user_xp, 'user_favoritos': user_favoritos})
         return context

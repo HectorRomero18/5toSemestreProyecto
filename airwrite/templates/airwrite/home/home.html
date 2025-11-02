@@ -182,17 +182,47 @@
         </div>
       </section>
 
+      
 
       <!-- Favorites Section -->
       <section class="favorites-section">
         <div class="section-header">
-          <div class="favorites-title-wrapper">
-            <h2 class="section-title">Favoritos</h2>
-            <img src="{% static 'airwrite/img/favorito icono.png' %}" alt="Favorite" class="favorite-icon" />
-          </div>
-          <button class="view-all-btn">Ver todos</button>
+          <h2 class="section-title">Favoritos</h2>
+          <img src="{% static 'airwrite/img/favorito icono.png' %}" alt="Favorite" class="favorite-icon" />
+        </div>
+
+        <div class="favorites-grid">
+          {% if user_favoritos %}
+            {% for letra in user_favoritos %}
+              <div class="course-card 
+                  {% if forloop.counter == 1 %}bg-red
+                  {% elif forloop.counter == 2 %}bg-blue
+                  {% elif forloop.counter == 3 %}bg-green
+                  {% elif forloop.counter == 4 %}bg-yellow
+                  {% elif forloop.counter == 5 %}bg-purple
+                  {% else %}bg-orange{% endif %}">
+
+                <img src="{% if forloop.counter == 1 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png
+                            {% elif forloop.counter == 2 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-2.png
+                            {% elif forloop.counter == 3 %}https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png
+                            {% elif forloop.counter == 4 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png
+                            {% elif forloop.counter == 5 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-5.png
+                            {% else %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-6.png{% endif %}"
+                  alt="Letra {{ letra }}" class="course-bg" />
+
+                <div class="course-content">
+                  <h3 class="course-title text-3xl font-bold">{{ letra }}</h3>
+                  <p class="course-lessons text-sm">Letra favorita</p>
+                </div>
+              </div>
+            {% endfor %}
+          {% else %}
+            <p class="text-gray-500 italic mt-4">No tienes letras favoritas todavía.</p>
+          {% endif %}
         </div>
       </section>
+
+
 
       <!-- Course Planning Section -->
       <section class="course-planning-section">
