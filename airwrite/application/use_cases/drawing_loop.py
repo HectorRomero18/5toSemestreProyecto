@@ -59,19 +59,19 @@ class DrawingLoop:
             return
 
         # UI buttons
-        cv2.rectangle(frame, (0, 0), (50, 50), self.cfg.color_amarillo, self.state.grosor_amarillo)
-        cv2.rectangle(frame, (50, 0), (100, 50), self.cfg.color_rosa, self.state.grosor_rosa)
-        cv2.rectangle(frame, (100, 0), (150, 50), self.cfg.color_verde, self.state.grosor_verde)
-        cv2.rectangle(frame, (150, 0), (200, 50), self.cfg.color_celeste, self.state.grosor_celeste)
-        cv2.rectangle(frame, (300, 0), (400, 50), self.cfg.color_clear, 1)
-        cv2.putText(frame, 'Limpiar', (320, 20), 6, 0.6, self.cfg.color_clear, 1, cv2.LINE_AA)
-        cv2.putText(frame, 'pantalla', (320, 40), 6, 0.6, self.cfg.color_clear, 1, cv2.LINE_AA)
-        cv2.rectangle(frame, (490, 0), (540, 50), (0, 0, 0), self.state.grosor_peque)
-        cv2.circle(frame, (515, 25), 3, (0, 0, 0), -1)
-        cv2.rectangle(frame, (540, 0), (590, 50), (0, 0, 0), self.state.grosor_medio)
-        cv2.circle(frame, (565, 25), 7, (0, 0, 0), -1)
-        cv2.rectangle(frame, (590, 0), (640, 50), (0, 0, 0), self.state.grosor_grande)
-        cv2.circle(frame, (615, 25), 11, (0, 0, 0), -1)
+        # cv2.rectangle(frame, (0, 0), (50, 50), self.cfg.color_amarillo, self.state.grosor_amarillo)
+        # cv2.rectangle(frame, (50, 0), (100, 50), self.cfg.color_rosa, self.state.grosor_rosa)
+        # cv2.rectangle(frame, (100, 0), (150, 50), self.cfg.color_verde, self.state.grosor_verde)
+        # cv2.rectangle(frame, (150, 0), (200, 50), self.cfg.color_celeste, self.state.grosor_celeste)
+        # cv2.rectangle(frame, (300, 0), (400, 50), self.cfg.color_clear, 1)
+        # cv2.putText(frame, 'Limpiar', (320, 20), 6, 0.6, self.cfg.color_clear, 1, cv2.LINE_AA)
+        # cv2.putText(frame, 'pantalla', (320, 40), 6, 0.6, self.cfg.color_clear, 1, cv2.LINE_AA)
+        # cv2.rectangle(frame, (490, 0), (540, 50), (0, 0, 0), self.state.grosor_peque)
+        # cv2.circle(frame, (515, 25), 3, (0, 0, 0), -1)
+        # cv2.rectangle(frame, (540, 0), (590, 50), (0, 0, 0), self.state.grosor_medio)
+        # cv2.circle(frame, (565, 25), 7, (0, 0, 0), -1)
+        # cv2.rectangle(frame, (590, 0), (640, 50), (0, 0, 0), self.state.grosor_grande)
+        # cv2.circle(frame, (615, 25), 11, (0, 0, 0), -1)
 
         # Deteccion del marcador color celeste (más ligero)
         mask = cv2.inRange(frame_hsv, self.cfg.celeste_low, self.cfg.celeste_high)
@@ -86,29 +86,38 @@ class DrawingLoop:
             if area > 1000:
                 x, y, w, h = cv2.boundingRect(c)
                 x2, y2 = x + w // 2, y + h // 2
+                
+
                 # Color botones
-                if 0 < x2 < 50 and 0 < y2 < 50:
-                    self._set_color(self.cfg.color_amarillo, (6, 2, 2, 2))
-                if 50 < x2 < 100 and 0 < y2 < 50:
-                    self._set_color(self.cfg.color_rosa, (2, 6, 2, 2))
-                if 100 < x2 < 150 and 0 < y2 < 50:
-                    self._set_color(self.cfg.color_verde, (2, 2, 6, 2))
-                if 150 < x2 < 200 and 0 < y2 < 50:
-                    self._set_color(self.cfg.color_celeste, (2, 2, 2, 6))
-                # Clear button
-                if 300 < x2 < 400 and 0 < y2 < 50:
-                    self.canvas.clear(self.current_shape)
-                # Thickness
-                if 490 < x2 < 540 and 0 < y2 < 50:
-                    self._set_thickness(3, (6, 1, 1))
-                if 540 < x2 < 590 and 0 < y2 < 50:
-                    self._set_thickness(7, (1, 6, 1))
-                if 590 < x2 < 640 and 0 < y2 < 50:
-                    self._set_thickness(11, (1, 1, 6))
+                # if 0 < x2 < 50 and 0 < y2 < 50:
+                #     self._set_color(self.cfg.color_amarillo, (6, 2, 2, 2))
+                # if 50 < x2 < 100 and 0 < y2 < 50:
+                #     self._set_color(self.cfg.color_rosa, (2, 6, 2, 2))
+                # if 100 < x2 < 150 and 0 < y2 < 50:
+                #     self._set_color(self.cfg.color_verde, (2, 2, 6, 2))
+                # if 150 < x2 < 200 and 0 < y2 < 50:
+                #     self._set_color(self.cfg.color_celeste, (2, 2, 2, 6))
+                # # Clear button
+                # if 300 < x2 < 400 and 0 < y2 < 50:
+                #     self.canvas.clear(self.current_shape)
+                # # Thickness
+                # if 490 < x2 < 540 and 0 < y2 < 50:
+                #     self._set_thickness(3, (6, 1, 1))
+                # if 540 < x2 < 590 and 0 < y2 < 50:
+                #     self._set_thickness(7, (1, 6, 1))
+                # if 590 < x2 < 640 and 0 < y2 < 50:
+                #     self._set_thickness(11, (1, 1, 6))
                 # dibujar
                 if self.state.x1 is not None and self.state.y1 is not None and not (0 < y2 < 60):
                     self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
                 self.state.x1, self.state.y1 = x2, y2
+                
+                cv2.circle(frame, (x2, y2), self.state.thickness, self.state.color, 3)
+
+                self.state.x1, self.state.y1 = x2, y2
+                # dibujar puntero en canvas
+                self.canvas.draw_temp_pointer((x2, y2), self.state.color, self.state.thickness*2)
+
             else:
                 self.state.x1, self.state.y1 = None, None
 
@@ -118,24 +127,59 @@ class DrawingLoop:
     def get_last_camera(self) -> Optional[np.ndarray]:
         return getattr(self, '_last_frame_cam', None)
 
-    # Helpers
+    # Cambiar color de linea
     def _set_color(self, color: tuple[int, int, int], ui: tuple[int, int, int, int]) -> None:
         self.state.color = color
         self.state.grosor_amarillo, self.state.grosor_rosa, self.state.grosor_verde, self.state.grosor_celeste = ui
+    
+    def set_color(self, name: str) -> bool:
+        mapping = {
+            'amarillo': (self.cfg.color_amarillo, (6, 2, 2, 2)),
+            'rosa': (self.cfg.color_rosa, (2, 6, 2, 2)),
+            'verde': (self.cfg.color_verde, (2, 2, 6, 2)),
+            'celeste': (self.cfg.color_celeste, (2, 2, 2, 6)),
+        }
+        entry = mapping.get(name)
+        if entry is None:
+            return False
+        color, ui = entry
+        self._set_color(color, ui)
+        return True
 
+    # Cambiar grosor de linea
     def _set_thickness(self, t: int, ui: tuple[int, int, int]) -> None:
         self.state.thickness = t
         self.state.grosor_peque, self.state.grosor_medio, self.state.grosor_grande = ui
+
+    def set_grosor(self, name: str) -> bool:
+        mapping = {
+            'peque': (3, (6, 1, 1)),
+            'medio': (7, (1, 6, 1)),
+            'grande': (11, (1, 1, 6)),
+        }
+
+        entry = mapping.get(name)
+        if entry is None:
+            return False
+        thickness, ui = entry
+        self._set_thickness(thickness, ui)
+        return True
+    
 
     def _apply_voice_command(self, cmd: str) -> None:
         c = cmd.lower()
         if 'limpiar' in c or 'clear' in c:
             self.canvas.clear(self.current_shape)
-        elif 'amarillo' in c:
-            self._set_color(self.cfg.color_amarillo, (6, 2, 2, 2))
-        elif 'rosa' in c:
-            self._set_color(self.cfg.color_rosa, (2, 6, 2, 2))
-        elif 'verde' in c:
-            self._set_color(self.cfg.color_verde, (2, 2, 6, 2))
-        elif 'celeste' in c:
-            self._set_color(self.cfg.color_celeste, (2, 2, 2, 6))
+            return
+        for name in ('amarillo', 'rosa', 'verde', 'celeste'):
+            if name in c:
+                self.set_color(name)
+                break
+            elif 'amarillo' in c:
+                self._set_color(self.cfg.color_amarillo, (6, 2, 2, 2))
+            elif 'rosa' in c:
+                self._set_color(self.cfg.color_rosa, (2, 6, 2, 2))
+            elif 'verde' in c:
+                self._set_color(self.cfg.color_verde, (2, 2, 6, 2))
+            elif 'celeste' in c:
+                self._set_color(self.cfg.color_celeste, (2, 2, 2, 6))

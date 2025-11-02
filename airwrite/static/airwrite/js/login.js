@@ -3,7 +3,7 @@ let currentLanguage = 'es';
 
 const translations = {
   es: {
-    welcomeText: 'Bienvenido al blog de notas<br />donde las ideas flotan!',
+    welcomeText: 'Bienvenido a AirWrite<br />donde aprender es divertido',
     noAccount: '¿No tienes una cuenta? Puedes&nbsp;&nbsp;',
     registerLink: 'Registrarte aquí.',
     signIn: 'Ingresar',
@@ -19,7 +19,7 @@ const translations = {
     placeholderPassword: '••••••••'
   },
   en: {
-    welcomeText: 'Welcome to the notes blog<br />where ideas float!',
+    welcomeText: 'Welcome to AirWrite<br />where learning is fun',
     noAccount: "Don't have an account? You can&nbsp;&nbsp;",
     registerLink: 'Register here.',
     signIn: 'Sign In',
