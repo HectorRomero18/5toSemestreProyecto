@@ -138,3 +138,4 @@ $RECYCLE.BIN/
 
 # Google Cloud credentials
 airwrite/airwrite-tts-c49efee304cc.json
+"airwrite/airwrite-tts-*.json" 
