@@ -93,6 +93,8 @@
 
   <!-- Pasar datos del contexto Django a JavaScript -->
   {{ modules|json_script:"modules-data" }}
+  {{ compradas|json_script:"compradas-data" }}
+
 
 
   <script src="{% static 'airwrite/js/tiendaXp.js' %}"></script>
