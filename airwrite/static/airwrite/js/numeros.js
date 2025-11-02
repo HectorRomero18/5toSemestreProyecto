@@ -38,9 +38,25 @@ function renderNumbers() {
       // Aquí puedes agregar la funcionalidad específica para cada acción
       if (title === 'Comprar') {
         alert(`Comprar ${button.closest('.number-card').querySelector('.number-name').textContent}`);
-      } else if (title === 'Escuchar') {
-        alert(`Reproducir sonido de ${button.closest('.number-card').querySelector('.number-name').textContent}`);
-      } else if (title === 'Escribir') {
+      } if (title === 'Escuchar') {
+  const numberText = button.closest('.number-card').querySelector('.number-text').textContent.trim();
+
+  // Llamada a la vista Django (igual que abecedario)
+  fetch(`/numeros/play/${encodeURIComponent(numberText)}/`)
+    .then(response => {
+      if (!response.ok) throw new Error('Error generando audio');
+      return response.blob();
+    })
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.play();
+    })
+    .catch(err => {
+      console.error('Error al reproducir número:', err);
+      alert('No se pudo generar el audio. Revisa consola del servidor para más detalles.');
+    });
+} else if (title === 'Escribir') {
         alert(`Abrir pantalla de escritura para ${button.closest('.number-card').querySelector('.number-name').textContent}`);
       }
     });
@@ -111,6 +127,16 @@ document.querySelector('.cart-container').addEventListener('click', () => {
   // Aquí puedes redirigir a la página de la tienda
   // window.location.href = 'tienda.html';
 });
+
+function getCSRFToken() {
+  const name = 'csrftoken';
+  const cookies = document.cookie.split(';');
+  for (const c of cookies) {
+    const cookie = c.trim();
+    if (cookie.startsWith(name + '=')) return decodeURIComponent(cookie.substring(name.length + 1));
+  }
+  return '';
+}
 
 // Inicializar la página
 document.addEventListener('DOMContentLoaded', renderNumbers);
