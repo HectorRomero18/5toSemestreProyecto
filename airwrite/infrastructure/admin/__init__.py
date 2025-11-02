@@ -18,6 +18,7 @@ class ModuleAdmin(admin.ModelAdmin):
 class PerfilUsuarioAdmin(admin.ModelAdmin):
     list_display = ('user_id', 'nombre', 'xp', 'nivel')
     search_fields = ('nombre', 'user_id__username')
+    filter_horizontal = ('letras_practicadas',) 
     list_filter = ('nivel',)
     ordering = ('-xp',)
 @admin.register(Letra)

@@ -31,5 +31,9 @@ def esta_bloqueada(usuario, nombre):
 
     if letra_anterior_obj in perfil.letras_desbloqueadas.all():
         return False
+    
+    # Desbloqueo segun tiene la letra anterior practicada
+    if letra_anterior_obj in perfil.letras_practicadas.all():
+        return False
 
     return True
