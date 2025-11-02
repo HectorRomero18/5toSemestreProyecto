@@ -115,9 +115,25 @@ function renderSilabas() {
       // Aquí puedes agregar la funcionalidad específica para cada acción
       if (title === 'Comprar') {
         alert(`Comprar ${button.closest('.letter-card').querySelector('.letter-name').textContent}`);
-      } else if (title === 'Escuchar') {
-        alert(`Reproducir sonido de ${button.closest('.letter-card').querySelector('.letter-name').textContent}`);
-      } else if (title === 'Escribir') {
+      } if (title === 'Escuchar') {
+  const silabaText = button.closest('.letter-card').querySelector('.letter-text').textContent.trim();
+
+  // Llamada a la vista Django (igual que abecedario)
+  fetch(`/silabas/play/${encodeURIComponent(silabaText)}/`)
+    .then(response => {
+      if (!response.ok) throw new Error('Error generando audio');
+      return response.blob();
+    })
+    .then(blob => {
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audio.play();
+    })
+    .catch(err => {
+      console.error('Error al reproducir Silaba:', err);
+      alert('No se pudo generar el audio. Revisa consola del servidor para más detalles.');
+    });
+} else if (title === 'Escribir') {
         alert(`Abrir pantalla de escritura para ${button.closest('.letter-card').querySelector('.letter-name').textContent}`);
       }
     });
