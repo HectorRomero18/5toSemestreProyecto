@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LETRAS FAVORITAS - AIRWRITE SOFT</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'airwrite/css/favorito.css' %}">
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="logo">
+      <div class="logo-text">AIRWRITE</div>
+      <div class="logo-text">SOFT</div>
+    </div>
+    
+    <div class="title-section">
+      <h1 class="main-title">LETRAS FAVORITAS</h1>
+      <p class="subtitle">tus letras preferidas</p>
+    </div>
+    
+    <div class="search-container">
+      <svg class="search-icon" width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M9 17A8 8 0 1 0 9 1a8 8 0 0 0 0 16zM18 18l-4.35-4.35" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <input type="text" class="search-input" placeholder="Buscar letra favorita..." id="searchInput">
+    </div>
+    
+    <a href="{% url 'tienda' %}" class="cart-container">
+      <svg class="cart-icon" width="24" height="24" viewBox="0 0 24 24" fill="none">
+        <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" 
+              stroke="#3B9EFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span class="cart-text">Tienda</span>
+    </a>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Top Section con estadísticas y filtros -->
+    <div class="top-section">
+      <div class="stats-container">
+        <div class="stat-card">
+          <div class="stat-value" id="totalFavorites">0</div>
+          <div class="stat-label">Total Favoritas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="vocalsCount">0</div>
+          <div class="stat-label">Vocales</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="consonantsCount">0</div>
+          <div class="stat-label">Consonantes</div>
+        </div>
+      </div>
+      
+      <div class="filter-buttons">
+        <button class="filter-btn btn-todas active" data-filter="all">Todas</button>
+        <button class="filter-btn btn-vocales" data-filter="vocal">Vocales</button>
+        <button class="filter-btn btn-consonantes" data-filter="consonante">Consonantes</button>
+      </div>
+    </div>
+
+    <!-- Letras Favoritas Section -->
+    <section class="section">
+      <h2 class="section-title">TODAS MIS LETRAS FAVORITAS</h2>
+      
+      <div id="favoritesContent">
+        <div class="letters-grid" id="favoritesGrid">
+          <!-- Las letras favoritas se generarán con JavaScript -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Cargar datos desde Django -->
+  {{ favorite_letters_data|json_script:"favorite-letters-data" }}
+  
+  <script src="{% static 'airwrite/js/favorito.js' %}"></script>
+</body>
+</html>
