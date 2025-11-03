@@ -77,12 +77,13 @@
       
       <div id="purchasedContent">
         <!-- El contenido se generará con JavaScript -->
+         {{modules_list}}
       </div>
     </section>
   </main>
 
-  <!-- Cargar datos desde Django -->
-  {{ purchased_letters_data|json_script:"purchased-letters-data" }}
+  <!-- Pasar datos del contexto Django a JavaScript -->
+  {{ modules|json_script:"modules-data" }}
   
   <script src="{% static 'airwrite/js/comprada.js' %}"></script>
 </body>
