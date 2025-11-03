@@ -75,8 +75,8 @@
     </section>
   </main>
 
-  <!-- Cargar datos desde Django -->
-  {{ favorite_letters_data|json_script:"favorite-letters-data" }}
+  <!-- Pasar datos del contexto Django a JavaScript -->
+  {{ modules|json_script:"modules-data" }}
   
   <script src="{% static 'airwrite/js/favorito.js' %}"></script>
 </body>

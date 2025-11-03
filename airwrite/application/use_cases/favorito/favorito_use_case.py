@@ -8,7 +8,9 @@ from typing import List, Optional
 
 @dataclass
 class ListFavoritosQuery:
-    q: Optional[str] = None
+    def __init__(self, q: Optional[str] = None, user_id: Optional[int] = None):
+        self.q = q
+        self.user_id = user_id
 
 
 class ListFavoritosUseCase:
@@ -16,7 +18,7 @@ class ListFavoritosUseCase:
         self._repo = repo
 
     def execute(self, query: ListFavoritosQuery) -> List[FavoritoEntity]:
-        return self._repo.list(q=query.q)
+        return self._repo.list(q=query.q, user_id=query.user_id) 
 
 @dataclass
 class AddFavoritoCommand:

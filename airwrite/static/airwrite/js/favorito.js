@@ -1,223 +1,241 @@
-// Obtener datos de las letras favoritas desde Django
-const favoriteLettersData = JSON.parse(document.getElementById('favorite-letters-data').textContent);
+// =========================
+// FAVORITOS.JS (CORREGIDO)
+// =========================
 
 // Variables globales
+let favoriteLetters = [];
 let currentFilter = 'all';
-let favoriteLetters = favoriteLettersData || [];
 
-// Si no hay datos desde Django, usar datos de ejemplo
-if (favoriteLetters.length === 0) {
-    favoriteLetters = [
-        { id: 1, letter: 'A', name: 'Letra A', favoriteDate: '2024-01-15', type: 'vocal', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png', isFavorite: true },
-        { id: 2, letter: 'E', name: 'Letra E', favoriteDate: '2024-01-20', type: 'vocal', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png', isFavorite: true },
-        { id: 3, letter: 'M', name: 'Letra M', favoriteDate: '2024-02-05', type: 'consonante', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png', isFavorite: true },
-        { id: 4, letter: 'P', name: 'Letra P', favoriteDate: '2024-02-10', type: 'consonante', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png', isFavorite: true },
-        { id: 5, letter: 'S', name: 'Letra S', favoriteDate: '2024-02-15', type: 'consonante', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png', isFavorite: true },
-        { id: 6, letter: 'L', name: 'Letra L', favoriteDate: '2024-02-20', type: 'consonante', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png', isFavorite: true }
-    ];
-}
-
-// Función para formatear fecha
-function formatDate(dateString) {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('es-ES', options);
-}
-
-// Función para filtrar letras
-function filterLetters(type) {
-    currentFilter = type;
-    
-    // Actualizar botones activos
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.querySelector(`.filter-btn[data-filter="${type}"]`).classList.add('active');
-    
-    // Filtrar y renderizar letras
-    renderFavoriteLetters();
-}
-
-// Función para obtener letras filtradas
-function getFilteredLetters() {
-    if (currentFilter === 'all') {
-        return favoriteLetters;
+// -----------------------------
+// Obtener CSRF token de cookies
+// -----------------------------
+function getCSRFToken() {
+    const name = 'csrftoken';
+    const cookies = document.cookie.split(';');
+    for (let c of cookies) {
+        c = c.trim();
+        if (c.startsWith(name + '=')) {
+            return decodeURIComponent(c.substring(name.length + 1));
+        }
     }
-    return favoriteLetters.filter(letter => letter.type === currentFilter);
+    return '';
 }
 
-// Función para quitar de favoritos
-function removeFromFavorites(letterId) {
-    // En una implementación real, haríamos una llamada a la API para actualizar en la base de datos
-    console.log(`Quitando de favoritos: ${letterId}`);
-    
-    // Encontrar la letra para mostrar el nombre en la notificación
-    const letter = favoriteLetters.find(l => l.id === letterId);
-    
-    // Actualizar la lista local (simulación)
-    const index = favoriteLetters.findIndex(l => l.id === letterId);
-    if (index !== -1) {
-        favoriteLetters.splice(index, 1);
+// -----------------------------
+// Inicializar la página
+// -----------------------------
+function initPage() {
+    const modulesScript = document.getElementById('modules-data');
+    if (modulesScript) {
+        try {
+            let data = JSON.parse(modulesScript.textContent);
+            if (Array.isArray(data)) {
+                favoriteLetters = data;
+            } else if (data && typeof data === 'object') {
+                favoriteLetters = Object.values(data);
+            } else {
+                favoriteLetters = [];
+            }
+            console.log('Datos cargados desde Django:', favoriteLetters);
+        } catch (e) {
+            console.error('Error al parsear modules-data:', e);
+        }
+    } else {
+        console.warn('No se encontró modules-data en el DOM');
     }
-    
-    // Actualizar estadísticas y renderizar
+
     updateStats();
     renderFavoriteLetters();
-    
-    // Mostrar mensaje de confirmación
-    if (letter) {
-        alert(`${letter.name} eliminada de favoritos`);
-    }
+    setupEventListeners();
 }
 
-// Función para actualizar las estadísticas
+// -----------------------------
+// Filtros
+// -----------------------------
+function filterLetters(dificultad) {
+    currentFilter = dificultad;
+
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.filter-btn[data-filter="${dificultad}"]`)?.classList.add('active');
+
+    renderFavoriteLetters();
+}
+
+function getFilteredLetters() {
+    if (currentFilter === 'all') return favoriteLetters;
+    if (currentFilter === 'vocal') return favoriteLetters.filter(letter => letter.tipo === 'V');
+    if (currentFilter === 'consonante') return favoriteLetters.filter(letter => letter.tipo === 'C');
+    return favoriteLetters.filter(letter => letter.dificultad === currentFilter);
+}
+
+// -----------------------------
+// Eliminar de favoritos localmente
+// -----------------------------
+function removeFromFavorites(letraId) {
+    const index = favoriteLetters.findIndex(l => l.letra_id === letraId);
+    if (index !== -1) favoriteLetters.splice(index, 1);
+
+    updateStats();
+    renderFavoriteLetters();
+}
+
+// -----------------------------
+// Actualizar estadísticas
+// -----------------------------
 function updateStats() {
-    const vocals = favoriteLetters.filter(letter => letter.type === 'vocal').length;
-    const consonants = favoriteLetters.filter(letter => letter.type === 'consonante').length;
-    
-    document.getElementById('totalFavorites').textContent = favoriteLetters.length;
+    const total = favoriteLetters.length;
+    const vocals = favoriteLetters.filter(l => l.tipo === 'V').length;
+    const consonants = favoriteLetters.filter(l => l.tipo === 'C').length;
+
+    document.getElementById('totalFavorites').textContent = total;
     document.getElementById('vocalsCount').textContent = vocals;
     document.getElementById('consonantsCount').textContent = consonants;
 }
 
-// Función para renderizar las letras favoritas
-function renderFavoriteLetters() {
-    const favoritesContent = document.getElementById('favoritesContent');
-    const filteredLetters = getFilteredLetters();
-    
-    if (filteredLetters.length === 0) {
-        favoritesContent.innerHTML = `
-            <div class="empty-state">
-                <div class="empty-icon">⭐</div>
-                <h2 class="empty-title">No hay letras favoritas</h2>
-                <p class="empty-description">${
-                    currentFilter === 'all' 
-                    ? 'Aún no has marcado ninguna letra como favorita. ¡Explora la tienda y marca tus letras preferidas!' 
-                    : `No tienes letras ${currentFilter === 'vocal' ? 'vocales' : 'consonantes'} marcadas como favoritas`
-                }</p>
-                <button class="cta-button" onclick="window.location.href='tienda.html'">Explorar Letras</button>
-            </div>
-        `;
-        return;
-    }
-    
-    favoritesContent.innerHTML = `
-        <div class="letters-grid" id="favoritesGrid">
-            <!-- Las letras favoritas se generarán con JavaScript -->
-        </div>
-    `;
-    
-    const favoritesGrid = document.getElementById('favoritesGrid');
-    
-    // Renderizar letras favoritas
-    filteredLetters.forEach(item => {
-        const card = createLetterCard(item);
-        favoritesGrid.appendChild(card);
-    });
-    
-    // Agregar event listeners a los botones de corazón
-    document.querySelectorAll('.heart-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const letterId = button.getAttribute('data-letter-id');
-            removeFromFavorites(parseInt(letterId));
-        });
-    });
-    
-    // Agregar event listeners a las tarjetas
-    document.querySelectorAll('.letter-card').forEach(card => {
-        card.addEventListener('click', () => {
-            const letterName = card.querySelector('.letter-name').textContent;
-            console.log(`Tarjeta clickeada: ${letterName}`);
-        });
-    });
-}
-
-// Función para crear una tarjeta de letra
+// -----------------------------
+// Crear tarjeta de letra
+// -----------------------------
 function createLetterCard(item) {
     const card = document.createElement('div');
     card.className = 'letter-card';
-    
+    card.dataset.tipo = item.tipo;
+    card.dataset.dificultad = item.dificultad;
+
     card.innerHTML = `
         <div class="letter-display">
-            <img src="${item.bg}" alt="${item.name}" class="letter-bg" />
-            <span class="letter-text">${item.letter}</span>
+            <img src="${item.bg}" alt="${item.simbolo}" class="letter-bg" />
+            <span class="letter-text">${item.simbolo}</span>
         </div>
         <div class="letter-footer">
-            <span class="letter-name">${item.name}</span>
+            <span class="letter-name">${item.letter}</span>
             <div class="letter-actions">
-                <button class="heart-btn" title="Quitar Favorito" data-letter-id="${item.id}">
+                <button class="heart-btn active" title="Quitar Favorito" data-letra-id="${item.letra_id}">
                     <svg class="heart-icon" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                        <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 
+                                 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 
+                                 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 
+                                 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                     </svg>
                 </button>
             </div>
         </div>
     `;
-    
     return card;
 }
 
-// Funcionalidad de búsqueda
-document.getElementById('searchInput').addEventListener('input', (e) => {
-    const searchTerm = e.target.value.toLowerCase();
-    
-    // Si no hay término de búsqueda, mostrar todas las letras filtradas
-    if (!searchTerm) {
-        renderFavoriteLetters();
-        return;
-    }
-    
-    const filteredLetters = getFilteredLetters().filter(letter => 
-        letter.name.toLowerCase().includes(searchTerm) || 
-        letter.letter.toLowerCase().includes(searchTerm)
-    );
-    
-    const favoritesGrid = document.getElementById('favoritesGrid');
-    if (!favoritesGrid) return;
-    
-    favoritesGrid.innerHTML = '';
-    
+// -----------------------------
+// Renderizar letras favoritas
+// -----------------------------
+function renderFavoriteLetters() {
+    const favoritesContent = document.getElementById('favoritesContent');
+    const filteredLetters = getFilteredLetters();
+
     if (filteredLetters.length === 0) {
-        favoritesGrid.innerHTML = `
-            <div class="empty-state" style="grid-column: 1 / -1; max-width: 100%;">
-                <div class="empty-icon">🔍</div>
-                <h2 class="empty-title">No se encontraron letras</h2>
-                <p class="empty-description">No hay letras que coincidan con "${searchTerm}"</p>
-                <button class="cta-button" onclick="document.getElementById('searchInput').value=''; renderFavoriteLetters();">Ver Todas</button>
+        favoritesContent.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-icon">⭐</div>
+                <h2 class="empty-title">No hay letras favoritas</h2>
+                <p class="empty-description">No tienes letras marcadas como favoritas en esta categoría.</p>
             </div>
         `;
         return;
     }
-    
-    // Renderizar letras filtradas
-    filteredLetters.forEach(item => {
-        const card = createLetterCard(item);
-        favoritesGrid.appendChild(card);
-    });
-    
-    // Reagregar event listeners después de la búsqueda
+
+    favoritesContent.innerHTML = `<div class="letters-grid" id="favoritesGrid"></div>`;
+    const favoritesGrid = document.getElementById('favoritesGrid');
+
+    filteredLetters.forEach(item => favoritesGrid.appendChild(createLetterCard(item)));
+
+    // Event listeners para los botones de corazón
     document.querySelectorAll('.heart-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
+        button.addEventListener('click', async (e) => {
             e.stopPropagation();
-            const letterId = button.getAttribute('data-letter-id');
-            removeFromFavorites(parseInt(letterId));
+            const letraId = parseInt(button.getAttribute('data-letra-id'));
+            const isFavorite = button.classList.contains('active');
+
+            try {
+                if (isFavorite) {
+                    // Quitar favorito
+                    const resp = await fetch('/favoritos/delete/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken(),
+                        },
+                        body: JSON.stringify({ letra_id: letraId }),
+                    });
+                    const data = await resp.json();
+                    if (data.status) {
+                        button.classList.remove('active');
+                        removeFromFavorites(letraId);
+                    }
+                } else {
+                    // Agregar favorito
+                    const resp = await fetch('/favoritos/add/', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCSRFToken(),
+                        },
+                        body: JSON.stringify({ letra_id: letraId }),
+                    });
+                    const data = await resp.json();
+                    if (data.status) {
+                        button.classList.add('active');
+                        favoriteLetters.push({
+                            letra_id: data.favorito.letra_id,
+                            letter: button.closest('.letter-card').querySelector('.letter-text').textContent,
+                            tipo: button.closest('.letter-card').dataset.tipo || 'V',
+                            dificultad: button.closest('.letter-card').dataset.dificultad || 'Fácil',
+                            bg: button.closest('.letter-card').querySelector('.letter-bg').src,
+                        });
+                        updateStats();
+                        renderFavoriteLetters();
+                    }
+                }
+            } catch (err) {
+                console.error('Error al actualizar favorito:', err);
+            }
         });
     });
-});
-
-// Agregar event listeners a los botones de filtro
-document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const filterType = btn.getAttribute('data-filter');
-        filterLetters(filterType);
-    });
-});
-
-// Inicializar la página
-function initPage() {
-    updateStats();
-    renderFavoriteLetters();
 }
 
-// Ejecutar cuando el DOM esté listo
+// -----------------------------
+// Búsqueda
+// -----------------------------
+function setupSearch() {
+    const searchInput = document.getElementById('searchInput');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase();
+        const filtered = getFilteredLetters().filter(l => l.letter.toLowerCase().includes(searchTerm));
+
+        const grid = document.getElementById('favoritesGrid');
+        if (!grid) return;
+
+        grid.innerHTML = '';
+        if (filtered.length === 0) {
+            grid.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;">No se encontraron letras</div>`;
+            return;
+        }
+
+        filtered.forEach(item => grid.appendChild(createLetterCard(item)));
+    });
+}
+
+// -----------------------------
+// Eventos iniciales
+// -----------------------------
+function setupEventListeners() {
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => filterLetters(btn.getAttribute('data-filter')));
+    });
+
+    setupSearch();
+}
+
+// -----------------------------
+// Iniciar
+// -----------------------------
 document.addEventListener('DOMContentLoaded', initPage);

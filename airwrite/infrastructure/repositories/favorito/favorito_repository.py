@@ -5,38 +5,57 @@ from airwrite.infrastructure.models.letra import Favorito as DjangoFavorito
 
 
 class DjangoFavoritoRepository(FavoritoPort):
-    def list(self, q: Optional[str] = None) -> List[FavoritoEntity]:
-        """ listar favoritos de letras """
+    def list(self, q: Optional[str] = None, user_id: Optional[int] = None) -> List[FavoritoEntity]:
+        """Listar favoritos de letras"""
         qs = DjangoFavorito.objects.all().order_by('id')
+
+        if user_id is not None:
+            qs = qs.filter(perfil_usuario_id=user_id)  # filtra solo los favoritos del usuario loggeado
+
         if q:
-            qs = qs.filter(caracter__icontains=q)
-        
+            qs = qs.filter(letra__nombre__icontains=q)
+
         return [
             FavoritoEntity(
-                id=l.id,
-                letra_id=l.letra.id,
-                user_id=l.user.id
-
-            ) for l in qs
+                id=f.id,
+                letra_id=f.letra.id,
+                letra_nombre=f.letra.nombre,
+                letra_dificultad=f.letra.dificultad,
+                user_id=f.perfil_usuario.id
+            )
+            for f in qs
         ]
-    
-    def add(self, favorito: FavoritoEntity) -> None:
-        """ agregar un favorito a una letra """
-        obj = DjangoFavorito.objects.create(letra_id=favorito.letra_id, 
-                                            user_id=favorito.user_id)
-        
-        return FavoritoEntity(id=obj.id,
-                              letra_id=obj.letra.id,
-                              user_id=obj.user.id)
-    
+
+
+    def add(self, favorito: FavoritoEntity) -> FavoritoEntity:
+        """Agregar un favorito a una letra"""
+        obj = DjangoFavorito.objects.create(
+            letra_id=favorito.letra_id,
+            perfil_usuario_id=favorito.user_id
+        )
+
+        return FavoritoEntity(
+            id=obj.id,
+            letra_id=obj.letra.id,
+            user_id=obj.perfil_usuario.id
+        )
+
     def delete(self, letra_id: int, user_id: int) -> None:
-        """ eliminar un favorito de una letra """
-        DjangoFavorito.objects.get(letra_id=letra_id,user_id=user_id).delete()
+        """Eliminar un favorito de una letra"""
+        try:
+            obj = DjangoFavorito.objects.get(
+                letra_id=letra_id,
+                perfil_usuario_id=user_id
+            )
+            obj.delete()
+            print(f"Favorito {letra_id} de {user_id} eliminado")
+        except DjangoFavorito.DoesNotExist:
+            print(f"No se encontró favorito {letra_id} para {user_id}")
+
 
     def exists(self, letra_id: int, user_id: int) -> bool:
-        """ verificar si existe el favorito """
-        try:
-            DjangoFavorito.objects.get(letra_id=letra_id,user_id=user_id)
-            return True
-        except DjangoFavorito.DoesNotExist:
-            return False
+        """Verificar si existe el favorito"""
+        return DjangoFavorito.objects.filter(
+            letra_id=letra_id,
+            perfil_usuario_id=user_id
+        ).exists()

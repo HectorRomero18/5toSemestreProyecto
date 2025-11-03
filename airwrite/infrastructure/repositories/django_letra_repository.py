@@ -12,6 +12,7 @@ class DjangoLetraRepository(LetraRepositoryPort):
         
         return [
             LetraEntity(
+                id=l.id,
                 caracter=l.nombre,
                 imagen=l.imagen,
                 contorno=l.contorno,
