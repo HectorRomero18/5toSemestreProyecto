@@ -1,21 +1,14 @@
-// Datos de los números del 1 al 10
-const numbers = [
-  { numero: '1', name: 'Número Uno', price: 120 },
-  { numero: '2', name: 'Número Dos', price: 110 },
-  { numero: '3', name: 'Número Tres', price: 115 },
-  { numero: '4', name: 'Número Cuatro', price: 105 },
-  { numero: '5', name: 'Número Cinco', price: 100 },
-  { numero: '6', name: 'Número Seis', price: 95 },
-  { numero: '7', name: 'Número Siete', price: 90 },
-  { numero: '8', name: 'Número Ocho', price: 85 },
-  { numero: '9', name: 'Número Nueve', price: 95 },
-  { numero: '10', name: 'Número Diez', price: 90 }
-];
+// =====================
+// números.js usando datos de Django
+// =====================
 
-// Imagen de fondo para todos los números
+// 1️⃣ Obtener datos desde Django
+const numbersData = JSON.parse(document.getElementById('modules-data').textContent);
+
+// 2️⃣ Imagen de fondo para todos los números
 const bgImage = 'https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png';
 
-// Función para renderizar los números
+// 3️⃣ Función para renderizar los números
 function renderNumbers() {
   const gridElement = document.getElementById('numbersGrid');
   
@@ -23,7 +16,7 @@ function renderNumbers() {
   gridElement.innerHTML = '';
   
   // Renderizar todos los números
-  numbers.forEach(item => {
+  numbersData.forEach(item => {
     const card = createNumberCard(item);
     gridElement.appendChild(card);
   });
@@ -33,36 +26,34 @@ function renderNumbers() {
     button.addEventListener('click', (e) => {
       e.stopPropagation();
       const title = button.getAttribute('title');
-      console.log(`Acción: ${title}`);
-      
-      // Aquí puedes agregar la funcionalidad específica para cada acción
-      if (title === 'Comprar') {
-        alert(`Comprar ${button.closest('.number-card').querySelector('.number-name').textContent}`);
-      } if (title === 'Escuchar') {
-  const numberText = button.closest('.number-card').querySelector('.number-text').textContent.trim();
+      const numberName = button.closest('.number-card').querySelector('.number-name').textContent;
 
-  // Llamada a la vista Django (igual que abecedario)
-  fetch(`/numeros/play/${encodeURIComponent(numberText)}/`)
-    .then(response => {
-      if (!response.ok) throw new Error('Error generando audio');
-      return response.blob();
-    })
-    .then(blob => {
-      const url = URL.createObjectURL(blob);
-      const audio = new Audio(url);
-      audio.play();
-    })
-    .catch(err => {
-      console.error('Error al reproducir número:', err);
-      alert('No se pudo generar el audio. Revisa consola del servidor para más detalles.');
-    });
-} else if (title === 'Escribir') {
-        alert(`Abrir pantalla de escritura para ${button.closest('.number-card').querySelector('.number-name').textContent}`);
+      if (title === 'Comprar') {
+        alert(`Comprar ${numberName}`);
+      } else if (title === 'Escuchar') {
+        const numberText = button.closest('.number-card').querySelector('.number-text').textContent.trim();
+
+        fetch(`/numeros/play/${encodeURIComponent(numberText)}/`)
+          .then(response => {
+            if (!response.ok) throw new Error('Error generando audio');
+            return response.blob();
+          })
+          .then(blob => {
+            const url = URL.createObjectURL(blob);
+            const audio = new Audio(url);
+            audio.play();
+          })
+          .catch(err => {
+            console.error('Error al reproducir número:', err);
+            alert('No se pudo generar el audio. Revisa consola del servidor para más detalles.');
+          });
+      } else if (title === 'Escribir') {
+        alert(`Abrir pantalla de escritura para ${numberName}`);
       }
     });
   });
   
-  // Agregar event listeners a las tarjetas
+  // Click en cada tarjeta
   document.querySelectorAll('.number-card').forEach(card => {
     card.addEventListener('click', () => {
       const numberName = card.querySelector('.number-name').textContent;
@@ -71,23 +62,35 @@ function renderNumbers() {
   });
 }
 
-// Función para crear una tarjeta de número
+// 4️⃣ Función para crear tarjeta
 function createNumberCard(item) {
   const card = document.createElement('div');
   card.className = 'number-card';
-  
+
+  const dificultadColors = {
+    'Fácil': '#4CAF50',
+    'Media': '#FFC107',
+    'Difícil': '#F44336'
+  };
+
   card.innerHTML = `
     <div class="number-display">
-      <img src="${bgImage}" alt="${item.name}" class="number-bg" />
-      <span class="number-text">${item.numero}</span>
+      <img src="${bgImage}" alt="${item.name || `${item.numero}`}" class="number-bg" />
+      <span class="number-text">${item.simbolo}</span>
     </div>
     <div class="number-footer">
-      <span class="number-name">${item.name}</span>
+      <div class="number-info">
+        <span class="number-name">${item.name || `${item.numero}`}</span>
+        <span class="number-dificultad" 
+              style="display: block; color: ${dificultadColors[item.dificultad] || '#999'}; font-size: 0.8rem;">
+          Dificultad: ${item.dificultad || 'Desconocida'}
+        </span>
+      </div>
       <div class="number-actions">
         <button class="action-btn" title="Escuchar">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
-              </svg>
+            <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
+          </svg>
         </button>
         <button class="action-btn" title="Escribir">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -104,11 +107,11 @@ function createNumberCard(item) {
       </div>
     </div>
   `;
-  
+
   return card;
 }
 
-// Funcionalidad de búsqueda
+// 5️⃣ Búsqueda
 document.getElementById('searchInput').addEventListener('input', (e) => {
   const searchTerm = e.target.value.toLowerCase();
   
@@ -116,27 +119,9 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
     const numberName = card.querySelector('.number-name').textContent.toLowerCase();
     const numberText = card.querySelector('.number-text').textContent.toLowerCase();
     
-    // Mostrar u ocultar según coincidencia en nombre o texto
     card.style.display = (numberName.includes(searchTerm) || numberText.includes(searchTerm)) ? 'block' : 'none';
   });
 });
 
-// Funcionalidad del carrito
-document.querySelector('.cart-container').addEventListener('click', () => {
-  console.log('Ir a la tienda');
-  // Aquí puedes redirigir a la página de la tienda
-  // window.location.href = 'tienda.html';
-});
-
-function getCSRFToken() {
-  const name = 'csrftoken';
-  const cookies = document.cookie.split(';');
-  for (const c of cookies) {
-    const cookie = c.trim();
-    if (cookie.startsWith(name + '=')) return decodeURIComponent(cookie.substring(name.length + 1));
-  }
-  return '';
-}
-
-// Inicializar la página
+// Inicializar
 document.addEventListener('DOMContentLoaded', renderNumbers);
