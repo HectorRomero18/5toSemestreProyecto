@@ -7,6 +7,7 @@ from airwrite.infrastructure.models import Letra
 from airwrite.infrastructure.models import Favorito
 from airwrite.infrastructure.models import Numero
 from airwrite.infrastructure.models import LetraCompra
+from airwrite.infrastructure.models import Silaba
 
 @admin.register(Module)
 class ModuleAdmin(admin.ModelAdmin):
@@ -45,3 +46,10 @@ class LetraCompraAdmin(admin.ModelAdmin):
     list_display = ('letra', 'usuario', 'fecha')
     search_fields = ('letra__nombre', 'usuario__nombre')
     ordering = ('-fecha',)
+
+@admin.register(Silaba)
+class SilabaAdmin(admin.ModelAdmin):
+    list_display = ('nombre', 'dificultad', 'bloqueada')
+    search_fields = ('nombre',)
+    list_filter = ('dificultad','bloqueada')
+    ordering = ('nombre',)
