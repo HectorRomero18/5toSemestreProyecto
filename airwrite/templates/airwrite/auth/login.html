@@ -12,134 +12,63 @@
       <div class="background">
         <div class="ellipse"></div>
         <p class="no-tienes-una-cuenta">
-          <span class="text-wrapper" id="noAccountText">¿No tienes una cuenta? Puedes&nbsp;&nbsp;</span>
-          <span class="span" onclick="switchToRegister()" id="registerLink">Registrarte aquí.</span>
+          <span class="text-wrapper" id="noAccountText">Únete hoy mismo. AirWrite es&nbsp;&nbsp;</span>
+          <span class="span" id="registerLink">gratis, rápido y seguro.</span>
         </p>
         <div class="div"></div>
       </div>
 
       <!-- FORMULARIO DE LOGIN -->
-      <div id="loginForm" class="form-container">
-        <form method="POST" action="#">
-          {% csrf_token %}
-          <input type="hidden" name="login_submit" value="1">
-          
-          <div class="enter-name">
-            <div class="rectangle-3"></div>
-            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-              <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-            <input type="email" class="enter-email" name="username" id="loginEmail" placeholder="Ingrese Email" required />
+      <div class="forms" style="top: 250px !important;">
+        <!-- Card de login profesional -->
+        <div class="login-card">
+          <div class="card-header">
+            <h2>Acceder a AirWrite</h2>
+            <p class="card-subtitle">Comienza tu experiencia de aprendizaje</p>
           </div>
-          
-          <div class="password">
-            <div class="rectangle-3"></div>
-            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-            <input type="password" class="text-wrapper-10" name="password" id="loginPassword" placeholder="••••••••" required />
-            <svg class="toggle-password" id="toggleLoginPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="togglePasswordVisibility('loginPassword', 'toggleLoginPassword')">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-          </div>
-        </form>
-      </div>
 
-      <!-- FORMULARIO DE REGISTRO -->
-      <div id="registerForm" class="form-container hidden">
-        <form method="POST" action="#">
-          {% csrf_token %}
-          <input type="hidden" name="register_submit" value="1">
-          
-          <div class="register-field field-1">
-            <div class="rectangle-3"></div>
-            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-              <circle cx="12" cy="7" r="4"></circle>
-            </svg>
-            <input type="text" class="enter-email" name="first_name" id="registerName" placeholder="Ingrese Nombre" required />
+          <!-- Contenedor del botón Google -->
+          <div class="google-section">
+            <div class="divider">
+              <span>Iniciar sesión con</span>
+            </div>
+            
+            <div class="google-container">
+              {% load socialaccount %}
+              <form id="googleLoginForm" method="POST" action="/accounts/google/login/" style="display: none;">
+                {% csrf_token %}
+              </form>
+              <a href="javascript:void(0)" onclick="document.getElementById('googleLoginForm').submit();" class="google-link">
+                <img class="google" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/google.png" alt="Google" />
+              </a>
+            </div>
           </div>
-          
-          <div class="register-field field-2">
-            <div class="rectangle-3"></div>
-            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-              <polyline points="22,6 12,13 2,6"></polyline>
-            </svg>
-            <input type="email" class="enter-email" name="email" id="registerEmail" placeholder="Ingrese Email" required />
-          </div>
-          
-          <div class="register-field field-3">
-            <div class="rectangle-3"></div>
-            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
-              <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
-            </svg>
-            <input type="password" class="text-wrapper-10" name="password1" id="registerPassword" placeholder="••••••••" required />
-            <svg class="toggle-password" id="toggleRegisterPassword" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="togglePasswordVisibility('registerPassword', 'toggleRegisterPassword')">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-              <circle cx="12" cy="12" r="3"></circle>
-            </svg>
-          </div>
-        </form>
-      </div>
 
-      <!-- BOTÓN DE ENVÍO Y REDES SOCIALES -->
-      <div class="forms">
-        <button type="button" class="bouton-sign-in" onclick="handleSubmit()">
-          <div class="rectangle"></div>
-          <div class="text-wrapper-2" id="btnText">Ingresar</div>
-        </button>
-        <div class="line">
-          <img class="img" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/line-2.svg" alt="line" />
-          <div class="text-wrapper-3" id="continueText">O continue con</div>
-          <img class="line-2" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/line-2.svg" alt="line" />
+          <!-- Información de beneficios -->
+          <div class="benefits">
+            <h4>Ventajas de usar Google</h4>
+            <ul>
+              <li>Acceso rápido y seguro</li>
+              <li>Protección avanzada de tu cuenta</li>
+              <li>Sincronización automática del progreso</li>
+            </ul>
+          </div>
+
+          <!-- Información para nuevos usuarios -->
+          <div class="new-user">
+            <p><strong>¿Nuevo en AirWrite?</strong><br>
+            Tu cuenta se creará automáticamente al iniciar sesión</p>
+          </div>
         </div>
-        <a href="#" style="text-decoration: none;">
-          <img class="facebook" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/facebook.png" alt="Facebook" />
-        </a>
-        <a href="#" style="text-decoration: none;">
-          <img class="apple" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/apple.png" alt="Apple" />
-        </a>
-        {% load socialaccount %}
--        <a href="{% provider_login_url 'google' %}" style="text-decoration: none;">
-+        <form id="googleLoginForm" method="POST" action="/accounts/google/login/" style="display: none;">
-+          {% csrf_token %}
-+        </form>
-+        <a href="javascript:void(0)" onclick="document.getElementById('googleLoginForm').submit();" style="text-decoration: none;">
-            <img class="google" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/google.png" alt="Google" />
-         </a>
       </div>
 
       <!-- MENÚ SUPERIOR -->
       <div class="top-side">
-        <div class="main-menu">
-          <a href="#" style="text-decoration: none;">
-            <div class="text-wrapper-4" id="menuInicio">Inicio</div>
-          </a>
-          <a href="#" style="text-decoration: none;">
-            <div class="text-wrapper-5" id="menuAcerca">Acerca de</div>
-          </a>
-          <a href="#" style="text-decoration: none;">
-            <div class="text-wrapper-6" id="menuContacto">Contacto</div>
-          </a>
-        </div>
         <div class="language">
           <select id="languageSelector" onchange="changeLanguage(this.value)">
             <option value="es">Español</option>
             <option value="en">English</option>
           </select>
-        </div>
-        <div class="sign-in" onclick="switchToLogin()">
-          <div class="text-wrapper-8" id="signInText">Ingresar</div>
-          <img class="line-3 active" id="loginLine" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/line-3.svg" alt="line" />
-        </div>
-        <div class="register" onclick="switchToRegister()">
-          <div class="text-wrapper-9" id="registerText">Registrarse</div>
-          <div class="register-line inactive" id="registerLine"></div>
         </div>
       </div>
 
@@ -156,26 +85,7 @@
       <img class="output-2" src="{% static 'airwrite/img/FlechaCorazonLogin.gif' %}" alt="Flecha Corazon" />
     </div>
 
-    <!-- Mensajes de Django
-    {% if messages %}
-    <script>
-      {% for message in messages %}
-        alert('{{ message }}');
-      {% endfor %}
-    </script>
-    {% endif %} -->
-
     <!-- Scripts -->
     <script src="{% static 'airwrite/js/login.js' %}"></script>
-    <script>
-      // Función para manejar el envío de formularios
-      function handleSubmit() {
-        if (currentForm === 'login') {
-          document.querySelector('#loginForm form').submit();
-        } else {
-          document.querySelector('#registerForm form').submit();
-        }
-      }
-    </script>
 </body>
 </html>
