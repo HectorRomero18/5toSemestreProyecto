@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Dict , Optional
-from domain.entities.letra import LetraEntity
+from airwrite.domain.entities.letra import LetraEntity
 from infrastructure.opencv.trazo_extractor import generar_trazo_desde_imagen
-from domain.entities.trazo import Trazo
+from airwrite.domain.entities.trazo import Trazo
 import logging
 
 logger = logging.getLogger(__name__)

@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import List
-from domain.services.comparador_trazos import comparar_trazos
-from domain.entities.trazo import Trazo
+from airwrite.domain.services.comparador_trazos import comparar_trazos
+from airwrite.domain.entities.trazo import Trazo
 import time
 
 @dataclass
@@ -18,14 +18,13 @@ class ValidarTrazo:
         self.intentos = 0
         self.errores = 0
         self.tiempos: List[float] = []
-        self.comparador = comparar_trazos()
-     
+        
     """Valida si el trazo del usuario es correcto comparando con el trazo de referencia"""   
     def validar_trazo(self, trazo_referencia: Trazo, trazo_usuario:Trazo) -> ResultadoValidacion:
         self.intentos += 1
         inicio = time.time()
         
-        similitud = self.comparador.comparar(trazo_referencia, trazo_usuario)
+        similitud = comparar_trazos(trazo_referencia, trazo_usuario)
         es_correcto = similitud >= self.umbral_similitud
         
         duracion = time.time() - inicio
