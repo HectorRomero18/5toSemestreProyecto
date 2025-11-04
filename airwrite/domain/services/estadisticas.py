@@ -1,4 +1,4 @@
-from domain.entities.usuario import Usuario
+from airwrite.domain.entities.usuario import Usuario
 
 class EstadisticasService:
     def __init__(self, usuario:Usuario):

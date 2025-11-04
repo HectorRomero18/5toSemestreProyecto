@@ -1,6 +1,6 @@
 from dataclasses import dataclass, asdict
 from typing import List
-from domain.entities.trazo import Trazo
+from airwrite.domain.entities.trazo import Trazo
 import math
 import json
 
@@ -11,7 +11,7 @@ def distacia_puntos(p1,p2):
 class ResultadoComparacion:
     similitud_pct : float
     similitud_raw: float
-    distacias: List[float]
+    distacias:List[float]
     n_compared: int
     n_model: int
     n_usuario:int
