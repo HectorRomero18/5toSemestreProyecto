@@ -55,7 +55,7 @@ def comparar_trazos(trazo_usuario:Trazo, trazo_modelo: Trazo, tolerancia: float 
     
     es_correcto = similitud_pct >= umbral_pct
     mensaje = "Correcto" if es_correcto else "Intentar de nuevo"
-    
+     
     return ResultadoComparacion(
         similitud_pct= similitud_pct,
         similitud_raw=similitud_raw,
@@ -66,5 +66,5 @@ def comparar_trazos(trazo_usuario:Trazo, trazo_modelo: Trazo, tolerancia: float 
         puntos_fuera_tolerancia=fuera,
         tolerancia=tolerancia,
         es_correcto=es_correcto,
-        mensaje=mensaje
+        mensaje=mensaje,
     )

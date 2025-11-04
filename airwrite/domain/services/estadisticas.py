@@ -10,7 +10,7 @@ class EstadisticasService:
         for letra in self.usuario.letras_practicadas:
             resultados[letra.caracter] = letra.tiempo_total()/ max(1, letra.numero_trazos())
         return resultados
-    
+      
     """ Calcula tiempo total practicado por usuario (todas las letras)"""
     def tiempo_total_usuario(self) -> float:
         return sum(letra.tiempo_total() for letra in self.usuario.letras_practicadas)
@@ -19,8 +19,8 @@ class EstadisticasService:
         if not self.usuario.letras_practicadas:
             return 0.0
         return sum(letra.dificultad for letra in self.usuario.letras_practicadas) / len(self.usuario.letras_practicadas)
-    
-    """ Devuelve un resumen general del rendimiento del usuario"""
+     
+    """ Devuelve un resumen general del rendimiento del usuario """
     def resumen_general(self) -> dict:
         return{
             "usuario" : self.usuario.nombre,

@@ -10,8 +10,8 @@ class ResultadoValidacion:
     similitud : float
     intentos : int
     errores: int
-    tiempo_promedio : float
-
+    tiempo_promedio : float 
+ 
 class ValidarTrazo:
     def __init__(self, umbral_similitud: float = 0.85):
         self.umbral_similitud = umbral_similitud
