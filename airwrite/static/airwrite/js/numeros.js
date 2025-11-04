@@ -2,13 +2,13 @@
 // números.js usando datos de Django
 // =====================
 
-// 1️⃣ Obtener datos desde Django
+// Obtener datos desde Django
 const numbersData = JSON.parse(document.getElementById('modules-data').textContent);
 
-// 2️⃣ Imagen de fondo para todos los números
+// Imagen de fondo para todos los números
 const bgImage = 'https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png';
 
-// 3️⃣ Función para renderizar los números
+//  Función para renderizar los números
 function renderNumbers() {
   const gridElement = document.getElementById('numbersGrid');
   
@@ -62,7 +62,7 @@ function renderNumbers() {
   });
 }
 
-// 4️⃣ Función para crear tarjeta
+// Función para crear tarjeta
 function createNumberCard(item) {
   const card = document.createElement('div');
   card.className = 'number-card';
@@ -111,7 +111,7 @@ function createNumberCard(item) {
   return card;
 }
 
-// 5️⃣ Búsqueda
+//  Búsqueda
 document.getElementById('searchInput').addEventListener('input', (e) => {
   const searchTerm = e.target.value.toLowerCase();
   

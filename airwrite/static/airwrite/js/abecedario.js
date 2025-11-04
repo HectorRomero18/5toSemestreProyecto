@@ -1,11 +1,11 @@
-// 1️⃣ Obtener los datos del contexto Django
+// Obtener los datos del contexto Django
 const modules = JSON.parse(document.getElementById('modules-data').textContent);
 
-// 2️⃣ Separar vocales y consonantes según la categoría
+// Separar vocales y consonantes según la categoría
 const vocales = modules.filter(item => item.categoria === 'V');
 const consonantes = modules.filter(item => item.categoria === 'C');
 
-// 3️⃣ Función para obtener imagen según categoría
+//  Función para obtener imagen según categoría
 function obtenerFondo(letra) {
   if (letra.categoria === 'V') {
     return 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png';
@@ -14,7 +14,7 @@ function obtenerFondo(letra) {
   }
 }
 
-// 4️⃣ Crear tarjeta de letra
+// Crear tarjeta de letra
 function createLetterCard(item) {
   const card = document.createElement('div');
   card.className = 'letter-card';
@@ -85,7 +85,7 @@ function createLetterCard(item) {
 }
 
 
-// 5️⃣ Renderizar letras y agregar eventos
+// Renderizar letras y agregar eventos
 function renderLetters() {
   const vocalesGrid = document.getElementById('vocalesGrid');
   const consonantesGrid = document.getElementById('consonantesGrid');
@@ -128,7 +128,7 @@ function renderLetters() {
 
 }
 
-// 6️⃣ Búsqueda
+// Búsqueda
 document.getElementById('searchInput').addEventListener('input', (e) => {
   const searchTerm = e.target.value.toLowerCase();
   document.querySelectorAll('.letter-card').forEach(card => {
@@ -169,5 +169,5 @@ document.querySelectorAll('.action-btn').forEach(button => {
 });
 
 
-// 7️⃣ Inicializar
+// Inicializar
 document.addEventListener('DOMContentLoaded', renderLetters);

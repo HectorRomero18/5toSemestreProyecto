@@ -173,10 +173,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const buyBtn = document.querySelector('.btn-buy');
     if (isPurchased(item)) {
-      buyBtn.textContent = 'Comprado';
+      buyBtn.textContent = 'Obtenido';
       buyBtn.disabled = true;
     } else {
-      buyBtn.textContent = 'Comprar';
+      buyBtn.textContent = 'Obtener';
       buyBtn.disabled = false;
     }
 

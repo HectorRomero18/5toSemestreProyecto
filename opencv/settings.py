@@ -129,7 +129,7 @@ DATABASES = {
         'NAME': config('DB_NAME', default='airwrite_db'),
         'USER': config('DB_USER', default='airwrite_db_user'),
         'PASSWORD': config('DB_PASSWORD'),
-        'HOST': config('DB_HOST', default='dpg-d436q53ipnbc73bidmj0-a.oregon-postgres.render.com'),
+        'HOST': config('DB_HOST'),
         'PORT': config('DB_PORT', default='5432'),
 
     }
