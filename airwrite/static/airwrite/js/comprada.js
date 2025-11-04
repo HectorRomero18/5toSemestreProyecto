@@ -1,27 +1,20 @@
-// Obtener datos de las letras compradas desde Django
-const purchasedLettersData = JSON.parse(document.getElementById('purchased-letters-data').textContent);
+// =====================
+// comprada.js
+// =====================
+
+const purchasedLettersData = JSON.parse(document.getElementById('modules-data').textContent);
+
+// Transformar datos para que tengan los mismos campos que tu JS
+let purchasedLetters = purchasedLettersData.map(item => ({
+    letter: item.simbolo,
+    name: item.nombre || `${item.letra}`,
+    purchaseDate: item.fecha,
+    type: item.tipo || 'V',
+    bg: item.bg || 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png' // placeholder si no hay imagen
+}));
 
 // Variables globales
 let currentFilter = 'all';
-let purchasedLetters = purchasedLettersData || [];
-
-// Si no hay datos desde Django, usar datos de ejemplo
-if (purchasedLetters.length === 0) {
-    purchasedLetters = [
-        { letter: 'A', name: 'Letra A', purchaseDate: '2024-01-15', type: 'vocal', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png' },
-        { letter: 'E', name: 'Letra E', purchaseDate: '2024-01-20', type: 'vocal', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png' },
-        { letter: 'I', name: 'Letra I', purchaseDate: '2024-01-22', type: 'vocal', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png' },
-        { letter: 'O', name: 'Letra O', purchaseDate: '2024-01-25', type: 'vocal', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png' },
-        { letter: 'U', name: 'Letra U', purchaseDate: '2024-01-28', type: 'vocal', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png' },
-        { letter: 'B', name: 'Letra B', purchaseDate: '2024-01-25', type: 'consonante', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png' },
-        { letter: 'C', name: 'Letra C', purchaseDate: '2024-02-01', type: 'consonante', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png' },
-        { letter: 'D', name: 'Letra D', purchaseDate: '2024-02-03', type: 'consonante', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png' },
-        { letter: 'F', name: 'Letra F', purchaseDate: '2024-02-05', type: 'consonante', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png' },
-        { letter: 'G', name: 'Letra G', purchaseDate: '2024-02-07', type: 'consonante', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png' },
-        { letter: 'H', name: 'Letra H', purchaseDate: '2024-02-10', type: 'consonante', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png' },
-        { letter: 'J', name: 'Letra J', purchaseDate: '2024-02-12', type: 'consonante', bg: 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png' }
-    ];
-}
 
 // Función para formatear fecha
 function formatDate(dateString) {
@@ -29,50 +22,49 @@ function formatDate(dateString) {
     return new Date(dateString).toLocaleDateString('es-ES', options);
 }
 
-// Función para contar vocales y consonantes
+// Contar vocales y consonantes
 function countLettersByType() {
-    const vocals = purchasedLetters.filter(letter => letter.type === 'vocal').length;
-    const consonants = purchasedLetters.filter(letter => letter.type === 'consonante').length;
-    
+    const vocals = purchasedLetters.filter(letter => letter.type === 'V').length;
+    const consonants = purchasedLetters.filter(letter => letter.type === 'C').length;
     return { vocals, consonants };
 }
 
-// Función para actualizar las estadísticas
+// Actualizar estadísticas en el DOM
 function updateStats() {
     const { vocals, consonants } = countLettersByType();
-    
     document.getElementById('totalLetters').textContent = purchasedLetters.length;
     document.getElementById('vocalsCount').textContent = vocals;
     document.getElementById('consonantsCount').textContent = consonants;
 }
 
-// Función para filtrar letras
+//  Filtrar letras por tipo
 function filterLetters(type) {
     currentFilter = type;
-    
+
     // Actualizar botones activos
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.remove('active');
-    });
-    document.querySelector(`.filter-btn[data-filter="${type}"]`).classList.add('active');
-    
-    // Filtrar y renderizar letras
+    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector(`.filter-btn[data-filter="${type}"]`)?.classList.add('active');
+
+    // Renderizar letras filtradas
     renderPurchasedLetters();
 }
 
-// Función para obtener letras filtradas
+//  Obtener letras filtradas según el filtro actual
 function getFilteredLetters() {
-    if (currentFilter === 'all') {
-        return purchasedLetters;
-    }
-    return purchasedLetters.filter(letter => letter.type === currentFilter);
+    if (currentFilter === 'all') return purchasedLetters;
+    // Mapear el filtro al valor que envio desde Django
+    const typeMap = {
+        'vocal': 'V',
+        'consonante': 'C'
+    };
+    return purchasedLetters.filter(letter => letter.type === typeMap[currentFilter]);
 }
 
-// Función para renderizar las letras compradas
+// Renderizar letras en el grid
 function renderPurchasedLetters() {
     const purchasedContent = document.getElementById('purchasedContent');
     const filteredLetters = getFilteredLetters();
-    
+
     if (filteredLetters.length === 0) {
         purchasedContent.innerHTML = `
             <div class="empty-state">
@@ -84,22 +76,16 @@ function renderPurchasedLetters() {
         `;
         return;
     }
-    
-    purchasedContent.innerHTML = `
-        <div class="letters-grid" id="purchasedGrid">
-            <!-- Las letras compradas se generarán con JavaScript -->
-        </div>
-    `;
-    
+
+    purchasedContent.innerHTML = `<div class="letters-grid" id="purchasedGrid"></div>`;
     const purchasedGrid = document.getElementById('purchasedGrid');
-    
-    // Renderizar letras compradas
+
     filteredLetters.forEach(item => {
         const card = createLetterCard(item);
         purchasedGrid.appendChild(card);
     });
-    
-    // Agregar event listeners a las tarjetas
+
+    // Agregar click a cada tarjeta
     document.querySelectorAll('.letter-card').forEach(card => {
         card.addEventListener('click', () => {
             const letterName = card.querySelector('.letter-name').textContent;
@@ -109,11 +95,11 @@ function renderPurchasedLetters() {
     });
 }
 
-// Función para crear una tarjeta de letra
+// Crear tarjeta de letra
 function createLetterCard(item) {
     const card = document.createElement('div');
     card.className = 'letter-card';
-    
+
     card.innerHTML = `
         <div class="purchased-badge">COMPRADO</div>
         <div class="letter-display">
@@ -125,21 +111,20 @@ function createLetterCard(item) {
             <div class="letter-date">Comprado: ${formatDate(item.purchaseDate)}</div>
         </div>
     `;
-    
+
     return card;
 }
 
 // Funcionalidad de búsqueda
 document.getElementById('searchInput').addEventListener('input', (e) => {
     const searchTerm = e.target.value.toLowerCase();
-    
     document.querySelectorAll('.letter-card').forEach(card => {
         const letterName = card.querySelector('.letter-name').textContent.toLowerCase();
         card.style.display = letterName.includes(searchTerm) ? 'block' : 'none';
     });
 });
 
-// Agregar event listeners a los botones de filtro
+// Event listeners a botones de filtro
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         const filterType = btn.getAttribute('data-filter');
@@ -147,11 +132,11 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     });
 });
 
-// Inicializar la página
+//  Inicializar página
 function initPage() {
     updateStats();
     renderPurchasedLetters();
 }
 
-// Ejecutar cuando el DOM esté listo
+// Ejecutar al cargar DOM
 document.addEventListener('DOMContentLoaded', initPage);
