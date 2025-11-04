@@ -3,7 +3,7 @@ from airwrite.infrastructure.opencv.trazo_extractor import generar_trazo_desde_i
 import matplotlib.pyplot as plt
 
 def main():
-    ruta = "media/letras/LETRA_A.png"
+    ruta = "media/letras/LETRA_Z.png"
     print(f"Generando trazo desde: {ruta}")
 
     trazo = generar_trazo_desde_imagen(ruta, n_points=64, target_size=256)
