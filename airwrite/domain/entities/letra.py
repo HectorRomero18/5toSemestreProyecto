@@ -22,7 +22,7 @@ class LetraEntity:
     categoria: Optional[str] = None
     dificultad_label: Optional[str] = None   
     
-    # Agrega nuevo trazo realizado por el usuario
+    """ Agrega nuevo trazo realizado por el usuario """
     def agregar_trazo(self, trazo: Trazo):
         self.trazos.append(trazo)
     
