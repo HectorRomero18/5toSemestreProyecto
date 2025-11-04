@@ -1,66 +1,6 @@
-<!-- {% load static %}
-<!DOCTYPE html>
-<html>
-
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta charset="utf-8" />
-  <title>AirWrite Soft - Home</title>
-  <link rel="stylesheet" href="{% static 'airwrite/css/home.css' %}">
-</head>
-
-<body>
-  <div class="home">
-    <div class="ellipse"></div>
-    <div class="div"></div>
-    <div class="ellipse-2"></div>
-    <div class="ellipse-3"></div>
-    <div class="tus-ideas">TUS IDEAS</div>
-    <img class="line" src="https://c.animaapp.com/mgr7itvqEOaRcZ/img/line-1.svg" />
-    <p class="text-wrapper">Notas rápidas, ideas claras. Escribe lo que quieras, donde quieras, sin complicarte.</p>
-      <a href="{% url 'trazos' %}">
-        <div class="frame">
-          <div class="text-wrapper-2">Comencemos!</div>
-        </div>   
-      </a>
-    <div class="como-usar-bloque">
-      <div class="text-wrapper-3">Como usar?</div>
-      <div class="frame-2">
-        <img class="polygon" src="https://c.animaapp.com/mgr7itvqEOaRcZ/img/polygon-1.svg" />
-        <div class="ellipse-4"></div>
-      </div>
-    </div>
-
-    <div class="text-wrapper-4">AIRWRITE SOFT</div>
-    
-        {% load socialaccount %}
-    <a href="{% url 'logout' %}" class="div-wrapper" >
-      <div class="text-wrapper-5">Cerrar Sesión</div>
-      <div class="register-line"></div>
-    </a>
-
-    <img class="campanas" src="{% static 'airwrite/img/campana-not.png' %}" alt="Notificaciones" />
-
-<p class="p" data-username="{{ user.first_name }}">Hola, {{ user.username }}! 👋</p>
-    <nav class="top-side">
-      <ul class="main-menu">
-        <li><a href="#" class="menu-link" id="menuInicio">Inicio</a></li>
-        <li><a href="#" class="menu-link" id="menuAcerca">Acerca de</a></li>
-        <li><a href="#" class="menu-link" id="menuContacto">Contacto</a></li>
-      </ul>
-    </nav>
-    <div class="MERECEN-FLOTAR-CON">MERECEN FLOTAR<br />CON ESTILO</div>
-    <img class="output" src="{% static 'airwrite/img/vector-home.gif' %}" alt="Vector animado" />
-  </div>
-
-  <script src="{% static 'airwrite/js/home.js' %}"></script>
-</body>
-
-</html> -->
 {% load static %}
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
   <meta charset="utf-8" />
@@ -83,41 +23,46 @@
   <div class="container">
     <!-- Sidebar -->
     <aside class="sidebar">
-      <header class="sidebar-header">
-        <h1 class="logo">AIRWRITE SOFT</h1>
-      </header>
+      <div class="sidebar-header">
+        <div class="logo">AIRWRITE SOFT</div>
+      </div>
 
       <nav class="navigation">
-        <button class="nav-item active">
-          <i class="fa-solid fa-house nav-icon"></i>
+        <a href="{% url 'home' %}" class="nav-item" data-page="home">
+          <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
           <span class="nav-label">Inicio</span>
-        </button>
+        </a>
 
-        <button class="nav-item">
-          <i class="fa-solid fa-book nav-icon"></i>
-          <span class="nav-label">Cursos</span>
-        </button>
-
-
-        <a href="{% url 'tienda' %}" class="nav-item" style="text-decoration: none;">
-          <i class="fa-solid fa-store nav-icon"></i>
+        <a href="{% url 'tienda' %}" class="nav-item active" data-page="tienda">
+          <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+          </svg>
           <span class="nav-label">Tienda</span>
         </a>
 
-        {% comment %} <button class="nav-item">
-          <i class="fa-solid fa-gear nav-icon"></i>
-          <span class="nav-label">Configuración</span>
-        </button> {% endcomment %}
+        <a href="{% url 'favorito' %}" class="nav-item" data-page="favoritos">
+          <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+          </svg>
+          <span class="nav-label">Favoritos</span>
+        </a>
 
         {% load socialaccount %}
-        <a href="{% url 'logout' %}" class="nav-item logout-link">
-          <i class="fa-solid fa-right-from-bracket nav-icon" style="color: red;"></i>
+        <a href="{% url 'logout' %}" class="nav-item logout-link" data-page="logout">
+          <svg class="nav-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
           <span class="nav-label">Cerrar Sesión</span>
         </a>
       </nav>
 
       <div class="sidebar-footer">
-        <img src="{% static 'airwrite/img/output-onlinegiftools (5).gif' %}" alt="Letra-home" class="sidebar-image" />
+        <img src="{% static 'airwrite/img/output-onlinegiftools (5).gif' %}" alt="Sidebar Image" class="sidebar-image">
       </div>
     </aside>
 
@@ -134,40 +79,24 @@
         <div class="section-header">
           <h2 class="section-title">Mis Cursos</h2>
           <div class="search-box">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.35-4.35"></path>
-            </svg>
-            <!-- Barra de búsqueda -->
-            <form method="get" class="p-4 flex justify-center">
-              <input type="text" name="q" placeholder="Buscar..." value="{{ request.GET.q }}" class="search-input"
-                style="padding: 0.5rem; width: 100%; max-width: 400px; text-align: center; border-radius: 0.5rem; border: 1px solid #ccc;" />
+            <form method="get">
+              <input type="text" name="q" placeholder="Buscar..." value="{{ request.GET.q }}" class="search-input" />
             </form>
           </div>
         </div>
 
         <div class="courses-grid">
           {% for module in modules %}
-          <a href="{% if module.name == 'Abecedario' %}
-             {% url 'abecedario' %}
-          {% elif module.name == 'Numeros' %}
-             {% url 'numeros' %}
-          {% elif module.name == 'Silabas' %}
-             {% url 'silaba' %}
-          {% else %}
-             {% url 'trazos' %}
-          {% endif %}" class="course-link">
+          <a href="{% if module.name == 'Abecedario' %}{% url 'abecedario' %}
+          {% elif module.name == 'Numeros' %}{% url 'numeros' %}
+          {% elif module.name == 'Silabas' %}{% url 'silaba' %}
+          {% else %}{% url 'trazos' %}{% endif %}" class="course-link">
 
-            <div class="course-card 
-                {% if forloop.counter == 1 %}bg-red
-                {% elif forloop.counter == 2 %}bg-blue
-                {% elif forloop.counter == 3 %}bg-green
-                {% else %}bg-yellow{% endif %}">
-
+            <div class="course-card">
               <img src="{% if forloop.counter == 1 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png
-                          {% elif forloop.counter == 2 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-2.png
-                          {% elif forloop.counter == 3 %}https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png
-                          {% else %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png{% endif %}"
+                        {% elif forloop.counter == 2 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-2.png
+                        {% elif forloop.counter == 3 %}https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png
+                        {% else %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png{% endif %}"
                 alt="{{ module.name }}" class="course-bg" />
 
               <div class="course-content">
@@ -182,45 +111,15 @@
         </div>
       </section>
 
-      
-      <section class="favorites-section">
-        <div class="section-header">
-          <h2 class="section-title">Favoritos</h2>
-          <img src="{% static 'airwrite/img/favorito icono.png' %}" alt="Favorite" class="favorite-icon" />
-        </div>
-
-        <div class="favorites-grid">
-          {% if user_favoritos %}
-            {% for letra in user_favoritos %}
-              <div class="course-card 
-                  {% if forloop.counter == 1 %}bg-red
-                  {% elif forloop.counter == 2 %}bg-blue
-                  {% elif forloop.counter == 3 %}bg-green
-                  {% elif forloop.counter == 4 %}bg-yellow
-                  {% elif forloop.counter == 5 %}bg-purple
-                  {% else %}bg-orange{% endif %}">
-
-                <img src="{% if forloop.counter == 1 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png
-                            {% elif forloop.counter == 2 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-2.png
-                            {% elif forloop.counter == 3 %}https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png
-                            {% elif forloop.counter == 4 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png
-                            {% elif forloop.counter == 5 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-5.png
-                            {% else %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-6.png{% endif %}"
-                  alt="Letra {{ letra }}" class="course-bg" />
-
-                <div class="course-content">
-                  <h3 class="course-title text-3xl font-bold">{{ letra }}</h3>
-                  <p class="course-lessons text-sm">Letra favorita</p>
-                </div>
-              </div>
-            {% endfor %}
-          {% else %}
-            <p class="text-gray-500 italic mt-4">No tienes letras favoritas todavía.</p>
-          {% endif %}
+      <!-- Video Section -->
+      <section class="video-section">
+        <div class="video-container">
+          <video class="main-video" controls autoplay muted loop>
+            <source src="{% static 'airwrite/img/demovideo.mp4' %}" type="video/mp4">
+            Tu navegador no soporta el elemento video.
+          </video>
         </div>
       </section>
-
-
 
       <!-- Course Planning Section -->
       <section class="course-planning-section">
@@ -234,13 +133,6 @@
               <div class="planning-title">{{ curso.nombre }}</div>
               <div class="planning-subtitle">Última vez abierto: {{ curso.fecha|date:"d F Y" }}</div>
             </div>
-            <button class="planning-menu">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="1"></circle>
-                <circle cx="12" cy="5" r="1"></circle>
-                <circle cx="12" cy="19" r="1"></circle>
-              </svg>
-            </button>
           </div>
           {% endfor %}
         </div>
@@ -280,19 +172,73 @@
         </div>
       </section>
 
-      <section class="activity-section">
-        <div class="activity-header">
-          <h2 class="section-title">Actividad</h2>
-          <div class="activity-tabs">
-            <button class="activity-tab" data-period="day">Día</button>
-            <button class="activity-tab active" data-period="week">Semana</button>
-            <button class="activity-tab" data-period="month">Mes</button>
-          </div>
-        </div>
+      <!-- Carrusel de Beneficios -->
+      <section class="carousel-section">
+        <h2 class="carousel-title">Beneficios del Sistema</h2>
+        <div class="carousel-container">
+          <div class="carousel-track">
+            <div class="carousel-card">
+              <div class="carousel-image"></div>
+              <div class="carousel-content">
+                <h3>Desarrollo motriz</h3>
+                <p>Mejora tus movimientos y coordinación al trazar letras y números con tu marcador mágico.</p>
+              </div>
+            </div>
 
-        <div class="activity-chart-wrapper">
-          <div class="activity-chart" id="activityChart">
-            <!-- Las barras se generarán con JS -->
+            <div class="carousel-card">
+              <div class="carousel-image"></div>
+              <div class="carousel-content">
+                <h3>Creatividad y colores</h3>
+                <p>Explora tu imaginación cambiando colores y tamaños del marcador en cada trazo divertido.</p>
+              </div>
+            </div>
+            
+            <div class="carousel-card">
+              <div class="carousel-image"></div>
+              <div class="carousel-content">
+                <h3>Aprendizaje divertido</h3>
+                <p>Juega y aprende a escribir mientras desbloqueas letras y ganas puntos en cada nivel.</p>
+              </div>
+            </div>
+            
+            <div class="carousel-card">
+              <div class="carousel-image"></div>
+              <div class="carousel-content">
+                <h3>Memoria y reconocimiento</h3>
+                <p>Practica cada forma muchas veces y verás cómo recuerdas las letras y números fácilmente.</p>
+              </div>
+            </div>
+            
+            <div class="carousel-card">
+              <div class="carousel-image"></div>
+              <div class="carousel-content">
+                <h3>Concentración y atención</h3>
+                <p>Aprende a concentrarte siguiendo los contornos y completa cada trazo sin salirte del camino.</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Botones del carrusel -->
+          <div class="carousel-buttons">
+            <button class="carousel-btn prev-btn" aria-label="Anterior">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+              </svg>
+            </button>
+            <button class="carousel-btn next-btn" aria-label="Siguiente">
+              <svg viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Indicadores -->
+          <div class="carousel-dots">
+            <button class="carousel-dot active" data-slide="0"></button>
+            <button class="carousel-dot" data-slide="1"></button>
+            <button class="carousel-dot" data-slide="2"></button>
+            <button class="carousel-dot" data-slide="3"></button>
+            <button class="carousel-dot" data-slide="4"></button>
           </div>
         </div>
       </section>
