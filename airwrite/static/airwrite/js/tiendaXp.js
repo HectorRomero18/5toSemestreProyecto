@@ -1,15 +1,17 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => { 
   // Obtener datos del contexto Django
   const modules = JSON.parse(document.getElementById('modules-data').textContent);
   const compradas = JSON.parse(document.getElementById('compradas-data').textContent)
-                        .map(l => l.toLowerCase()); // asegurar minúsculas
+                        .map(l => l.toLowerCase());
 
-  // Inicializar filtros y favoritos
-  let currentFilter = 'all'; // all, vowel, consonant
-  const favorites = {}; // usar item.caracter como key
-  let currentFeatured = null; // item actualmente mostrado
+  let currentFilter = 'all';
+  const favorites = {};
+  let currentFeatured = null;
 
-  // Funciones auxiliares
+  // ----------cargar favoritos desde localStorage ----------
+  const savedFavorites = JSON.parse(localStorage.getItem('favorites')) || {};
+  Object.assign(favorites, savedFavorites);
+
   function getItemKey(itemOrLetter) {
     if (!itemOrLetter) return null;
     if (typeof itemOrLetter === 'string') return itemOrLetter.toLowerCase();
@@ -33,18 +35,25 @@ document.addEventListener('DOMContentLoaded', () => {
       : 'https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png';
   }
 
-  // Crear card de letra
+  function getCSRFToken() {
+    let cookieValue = null;
+    const name = 'csrftoken';
+    if (document.cookie && document.cookie !== '') {
+      document.cookie.split(';').forEach(cookie => {
+        cookie = cookie.trim();
+        if (cookie.startsWith(name + '=')) cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+      });
+    }
+    return cookieValue;
+  }
+
   function createLetterCard(item) {
     const card = document.createElement('div');
     card.className = 'letter-card';
     const letra = item.letter;
-    const resultado = letra.charAt(0).toUpperCase() + 
-                      letra.slice(1, -1) + 
-                      letra.slice(-1).toUpperCase();
+    const resultado = letra.charAt(0).toUpperCase() + letra.slice(1, -1) + letra.slice(-1).toUpperCase();
 
-    featuredInfo.querySelector('.featured-title').textContent = resultado;
-    card.innerHTML = `
-    
+   card.innerHTML = `
       <div class="letter-display">
         <img src="${obtenerFondo(item)}" alt="${item.simbolo}" class="letter-bg" />
         <span class="letter-text">${item.letra_obj}</span>
@@ -57,7 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
           </span>
         </div>
         <div class="letter-actions">
-          <button class="btn-favorite-small ${favorites[item.letter] ? 'active' : ''}" data-key="${item.letter}">
+          <!-- Agregamos data-letra-id -->
+          <button class="btn-favorite-small ${favorites[item.letter] ? 'active' : ''}" 
+                  data-nombre="${item.letter}" 
+                  data-letra-id="${item.id}">
             <svg width="22" height="22" viewBox="0 0 24 24" fill="${favorites[item.letter] ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="2">
               <path d="M11.645 20.91l-.007-.003-.022-.012a15.247 15.247 0 01-.383-.218 25.18 25.18 0 01-4.244-3.17C4.688 15.36 2.25 12.174 2.25 8.25 2.25 5.322 4.714 3 7.688 3A5.5 5.5 0 0112 5.052 5.5 5.5 0 0116.313 3c2.973 0 5.437 2.322 5.437 5.25 0 3.925-2.438 7.111-4.739 9.256a25.175 25.175 0 01-4.244 3.17 15.247 15.247 0 01-.383.219l-.022.012-.007.004-.003.001a.752.752 0 01-.704 0l-.003-.001z"/>
             </svg>
@@ -65,11 +77,70 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `;
-    card.addEventListener('click', () => updateFeaturedCard(item));
+
+    // Listener para el botón de favorito
+    const favBtn = card.querySelector('.btn-favorite-small');
+    favBtn.onclick = async (e) => {
+      e.stopPropagation(); // Evita que también se dispare el click del card
+      const letraId = favBtn.dataset.letraId; 
+      const nombre = favBtn.dataset.nombre;
+      if (!letraId) return;
+      console.log(`Boton presionado para ${nombre}, ID: ${letraId}`);
+
+      const isFavorite = favBtn.classList.contains('active');
+
+      try {
+        if (isFavorite) {
+          // Quitar favorito
+          const resp = await fetch('/favoritos/delete/', {
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'X-CSRFToken': getCSRFToken(),
+              },
+              body: JSON.stringify({ letra_id: letraId }),
+          });
+          const data = await resp.json();
+          if (data.status) {
+              favBtn.classList.remove('active');
+              favBtn.querySelector('svg').setAttribute('fill', 'none'); // actualizar el corazón
+              delete favorites[nombre]; // eliminar del objeto de favoritos
+          } else {
+              console.error('Error del servidor:', data.error);
+          }
+        } else {
+          // Agregar favorito
+          const resp = await fetch('/favoritos/add/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCSRFToken(),
+            },
+            body: JSON.stringify({ nombre }),
+          });
+          const data = await resp.json();
+          if (data.status) {
+            favBtn.classList.add('active');
+            favBtn.querySelector('svg').setAttribute('fill', 'currentColor');
+            favorites[nombre] = true;
+          } else console.error('Error del servidor:', data.error);
+        }
+      } catch (err) {
+        console.error('Error al actualizar favorito:', err);
+      }
+
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+    };
+
+
+    card.addEventListener('click', () => {
+      updateFeaturedCard(item);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
     return card;
   }
 
-  // Renderizar letras
   function renderLetters() {
     const lettersGrid = document.getElementById('lettersGrid');
     lettersGrid.innerHTML = '';
@@ -80,18 +151,8 @@ document.addEventListener('DOMContentLoaded', () => {
         return true;
       })
       .forEach(item => lettersGrid.appendChild(createLetterCard(item)));
-
-    document.querySelectorAll('.btn-favorite-small').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.stopPropagation();
-        const key = btn.dataset.key;
-        favorites[key] = !favorites[key];
-        renderLetters();
-      });
-    });
   }
 
-  // Actualizar Featured Card
   function updateFeaturedCard(item) {
     currentFeatured = item;
     const featuredCard = document.getElementById('featuredCard');
@@ -100,9 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     featuredLetter.textContent = item.letra_obj;
     const letra = item.letter;
-    const resultado = letra.charAt(0).toUpperCase() + 
-                      letra.slice(1, -1) + 
-                      letra.slice(-1).toUpperCase();
+    const resultado = letra.charAt(0).toUpperCase() + letra.slice(1, -1) + letra.slice(-1).toUpperCase();
 
     featuredInfo.querySelector('.featured-title').textContent = resultado;
     featuredInfo.querySelector('.featured-categoria').textContent = `Categoria: ${item.categoria}`;
@@ -114,15 +173,70 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const buyBtn = document.querySelector('.btn-buy');
     if (isPurchased(item)) {
-      buyBtn.textContent = 'Comprado';
+      buyBtn.textContent = 'Obtenido';
       buyBtn.disabled = true;
     } else {
-      buyBtn.textContent = 'Comprar';
+      buyBtn.textContent = 'Obtener';
       buyBtn.disabled = false;
     }
+
+    // ---------- Sincronizar corazón del featured con favoritos ----------
+    const featuredFavBtn = document.getElementById('featuredFavorite');
+    if (favorites[item.letter]) {
+      featuredFavBtn.classList.add('active');
+      featuredFavBtn.querySelector('svg').setAttribute('fill', 'currentColor');
+    } else {
+      featuredFavBtn.classList.remove('active');
+      featuredFavBtn.querySelector('svg').setAttribute('fill', 'none');
+    }
+
+    // ---------- Evento eliminar/agregar del featured ----------
+    featuredFavBtn.onclick = async () => {
+      const nombre = item.letter;
+      if (!nombre) return;
+
+      const isFavorite = featuredFavBtn.classList.contains('active');
+
+      try {
+        if (isFavorite) {
+          const resp = await fetch('/favoritos/delete/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCSRFToken(),
+            },
+            body: JSON.stringify({ letra_id: item.id }),
+          });
+          const data = await resp.json();
+          if (data.status) {
+            featuredFavBtn.classList.remove('active');
+            featuredFavBtn.querySelector('svg').setAttribute('fill', 'none');
+            delete favorites[nombre];
+          } else console.error('Error del servidor:', data.error);
+        } else {
+          const resp = await fetch('/favoritos/add/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-CSRFToken': getCSRFToken(),
+            },
+            body: JSON.stringify({ nombre }),
+          });
+          const data = await resp.json();
+          if (data.status) {
+            featuredFavBtn.classList.add('active');
+            featuredFavBtn.querySelector('svg').setAttribute('fill', 'currentColor');
+            favorites[nombre] = true;
+          } else console.error('Error del servidor:', data.error);
+        }
+      } catch (err) {
+        console.error('Error al actualizar favorito:', err);
+      }
+
+      localStorage.setItem('favorites', JSON.stringify(favorites));
+    };
   }
 
-  // Filtros
   document.querySelectorAll('.btn-category').forEach(btn => {
     btn.addEventListener('click', () => {
       currentFilter = btn.dataset.filter;
@@ -132,7 +246,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Búsqueda
   document.getElementById('searchInput').addEventListener('input', e => {
     const searchTerm = e.target.value.toLowerCase();
     document.querySelectorAll('.letter-card').forEach(card => {
@@ -141,19 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // CSRF
-  function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-      document.cookie.split(';').forEach(cookie => {
-        cookie = cookie.trim();
-        if (cookie.startsWith(name + '=')) cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-      });
-    }
-    return cookieValue;
-  }
-
-  // Comprar letra
   document.querySelector('.btn-buy').addEventListener('click', () => {
     if (!currentFeatured) return;
     const featuredLetter = document.getElementById('featuredLetter').textContent;
@@ -169,7 +269,6 @@ document.addEventListener('DOMContentLoaded', () => {
       cancelButtonText: 'Cancelar'
     }).then(result => {
       if (result.isConfirmed) {
-        // Enviar la clave real del item (no solo el carácter visible)
         const letraKey = encodeURIComponent(
           currentFeatured?.simbolo || currentFeatured?.caracter || currentFeatured?.letter || featuredLetter
         );
@@ -177,30 +276,29 @@ document.addEventListener('DOMContentLoaded', () => {
           method: 'POST',
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
-            'X-CSRFToken': getCookie('csrftoken')
+            'X-CSRFToken': getCSRFToken()
           },
           body: `letra=${letraKey}&precio=${price}`
         })
-         .then(res => res.json())
-         .then(data => {
-           if (data.success) {
-             Swal.fire('¡Compra realizada!', data.message, 'success');
-             document.querySelector('.xp-badge').textContent = `${data.user_xp}Xp`;
-             const key = getItemKey(currentFeatured || featuredLetter);
-             if (key && !compradas.includes(key)) compradas.push(key);
-             const buyBtn = document.querySelector('.btn-buy');
-             buyBtn.textContent = 'Comprado';
-             buyBtn.disabled = true;
-           } else {
-             Swal.fire('Error', data.message, 'error');
-           }
-         })
-         .catch(() => Swal.fire('Error', 'No se pudo procesar la compra', 'error'));
-       }
-     });
-   });
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            Swal.fire('¡Compra realizada!', data.message, 'success');
+            document.querySelector('.xp-badge').textContent = `${data.user_xp}Xp`;
+            const key = getItemKey(currentFeatured || featuredLetter);
+            if (key && !compradas.includes(key)) compradas.push(key);
+            const buyBtn = document.querySelector('.btn-buy');
+            buyBtn.textContent = 'Comprado';
+            buyBtn.disabled = true;
+          } else {
+            Swal.fire('Error', data.message, 'error');
+          }
+        })
+        .catch(() => Swal.fire('Error', 'No se pudo procesar la compra', 'error'));
+      }
+    });
+  });
 
-  // Inicializar render y featured
   renderLetters();
   if (modules.length > 0) updateFeaturedCard(modules[0]);
 });

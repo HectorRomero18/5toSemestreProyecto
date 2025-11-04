@@ -34,6 +34,7 @@ class TiendaXpListView( LoginRequiredMixin, TemplateView):
         modules_serializable = [
             {
 
+                'id':  m.id,
                 'letter': m.caracter.lower(),
                 'categoria': CATEGORIAS_LETRAS_DICT.get(m.categoria, ''),
                 'dificultad': DIFICULTADES_DICT.get(m.dificultad, ''),

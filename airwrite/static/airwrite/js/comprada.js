@@ -95,7 +95,7 @@ function renderPurchasedLetters() {
     });
 }
 
-// 10️⃣ Crear tarjeta de letra
+// Crear tarjeta de letra
 function createLetterCard(item) {
     const card = document.createElement('div');
     card.className = 'letter-card';
@@ -115,7 +115,7 @@ function createLetterCard(item) {
     return card;
 }
 
-// 11️⃣ Funcionalidad de búsqueda
+// Funcionalidad de búsqueda
 document.getElementById('searchInput').addEventListener('input', (e) => {
     const searchTerm = e.target.value.toLowerCase();
     document.querySelectorAll('.letter-card').forEach(card => {
@@ -124,7 +124,7 @@ document.getElementById('searchInput').addEventListener('input', (e) => {
     });
 });
 
-// 12️⃣ Event listeners a botones de filtro
+// Event listeners a botones de filtro
 document.querySelectorAll('.filter-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         const filterType = btn.getAttribute('data-filter');
@@ -132,7 +132,7 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
     });
 });
 
-// 13️⃣ Inicializar página
+//  Inicializar página
 function initPage() {
     updateStats();
     renderPurchasedLetters();
