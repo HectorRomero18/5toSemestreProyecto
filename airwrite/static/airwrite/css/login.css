@@ -219,14 +219,215 @@ a {
 
 .login-jorge .google {
   position: absolute;
-  top: 152px;
-  left: 0;
+  top: 135px;
+  left: 150px;
   width: 94px;
   height: 48px;
   transition: transform 0.2s, opacity 0.2s;
   cursor: pointer;
 }
 
+      /* Diseño de card profesional */
+      .login-card {
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 32px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        border: 1px solid #e1e5e9;
+        width: 380px;
+        margin: 0 auto;
+        transition: all 0.3s ease;
+      }
+
+      .card-header {
+        text-align: center;
+        margin-bottom: 28px;
+      }
+
+      .card-header h2 {
+        font-family: "Red Hat Display", Helvetica;
+        font-weight: 700;
+        color: #1a1a1a;
+        font-size: 22px;
+        margin: 0 0 6px 0;
+        letter-spacing: 0.2px;
+      }
+
+      .card-subtitle {
+        font-family: "Red Hat Display", Helvetica;
+        font-weight: 500;
+        color: #666;
+        font-size: 14px;
+        margin: 0;
+        line-height: 1.4;
+      }
+
+      /* Sección Google bien contenida */
+      .google-section {
+        margin-bottom: 25px;
+      }
+
+      /* Separador profesional */
+      .divider {
+        text-align: center;
+        margin: 0 0 18px 0;
+        color: #666;
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.3px;
+      }
+
+      /* Contenedor del botón Google */
+      .google-container {
+        text-align: center;
+        padding: 8px 0;
+      }
+
+      .google-link {
+        display: inline-block;
+        transition: all 0.3s ease;
+      }
+
+      .google {
+        transition: all 0.3s ease;
+      }
+
+      .google:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+      }
+
+      /* Sección de beneficios profesional */
+      .benefits {
+        background: #f8faff;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid rgba(68, 97, 242, 0.1);
+      }
+
+      .benefits h4 {
+        font-family: "Red Hat Display", Helvetica;
+        font-weight: 600;
+        color: #4461f2;
+        font-size: 15px;
+        margin: 0 0 14px 0;
+        text-align: center;
+        letter-spacing: 0.2px;
+      }
+
+      .benefits ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .benefits li {
+        font-family: "Red Hat Display", Helvetica;
+        font-weight: 500;
+        color: #5a6270;
+        font-size: 13px;
+        padding: 8px 0;
+        padding-left: 22px;
+        position: relative;
+        line-height: 1.4;
+        letter-spacing: 0.1px;
+      }
+
+      .benefits li::before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: #4461f2;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      /* Información para nuevos usuarios profesional */
+      .new-user {
+        background: rgba(68, 97, 242, 0.05);
+        border-radius: 10px;
+        padding: 16px;
+        border: 1px solid rgba(68, 97, 242, 0.15);
+        text-align: center;
+      }
+
+      .new-user p {
+        font-family: "Red Hat Display", Helvetica;
+        font-weight: 500;
+        color: #4461f2;
+        font-size: 13px;
+        line-height: 1.4;
+        margin: 0;
+        letter-spacing: 0.1px;
+      }
+
+      .new-user strong {
+        font-weight: 600;
+        color: #4461f2;
+      }
+
+      /* Ajustes de posición */
+      .forms {
+        position: absolute;
+        top: 250px !important;
+        left: 1050px;
+        width: 380px;
+        height: auto;
+      }
+
+      /* Efectos de hover SOLO para el card completo - sin movimiento interno */
+      .login-card {
+        transition: all 0.3s ease;
+      }
+
+      .login-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+        /* Solo cambiamos el fondo de las secciones, sin transformaciones internas */
+      }
+
+      .login-card:hover .benefits {
+        background: #f0f4ff;
+        border-color: rgba(68, 97, 242, 0.2);
+      }
+
+      .login-card:hover .new-user {
+        background: rgba(68, 97, 242, 0.08);
+        border-color: rgba(68, 97, 242, 0.25);
+      }
+
+      /* ELIMINAMOS TODAS LAS TRANSFORMACIONES INTERNAS */
+      .card-header,
+      .google-section,
+      .divider,
+      .google-container,
+      .benefits h4,
+      .benefits li,
+      .benefits li::before,
+      .new-user p {
+        transition: none !important;
+        transform: none !important;
+      }
+
+      /* Mejoras de legibilidad */
+      * {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* Responsive básico */
+      @media (max-width: 1400px) {
+        .forms {
+          left: 900px;
+        }
+      }
+
+      @media (max-width: 1200px) {
+        .forms {
+          left: 800px;
+        }
+      }
 .login-jorge .google:hover {
   transform: scale(1.05);
   opacity: 0.9;
