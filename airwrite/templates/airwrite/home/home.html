@@ -87,28 +87,42 @@
 
         <div class="courses-grid">
           {% for module in modules %}
-          <a href="{% if module.name == 'Abecedario' %}{% url 'abecedario' %}
-          {% elif module.name == 'Numeros' %}{% url 'numeros' %}
-          {% elif module.name == 'Silabas' %}{% url 'silaba' %}
-          {% else %}{% url 'trazos' %}{% endif %}" class="course-link">
+            <a href="{% if module.name == 'Abecedario' %}
+                        {% url 'abecedario' %}
+                      {% elif module.name == 'Numeros' %}
+                        {% url 'numeros' %}
+                      {% elif module.name == 'Silabas' %}
+                        {% url 'silaba' %}
+                      {% else %}
+                        {% url 'trazos' %}
+                      {% endif %}" class="course-link">
+                {% comment %} <p>{{ module.name }}</p> {% endcomment %}
 
-            <div class="course-card">
-              <img src="{% if forloop.counter == 1 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png
-                        {% elif forloop.counter == 2 %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-2.png
-                        {% elif forloop.counter == 3 %}https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png
-                        {% else %}https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png{% endif %}"
-                alt="{{ module.name }}" class="course-bg" />
+              <div class="course-card">
+                <img src="{% if forloop.counter == 1 %}
+                            https://c.animaapp.com/mh6mj11rEipEzl/img/group-1.png
+                          {% elif forloop.counter == 2 %}
+                            https://c.animaapp.com/mh6mj11rEipEzl/img/group-2.png
+                          {% elif forloop.counter == 3 %}
+                            https://c.animaapp.com/mh6mj11rEipEzl/img/italian.png
+                          {% else %}
+                            https://c.animaapp.com/mh6mj11rEipEzl/img/group-4.png
+                          {% endif %}"
+                    alt="{{ module.name }}" class="course-bg" />
 
-              <div class="course-content">
-                <h3 class="course-title">{{ module.name }}</h3>
-                <p class="course-lessons">{{ module.description }}</p>
+                <div class="course-content">
+                  <h3 class="course-title">{{ module.name }}</h3>
+                  <p class="course-lessons">{{ module.description }}</p>
+
+                  <img src="{{ module.imagen_url }}" alt="numeros_home" class="course-decoration" />
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
           {% empty %}
-          <p>No hay cursos disponibles.</p>
+            <p>No hay cursos disponibles.</p>
           {% endfor %}
         </div>
+
       </section>
 
       <!-- Video Section -->

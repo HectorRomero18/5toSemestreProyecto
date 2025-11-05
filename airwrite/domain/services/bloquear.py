@@ -2,7 +2,7 @@ from airwrite.infrastructure.models.letra import Letra
 from airwrite.infrastructure.models.letra_compra import LetraCompra
 
 @staticmethod
-def esta_bloqueada(usuario, nombre):
+def esta_bloqueada(usuario, nombre: str) -> bool:
     # Obtener perfil
     perfil = getattr(usuario, 'perfilusuario', None)
     if not perfil:
@@ -21,18 +21,21 @@ def esta_bloqueada(usuario, nombre):
     if LetraCompra.objects.filter(usuario=usuario, letra=letra_obj).exists():
         return False
 
+    # Si la letra ya fue practicada o está desbloqueada, desbloqueada
+    if letra_obj in perfil.letras_practicadas.all() or letra_obj in perfil.letras_desbloqueadas.all():
+        return False
+
     # Desbloqueo según letra anterior
-    letra_char = nombre.split()[-1].upper()       
+    letra_char = nombre.split()[-1].upper()
     letra_anterior_char = chr(ord(letra_char) - 1)
     try:
         letra_anterior_obj = Letra.objects.get(nombre=f"Letra {letra_anterior_char}")
     except Letra.DoesNotExist:
         return True
 
-    if letra_anterior_obj in perfil.letras_desbloqueadas.all():
-        return False 
+    # if letra_anterior_obj in perfil.letras_desbloqueadas.all():
+    #     return False 
     
-    # Desbloqueo segun tiene la letra anterior practicada
     if letra_anterior_obj in perfil.letras_practicadas.all():
         return False
 

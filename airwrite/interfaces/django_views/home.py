@@ -26,6 +26,12 @@ class ModuleListView( LoginRequiredMixin, TemplateView):
 
 
         modules = use_case.execute(ListModulesQuery(q=q))
+        for m in modules:
+            if m.imagen_url:  # verifica que exista imagen
+                print(m.imagen_url)
+            else:
+                print(f"{m.name} no tiene imagen.")
+
 
         user_xp = perfil.xp if perfil else 0
         context.update({'modules': modules, 'title': 'Module List', 'user': user, 'user_xp': user_xp})

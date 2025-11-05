@@ -3,6 +3,7 @@ from airwrite.domain.entities.usuario import Usuario
 from airwrite.infrastructure.models.PerfilUsuario import PerfilUsuario
 from airwrite.infrastructure.models.letra_compra import LetraCompra
 from airwrite.application.use_cases.compra_letra import PerfilRepositoryPort, LetraCompraRepositoryPort
+from airwrite.infrastructure.models.letra import Letra
 
 class DjangoPerfilRepository(PerfilRepositoryPort):
 
@@ -32,13 +33,18 @@ class DjangoLetraCompraRepository(LetraCompraRepositoryPort):
         User = get_user_model()
         user_model = User.objects.get(id=usuario.id)  # usuario.id es el id de User
 
-        # Obtener la instancia de Letra
-        from airwrite.infrastructure.models.letra import Letra
         letra_instance = Letra.objects.get(nombre=letra)
 
         # Crear la compra
         LetraCompra.objects.create(
-            usuario=user_model,  # FK correcta al User
+            usuario=user_model,
             letra=letra,
             precio=precio
         )
+
+        letra_instance.bloqueada = False
+        letra_instance.save()
+
+        perfil_model = PerfilUsuario.objects.get(user_id=user_model)
+        perfil_model.letras_desbloqueadas.add(letra_instance)
+        perfil_model.save()

@@ -37,6 +37,7 @@ class AbecedarioListView(LoginRequiredMixin, TemplateView):
             # print("Caracter real:", caracter_real)
 
             modules_serializable.append({
+                'id': m.id,
                 'letter': m.caracter,
                 'bloqueada': esta_bloqueada(user, m.caracter),  
                 'categoria': getattr(m, 'categoria', ''),

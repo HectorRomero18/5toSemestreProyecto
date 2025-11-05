@@ -16,6 +16,7 @@ class DjangoModuleRepository(ModuleRepositoryPort):
                 description=m.description,
                 url=m.url,
                 order=m.order,
+                imagen_url=m.imagen.url if m.imagen else '',
                 is_active=m.is_active,
             ) for m in qs
         ]
