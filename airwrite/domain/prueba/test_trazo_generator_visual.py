@@ -10,6 +10,7 @@ def main():
     puntos = trazo.coordenadas  # ✅ usamos el nombre correcto
 
     print(f"Puntos generados: {len(puntos)}")
+
     print(puntos[:10])  # muestra algunos para verificar
 
     # --- Visualización con matplotlib ---
