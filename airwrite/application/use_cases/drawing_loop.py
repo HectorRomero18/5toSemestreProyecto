@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import cv2
 import numpy as np
-from typing import Optional
+from typing import Optional, Tuple
 from airwrite.domain.ports.camera import CameraPort
 from airwrite.domain.ports.canvas import CanvasPort
 from airwrite.domain.ports.commands import CommandPort
@@ -16,6 +16,7 @@ class DrawingConfig:
     color_rosa: tuple[int, int, int]
     color_verde: tuple[int, int, int]
     color_clear: tuple[int, int, int]
+    target_size: Optional[Tuple[int, int]] = None 
 
 
 class DrawingState:
@@ -42,11 +43,27 @@ class DrawingLoop:
         if not ok or frame is None:
             frame = None
         else:
+            # espejo horizontal
             frame = cv2.flip(frame, 1)
+
+            # Si se definió target_size en la configuración, redimensionar el frame
+            if self.cfg.target_size:
+                tgt_h, tgt_w = self.cfg.target_size
+                if (frame.shape[0], frame.shape[1]) != (tgt_h, tgt_w):
+                    frame = cv2.resize(frame, (tgt_w, tgt_h), interpolation=cv2.INTER_LINEAR)
+
             frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        default_shape = (180, 240, 3)
-        current_shape = frame.shape if frame is not None else default_shape
+        # Determinar la forma que tendrá el canvas: si hay target_size, usarla como fallback
+        if frame is not None:
+            current_shape = frame.shape
+        else:
+            if self.cfg.target_size:
+                tgt_h, tgt_w = self.cfg.target_size
+                current_shape = (tgt_h, tgt_w, 3)
+            else:
+                current_shape = (500, 750, 3)
+
         self.canvas.ensure_shape(current_shape)
         self.current_shape = current_shape
 

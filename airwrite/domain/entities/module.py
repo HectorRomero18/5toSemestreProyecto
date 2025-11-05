@@ -9,4 +9,5 @@ class ModuleEntity:
     description: str
     url: str
     order: int
+    imagen_url: str
     is_active: bool = True

@@ -27,9 +27,9 @@ urlpatterns = [
     path('logout/', CustomLogoutView.as_view(), name='logout'),
 
 
-    path('trazos/', index, name='trazos'),
+    path('trazos/<int:letra_id>/', index, name='trazos'),
     path('video/cam/', video_feed_cam, name='video_feed_cam'),
-    path('video/canvas/', video_feed_canvas, name='video_feed_canvas'),
+    path('video/canvas/<int:letra_id>/', video_feed_canvas, name='video_feed_canvas'),
     path('clear/', clear_canvas, name='clear_canvas'),
     path('set_grosor/', set_grosor, name='set_grosor'),
 
