@@ -9,6 +9,7 @@ from airwrite.domain.constants.xp_reward import XP_DEFAULT
 
 @dataclass
 class NumeroEntity:
+    id: int
     caracter: str
     imagen: Optional[str] = None  # Ruta o URL de la imagen de la letra
     contorno: List[Tuple[int ,int]] = field(default_factory=list)
