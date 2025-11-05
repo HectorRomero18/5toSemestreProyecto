@@ -29,6 +29,7 @@ class NumeroListView(LoginRequiredMixin, TemplateView):
         modules_list = []
         for n in numeros:
             modules_list.append({
+                'id': n.id,
                 'numero': n.caracter,       
                 'dificultad': DIFICULTADES_DICT.get(n.dificultad, ''),
                 'simbolo': n.caracter[-1]   

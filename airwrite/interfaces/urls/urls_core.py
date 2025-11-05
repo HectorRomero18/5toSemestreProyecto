@@ -27,9 +27,15 @@ urlpatterns = [
     path('logout/', CustomLogoutView.as_view(), name='logout'),
 
 
-    path('trazos/<int:letra_id>/', index, name='trazos'),
+    path('trazos/<int:letra_id>/', index, {'tipo': 'letra'}, name='trazos_letra'),
+    path('trazos/numero/<int:numero_id>/', index, {'tipo': 'numero'}, name='trazos_numero'),
+
+    # Feeds de video
     path('video/cam/', video_feed_cam, name='video_feed_cam'),
-    path('video/canvas/<int:letra_id>/', video_feed_canvas, name='video_feed_canvas'),
+    path('video/canvas/<str:tipo>/<int:objeto_id>/', video_feed_canvas, name='video_feed_canvas'),
+
+    # ruta para números
+    path('video/numero/<int:objeto_id>/', video_feed_canvas, {'tipo': 'numero'}, name='video_feed_numero'),
     path('clear/', clear_canvas, name='clear_canvas'),
     path('set_grosor/', set_grosor, name='set_grosor'),
 
