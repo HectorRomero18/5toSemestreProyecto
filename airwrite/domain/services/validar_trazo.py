@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import List
-from airwrite.domain.services.comparador_trazos import comparar_trazos
+from airwrite.domain.services.comparador_trazos import comparar_trazos, ResultadoComparacion
 from airwrite.domain.entities.trazo import Trazo
 import time
 
@@ -11,6 +11,7 @@ class ResultadoValidacion:
     intentos : int
     errores: int
     tiempo_promedio : float 
+    detalle: ResultadoComparacion
  
 class ValidarTrazo:
     def __init__(self, umbral_similitud: float = 0.85):
@@ -24,7 +25,9 @@ class ValidarTrazo:
         self.intentos += 1
         inicio = time.time()
         
-        similitud = comparar_trazos(trazo_referencia, trazo_usuario)
+        resultado_comparacion = comparar_trazos(trazo_referencia, trazo_usuario)
+        
+        similitud = resultado_comparacion.similitud_pct
         es_correcto = similitud >= self.umbral_similitud
         
         duracion = time.time() - inicio
@@ -40,7 +43,8 @@ class ValidarTrazo:
             similitud= similitud,
             intentos= self.intentos,
             errores= self.errores,
-            tiempo_promedio=promedio
+            tiempo_promedio=promedio,
+            detalle=resultado_comparacion
         )
         
     """Reinicia las métricas del validador """
