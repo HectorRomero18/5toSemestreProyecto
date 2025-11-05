@@ -247,6 +247,15 @@ body {
   height: 210px;
 }
 
+.course-decoration {
+      position: absolute;
+      top: 16px;
+      left: 160px;
+      width: 135px;
+      height: 115px;
+      object-fit: cover;
+    }
+
 .course-content {
   position: relative;
   z-index: 10;

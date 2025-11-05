@@ -18,6 +18,7 @@ function obtenerFondo(letra) {
 function createLetterCard(item) {
   const card = document.createElement('div');
   card.className = 'letter-card';
+  card.setAttribute('data-id', item.id);
 
   const bg = obtenerFondo(item);
   const dificultadColors = {
@@ -54,6 +55,7 @@ function createLetterCard(item) {
     <div class="letter-display">
       <img src="${bg}" alt="${item.simbolo}" class="letter-bg" />
       <span class="letter-text">${item.simbolo}</span>
+      
     </div>
     <div class="letter-footer">
       <div class="letter-info">
@@ -101,7 +103,9 @@ function renderLetters() {
       button.addEventListener('click', (e) => {
           e.stopPropagation();
           const title = button.getAttribute('title');
+          const letterCard = button.closest('.letter-card');
           const letter = button.closest('.letter-card').querySelector('.letter-name').textContent;
+          const letterId = letterCard.getAttribute('data-id'); 
 
           if (title === 'Escuchar') {
               playLetter(letter);
@@ -110,10 +114,21 @@ function renderLetters() {
           } else if (title === 'Escribir') {
               // Desbloqueada → abrir pantalla de escritura
               Swal.fire({
-                  icon: 'success',
-                  title: `Escribir ${letter}`,
-                  text: '¡Preparando pantalla de escritura!',
-              });
+                icon: 'success',
+                title: `Escribir ${letter}`,
+                text: '¡Preparando pantalla de escritura!',
+                showCancelButton: false,
+                confirmButtonText: 'Ir a la pantalla',
+                confirmButtonColor: '#3085d6', // color del botón
+                didOpen: () => {
+                    // Opcional: puedes aplicar estilos aquí si quieres
+                },
+                preConfirm: () => {
+                    // Redirige al hacer clic en el botón
+                    window.location.href= `/trazos/${letterId}/`;
+                }
+            });
+
           } else if (title === 'Bloqueada') {
               // Letra bloqueada → mensaje SweetAlert
               Swal.fire({

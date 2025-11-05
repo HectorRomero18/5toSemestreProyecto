@@ -136,5 +136,7 @@ $RECYCLE.BIN/
 .idea/
 *.iml
 
+media/*.wav
+
 # Google Cloud credentials
 airwrite/airwrite-tts-c49efee304cc.json

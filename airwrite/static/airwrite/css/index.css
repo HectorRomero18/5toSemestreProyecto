@@ -698,3 +698,21 @@ body {
     width: 18px;
     height: 18px;
 }
+
+.xp-badge {
+  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+  top: 20vh;
+  color: white;
+  padding: 6px 18px;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.star-icon {
+    top: -11px; /* mueve hacia abajo desde la posición original */
+    /* o con transform: */
+    transform: translateY(20px);
+    position: relative; /* asegúrate de que sea relativo si usas top */
+}
+

@@ -172,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
       : 'linear-gradient(135deg, #FFC107 0%, #FFB300 100%)';
 
     const buyBtn = document.querySelector('.btn-buy');
-    if (isPurchased(item)) {
+    if (isPurchased(item) || ["A", "B", "C"].includes(item.letra_obj)) {
       buyBtn.textContent = 'Obtenido';
       buyBtn.disabled = true;
     } else {
@@ -288,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const key = getItemKey(currentFeatured || featuredLetter);
             if (key && !compradas.includes(key)) compradas.push(key);
             const buyBtn = document.querySelector('.btn-buy');
-            buyBtn.textContent = 'Comprado';
+            buyBtn.textContent = 'Obtenido';
             buyBtn.disabled = true;
           } else {
             Swal.fire('Error', data.message, 'error');

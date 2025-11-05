@@ -28,12 +28,26 @@ class CanvasState:
         with self._lock:
             if self._canvas is None or self._canvas.shape != shape:
                 import numpy as np
-                self._canvas = np.zeros(shape, dtype=np.uint8)
+                # Crear un lienzo blanco (valores 255 en un arreglo de tipo uint8)
+                self._canvas = np.ones(shape, dtype=np.uint8) * 200  # 255 es el valor de blanco
+                
+                # Dibujar la cuadricula (líneas horizontales y verticales)
+                grid_size = 17  # Tamaño de la cuadriculals
+                
+                # Dibujar líneas horizontales (líneas grises)
+                self._canvas[::grid_size, :] = 150  # Líneas horizontales en la matriz
+                
+                # Dibujar líneas verticales (líneas grises)
+                self._canvas[:, ::grid_size] = 150  # Líneas verticales en la matriz
+
 
     def clear(self, shape) -> None:
         with self._lock:
             import numpy as np
-            self._canvas = np.zeros(shape, dtype=np.uint8)
+            self._canvas = np.ones(shape, dtype=np.uint8) * 200 
+            grid_size = 17 
+            self._canvas[::grid_size, :] = 150
+            self._canvas[:, ::grid_size] = 150
 
     def draw_line(self, p1, p2, color, thickness) -> None:
         import cv2

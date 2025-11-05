@@ -28,7 +28,7 @@ class CompraLetraUseCase:
 
         return {
             "success": True,
-            "msg": f"Has comprado la letra {command.letra}",
+            "msg": f"Has comprado la {command.letra}",
             "nuevo_xp": perfil.xp  # <-- aquí devuelves el XP actualizado
         }
 
