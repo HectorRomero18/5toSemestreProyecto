@@ -44,3 +44,8 @@ def test_validador_multiple():
 
 if __name__ == "__main__":
     test_validador_multiple()
+    
+    
+""" 
+python -m airwrite.domain.prueba.test_validador_multiple
+"""
