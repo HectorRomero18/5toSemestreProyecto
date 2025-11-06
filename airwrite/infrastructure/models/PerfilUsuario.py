@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from airwrite.infrastructure.models.letra import Letra
 
 
 class PerfilUsuario(models.Model):
@@ -30,6 +31,7 @@ class PerfilUsuario(models.Model):
         related_name='usuarios_desbloqueados_silabas',
         blank=True
     )
+
 
     # Método opcional para convertir a entidad de dominio
     # def to_entity(self):

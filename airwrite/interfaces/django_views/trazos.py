@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from airwrite.infrastructure.models.letra import Letra
 from airwrite.infrastructure.models.numeros import Numero
 from airwrite.infrastructure.models.silabas import Silaba
+from airwrite.infrastructure.decoradores.decorador import requiere_desbloqueo
 
 from airwrite.application.use_cases.drawing_loop import DrawingLoop, DrawingConfig, DrawingState
 from airwrite.infrastructure.repositories.state import OpenCVCamera, CanvasState, CommandState
@@ -50,6 +51,7 @@ _state = DrawingState()
 _loop = DrawingLoop(_cam_port, _canvas_port, _cmd_port, _cfg, _state)
 
 
+@requiere_desbloqueo
 @login_required
 def index(request, letra_id=None, numero_id=None, silaba_id=None, tipo='letra'):
     objeto = None
@@ -93,6 +95,7 @@ def video_feed_cam(request):
                 continue
             yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
     return StreamingHttpResponse(gen(), content_type='multipart/x-mixed-replace; boundary=frame')
+
 def video_feed_canvas(request, tipo, objeto_id):
     """
     Muestra en streaming la imagen de una letra o número centrada en el lienzo.

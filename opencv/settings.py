@@ -74,20 +74,33 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': config('GOOGLE_CLIENT_ID', default='fake-client-id'),
-            'secret': config('GOOGLE_CLIENT_SECRET', default='fake-client-secret'),
-        }
-    }
+    "google": {
+        "APP": {
+            "client_id": config("GOOGLE_CLIENT_ID", default="fake-client-id"),
+            "secret": config("GOOGLE_CLIENT_SECRET", default="fake-client-secret"),
+        },
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    },
 }
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = "optional"
+SOCIALACCOUNT_AUTO_SIGNUP = True  # evita el formulario extra
+ACCOUNT_SIGNUP_ENABLED = False  # Desactiva el registro manual por formulario
+ACCOUNT_SIGNUP_FORM_CLASS = None
+
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_SIGNUP_ENABLED = False
+ACCOUNT_USERNAME_REQUIRED = False  # No pedirá username manualmente
+ACCOUNT_EMAIL_VERIFICATION = "none"  # Evita verificación por correo
 
 LOGIN_URL = '/login/'         
 LOGIN_REDIRECT_URL = '/home/'  

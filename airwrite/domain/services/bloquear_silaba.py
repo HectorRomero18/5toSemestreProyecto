@@ -5,7 +5,7 @@ def esta_bloqueada_silaba(usuario, nombre: str) -> bool:
     if not perfil:
         return True
     
-    if nombre in ["Silaba ba", "Silaba be", "Silaba bi"]:
+    if nombre in ["Silaba ba", "Silaba be", "Silaba ca"]:
         return False
 
     try:
@@ -18,6 +18,7 @@ def esta_bloqueada_silaba(usuario, nombre: str) -> bool:
 
     # Obtener las letras que forman la sílaba
     silaba_texto = nombre.replace("Silaba", "").strip()
+
     letras_silabas = [f"Letra {l.upper()}" for l in silaba_texto if l.isalpha()]
     # print("Letras de la sílaba:", letras_silabas)
 
