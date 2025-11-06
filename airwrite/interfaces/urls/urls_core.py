@@ -29,6 +29,7 @@ urlpatterns = [
 
     path('trazos/<int:letra_id>/', index, {'tipo': 'letra'}, name='trazos_letra'),
     path('trazos/numero/<int:numero_id>/', index, {'tipo': 'numero'}, name='trazos_numero'),
+    path('trazos/silaba/<int:silaba_id>/', index, {'tipo': 'silaba'}, name='trazos_silaba'),
 
     # Feeds de video
     path('video/cam/', video_feed_cam, name='video_feed_cam'),

@@ -1,14 +1,11 @@
 from airwrite.infrastructure.models.silabas import Silaba
 from airwrite.infrastructure.models.PerfilUsuario import PerfilUsuario
-
 def esta_bloqueada_silaba(usuario, nombre: str) -> bool:
-    # Obtener perfil
     perfil = getattr(usuario, 'perfilusuario', None)
     if not perfil:
         return True
-
-    # Sílabas iniciales desbloqueadas (por ejemplo, BA, BE, CA, CE)
-    if nombre in ["BA", "BE", "CA", "CE"]:
+    
+    if nombre in ["Silaba ba", "Silaba be", "Silaba bi"]:
         return False
 
     try:
@@ -16,16 +13,27 @@ def esta_bloqueada_silaba(usuario, nombre: str) -> bool:
     except Silaba.DoesNotExist:
         return True
 
-    # Si la sílaba ya fue practicada o está desbloqueada, desbloqueada
     if silaba_obj in perfil.silabas_practicadas.all() or silaba_obj in perfil.silabas_desbloqueadas.all():
         return False
 
-    # Desbloqueo según sílaba anterior (lógica simple: desbloquear si la anterior fue practicada)
-    # Para simplificar, desbloquear si el usuario tiene suficiente XP o ha practicado suficientes sílabas anteriores
-    # Aquí puedes implementar lógica más compleja basada en el orden alfabético o dificultad
+    # Obtener las letras que forman la sílaba
+    silaba_texto = nombre.replace("Silaba", "").strip()
+    letras_silabas = [f"Letra {l.upper()}" for l in silaba_texto if l.isalpha()]
+    # print("Letras de la sílaba:", letras_silabas)
 
-    # Por ejemplo, desbloquear si el usuario tiene al menos 100 XP
-    if perfil.xp >= 100:
+    # Letras desbloqueadas del perfil
+    letras_desbloqueadas = set(
+        l.lower() for l in perfil.letras_desbloqueadas.values_list('nombre', flat=True)
+    )
+    # print("Letras desbloqueadas:", letras_desbloqueadas)
+
+    # Si todas las letras están desbloqueadas → sílaba desbloqueada
+    bloqueado = all(letra.lower() in letras_desbloqueadas for letra in letras_silabas)
+    if bloqueado:
+        perfil.silabas_desbloqueadas.add(silaba_obj)
+        perfil.save()
         return False
+    
+    
 
     return True

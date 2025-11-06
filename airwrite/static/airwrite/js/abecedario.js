@@ -27,11 +27,22 @@ function createLetterCard(item) {
     'Difícil': '#F44336'
   };
 
+  // Clase bloqueado para el div principal
+  const blockedClass = item.bloqueada ? 'blocked' : '';
+
+  // Candado solo si está bloqueada
+  const blockedIcon = item.bloqueada ? `
+    <div class="blocked-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+    </div>
+  ` : '';
+
   // Decide el botón de escribir según si está bloqueada
   let escribirBtn = '';
   if (!item.bloqueada) {
-    // Desbloqueada → lápiz
-    console.log("Letra desbloqueada:", item.bloqueada);
     escribirBtn = `
       <button class="action-btn" title="Escribir">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -40,7 +51,6 @@ function createLetterCard(item) {
       </button>
     `;
   } else {
-    // Bloqueada → candado
     escribirBtn = `
       <button class="action-btn bloqueada" title="Bloqueada">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -52,10 +62,10 @@ function createLetterCard(item) {
   }
 
   card.innerHTML = `
-    <div class="letter-display">
+    <div class="letter-display ${blockedClass}">
       <img src="${bg}" alt="${item.simbolo}" class="letter-bg" />
       <span class="letter-text">${item.simbolo}</span>
-      
+      ${blockedIcon}
     </div>
     <div class="letter-footer">
       <div class="letter-info">
@@ -66,7 +76,7 @@ function createLetterCard(item) {
         </span>
       </div>
       <div class="letter-actions">
-        <button class="action-btn" title="Escuchar">
+        <button class="action-btn" title="Escuchar"}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/>
           </svg>

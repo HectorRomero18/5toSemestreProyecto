@@ -67,8 +67,8 @@ function renderNumbers() {
       // =============== ESCRIBIR ===============
       else if (title === 'Escribir') {
 
-          const card = button.closest('.number-card'); // ✅ obtiene el card real
-        const numberId = card.getAttribute('data-id'); // ✅ obtiene el id desde el atributo
+        const card = button.closest('.number-card'); 
+        const numberId = card.getAttribute('data-id'); 
         const numberText = card.querySelector('.number-text').textContent.trim();
 
         Swal.fire({

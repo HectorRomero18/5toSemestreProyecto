@@ -46,6 +46,7 @@ class SilabaListView(LoginRequiredMixin, TemplateView):
                 'price': getattr(m, 'price', 100),
                 'simbolo': m.nombre,
             })
+            
 
         # Obtenemos la experiencia del usuario (xp)
         perfil = getattr(user, 'perfilusuario', None)

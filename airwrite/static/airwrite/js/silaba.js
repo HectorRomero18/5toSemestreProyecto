@@ -49,7 +49,7 @@ function renderSilabas() {
           },
           preConfirm: () => {
               // Redirige al hacer clic en el botón
-              window.location.href= `/trazos/${letterId}/`;
+              window.location.href= `/trazos/silaba/${letterId}/`;
           }
         });
       } else if (title === 'Bloqueada') {
@@ -79,7 +79,10 @@ function createSilabaCard(item) {
   card.className = 'letter-card';
   card.setAttribute('data-id', item.id);
 
+  // Clase CSS según estado (bloqueada o desbloqueada)
   const blockedClass = item.bloqueada ? 'blocked' : '';
+
+  // Icono superior (candado flotante si está bloqueada)
   const blockedIcon = item.bloqueada ? `
     <div class="blocked-icon">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -90,16 +93,27 @@ function createSilabaCard(item) {
     </div>
   ` : '';
 
-  // Botón de bloqueada para todas las sílabas
-  const bloqueadaBtn = `
-    <button class="action-btn bloqueada" title="Bloqueada">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-        <circle cx="12" cy="16" r="1"/>
-        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-      </svg>
-    </button>
-  `;
+  // Botón según estado (bloqueada o desbloqueada)
+  const bloqueadaBtn = item.bloqueada
+    ? `
+      <button class="action-btn bloqueada" title="Bloqueada">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+          <circle cx="12" cy="16" r="1"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </button>
+    `
+    : `
+      <button class="action-btn" title="Escribir">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+        </svg>
+      </button>
+    `;
+
+
 
   card.innerHTML = `
     <div class="letter-display ${blockedClass}">

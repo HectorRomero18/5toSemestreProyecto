@@ -282,3 +282,38 @@
         grid-template-columns: repeat(2, 1fr);
       }
     }
+
+  
+.letter-display.blocked {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+.letter-display.blocked {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+.letter-display.blocked {
+  position: relative;
+  background-color: rgba(200, 200, 200, 0.6); /* gris semitransparente */
+  filter: grayscale(100%);
+}
+
+.blocked-icon {
+  position: absolute;
+  display: none !important;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* centrar */
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  padding: 8px;
+  z-index: 20;
+}
+
+.blocked-icon svg {
+  color: white;
+  width: 24px;
+  height: 24px;
+}

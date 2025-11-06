@@ -9,6 +9,7 @@ import json
 from django.views.decorators.http import require_POST
 from airwrite.infrastructure.models.letra import Letra
 from airwrite.infrastructure.models.numeros import Numero
+from airwrite.infrastructure.models.silabas import Silaba
 
 from airwrite.application.use_cases.drawing_loop import DrawingLoop, DrawingConfig, DrawingState
 from airwrite.infrastructure.repositories.state import OpenCVCamera, CanvasState, CommandState
@@ -50,7 +51,7 @@ _loop = DrawingLoop(_cam_port, _canvas_port, _cmd_port, _cfg, _state)
 
 
 @login_required
-def index(request, letra_id=None, numero_id=None, tipo='letra'):
+def index(request, letra_id=None, numero_id=None, silaba_id=None, tipo='letra'):
     objeto = None
 
     # Si se pasa letra_id, obtiene una Letra
@@ -62,6 +63,10 @@ def index(request, letra_id=None, numero_id=None, tipo='letra'):
     elif numero_id:
         objeto = get_object_or_404(Numero, id=numero_id)
         tipo = 'numero'
+    
+    elif silaba_id:
+        objeto = get_object_or_404(Silaba, id=silaba_id)
+        tipo = 'silaba'
 
     context = {
         'objeto': objeto,  # Puede ser Letra o Número
@@ -94,13 +99,21 @@ def video_feed_canvas(request, tipo, objeto_id):
     tipo: 'letra' o 'numero'
     objeto_id: id del objeto en su respectivo modelo
     """
+    perfil = getattr(request.user, 'perfilusuario', None)
+    no_bloqueadas = ["Letra A", "Letra B", "Letra C"]
     # Validar tipo y obtener objeto
     if tipo == 'numero':
         objeto = get_object_or_404(Numero, id=objeto_id)
+        desbloqueada = True  # Números siempre desbloqueados
     elif tipo == 'letra':
         objeto = get_object_or_404(Letra, id=objeto_id)
+        desbloqueada = (perfil and objeto in perfil.letras_desbloqueadas.all()) or objeto.nombre in no_bloqueadas
+
+    elif tipo == 'silaba':
+        objeto = get_object_or_404(Silaba, id=objeto_id)
+        desbloqueada = (perfil and objeto in perfil.silabas_desbloqueadas.all()) or objeto.nombre in ["Silaba ba", "Silaba be", "Silaba bi"]
     else:
-        pass
+        raise ValueError("Tipo inválido")
 
     texto = DIFICULTADES_DICT.get(objeto.dificultad, '')
     texto_sin_tilde = quitar_tildes(texto)
@@ -116,9 +129,8 @@ def video_feed_canvas(request, tipo, objeto_id):
                 continue
 
             # Imagen desbloqueada o permitida
-            no_bloqueadas = ["Letra A", "Letra B", "Letra C"]
 
-            if getattr(objeto, "bloqueada", False) is False or objeto.nombre in no_bloqueadas:
+            if (desbloqueada):
                 img_path = objeto.imagen.path
                 objeto_img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
 
