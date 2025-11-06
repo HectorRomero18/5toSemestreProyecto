@@ -127,10 +127,14 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="canvas-container">
-              {% if letra_id %}
-              <img src="{% url 'video_feed_canvas' letra_id %}" alt="Canvas de procesamiento" class="canvas-feed">
+              {% if objeto %}
+                <img 
+                  src="{% url 'video_feed_canvas' tipo=tipo objeto_id=objeto.id %}"
+                  alt="Canvas {{ tipo }}"
+                  class="canvas-feed"
+                >
               {% else %}
-                  <p>Selecciona una letra para comenzar a dibujar</p>
+                <p>Selecciona una letra o número para comenzar a dibujar</p>
               {% endif %}
             </div>
 

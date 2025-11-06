@@ -18,46 +18,49 @@
         <div class="div"></div>
       </div>
 
-      <!-- FORMULARIO DE LOGIN -->
-      <div class="forms" style="top: 250px !important;">
-        <!-- Card de login profesional -->
-        <div class="login-card">
-          <div class="card-header">
-            <h2>Acceder a AirWrite</h2>
-            <p class="card-subtitle">Comienza tu experiencia de aprendizaje</p>
+      <!-- SOLO CARTA PRINCIPAL DE LOGIN -->
+      <div class="auth-container">
+        <div class="auth-card">
+          <!-- Logo y título mejorados -->
+          <div class="auth-header">
+            <div class="auth-logo">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                <path d="M16 2L8 8V18C8 21.54 11.42 24.16 16 24.5C20.58 24.16 24 21.54 24 18V8L16 2Z" fill="white"/>
+              </svg>
+            </div>
+            <h1>Bienvenido a AirWrite</h1>
+            <p>Inicia sesión para comenzar tu aprendizaje</p>
           </div>
 
-          <!-- Contenedor del botón Google -->
-          <div class="google-section">
-            <div class="divider">
-              <span>Iniciar sesión con</span>
-            </div>
+          <!-- Botón de Google mejorado -->
+          <div class="auth-body">
+            {% load socialaccount %}
+            <form id="googleLoginForm" method="POST" action="/accounts/google/login/" style="display: none;">
+              {% csrf_token %}
+            </form>
             
-            <div class="google-container">
-              {% load socialaccount %}
-              <form id="googleLoginForm" method="POST" action="/accounts/google/login/" style="display: none;">
-                {% csrf_token %}
-              </form>
-              <a href="javascript:void(0)" onclick="document.getElementById('googleLoginForm').submit();" class="google-link">
-                <img class="google" src="https://c.animaapp.com/mgpxd10mCIFYhp/img/google.png" alt="Google" />
-              </a>
+            <button type="button" class="google-btn" onclick="document.getElementById('googleLoginForm').submit();">
+              <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+                <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4"/>
+                <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853"/>
+                <path d="M4.405 11.9c-.2-.6-.314-1.24-.314-1.9 0-.66.114-1.3.314-1.9V5.51H1.064A9.996 9.996 0 000 10c0 1.614.386 3.14 1.064 4.49l3.34-2.59z" fill="#FBBC05"/>
+                <path d="M10 3.977c1.468 0 2.786.505 3.823 1.496l2.868-2.868C14.959.99 12.695 0 10 0 6.09 0 2.71 2.24 1.064 5.51l3.34 2.59C5.19 5.737 7.395 3.977 10 3.977z" fill="#EA4335"/>
+              </svg>
+              <span>Continuar con Google</span>
+            </button>
+
+            <!-- Información automática de cuenta mejorada -->
+            <div class="auto-account-info">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 1C5.03 1 1 5.03 1 10C1 14.97 5.03 19 10 19C14.97 19 19 14.97 19 10C19 5.03 14.97 1 10 1ZM10 18C5.58 18 2 14.42 2 10C2 5.58 5.58 2 10 2C14.42 2 18 5.58 18 10C18 14.42 14.42 18 10 18ZM9 6H11V8H9V6ZM9 10H11V14H9V10Z" fill="#4461f2"/>
+              </svg>
+              <p>Tu cuenta se creará automáticamente si es tu primera vez en AirWrite</p>
             </div>
           </div>
 
-          <!-- Información de beneficios -->
-          <div class="benefits">
-            <h4>Ventajas de usar Google</h4>
-            <ul>
-              <li>Acceso rápido y seguro</li>
-              <li>Protección avanzada de tu cuenta</li>
-              <li>Sincronización automática del progreso</li>
-            </ul>
-          </div>
-
-          <!-- Información para nuevos usuarios -->
-          <div class="new-user">
-            <p><strong>¿Nuevo en AirWrite?</strong><br>
-            Tu cuenta se creará automáticamente al iniciar sesión</p>
+          <!-- Footer mejorado -->
+          <div class="auth-footer">
+            <p>¿Necesitas ayuda? <a href="#">Contactar soporte</a></p>
           </div>
         </div>
       </div>
@@ -75,17 +78,14 @@
       <!-- ELEMENTOS VISUALES -->
       <div class="virtual-meeting">AIRWRITE SOFT</div>
       
-      <!-- GIF 1 - Mantiene el static de Django -->
       <img class="output" src="{% static 'airwrite/img/VectorPrincipalAnimado.gif' %}" alt="Vector Principal" />
       
       <p class="bienvenido-al-blog" id="welcomeText">Bienvenido a AirWrite <br />donde aprender es divertido</p>
       <div class="ellipse-2"></div>
       
-      <!-- GIF 2 - Mantiene el static de Django -->
       <img class="output-2" src="{% static 'airwrite/img/FlechaCorazonLogin.gif' %}" alt="Flecha Corazon" />
     </div>
 
-    <!-- Scripts -->
     <script src="{% static 'airwrite/js/login.js' %}"></script>
 </body>
 </html>

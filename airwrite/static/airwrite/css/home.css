@@ -1088,3 +1088,11 @@ body {
     height: 36px;
   }
 }
+
+.course-card {
+  transition: transform 0.3s ease !important;
+}
+
+.course-card:hover {
+  transform: translateY(-4px) !important;
+}

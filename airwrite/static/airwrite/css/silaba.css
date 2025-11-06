@@ -167,6 +167,25 @@ a.cart-container {
   overflow: hidden;
 }
 
+.letter-display.blocked {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+
+.blocked-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+  padding: 8px;
+  z-index: 20;
+}
+
+.blocked-icon svg {
+  color: white;
+}
+
 .letter-bg {
   position: absolute;
   top: 0;
@@ -189,10 +208,26 @@ a.cart-container {
   background: white;
 }
 
+.letter-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
 .letter-name {
   font-size: 15px;
   font-weight: 600;
   color: #1a1a1a;
+}
+
+.letter-difficulty {
+  font-size: 12px;
+  font-weight: 500;
+  color: #666;
+  background: #f0f0f0;
+  padding: 2px 8px;
+  border-radius: 10px;
+  margin-top: 4px;
 }
 
 .letter-actions {

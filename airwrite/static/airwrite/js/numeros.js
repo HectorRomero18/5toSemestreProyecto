@@ -26,13 +26,22 @@ function renderNumbers() {
     button.addEventListener('click', (e) => {
       e.stopPropagation();
       const title = button.getAttribute('title');
-      const numberName = button.closest('.number-card').querySelector('.number-name').textContent;
+      const card = button.closest('.number-card');
+      const numberName = card.querySelector('.number-name').textContent;
+      const numberText = card.querySelector('.number-text').textContent.trim();
 
+      // =============== COMPRAR (Candado) ===============
       if (title === 'Comprar') {
-        alert(`Comprar ${numberName}`);
-      } else if (title === 'Escuchar') {
-        const numberText = button.closest('.number-card').querySelector('.number-text').textContent.trim();
-
+        Swal.fire({
+          icon: 'info',
+          title: '🔒 Bloqueado',
+          text: 'Los números no se pueden comprar. Solo puedes escucharlos o escribirlos.',
+          confirmButtonColor: '#3085d6'
+        });
+      } 
+      
+      // =============== ESCUCHAR ===============
+      else if (title === 'Escuchar') {
         fetch(`/numeros/play/${encodeURIComponent(numberText)}/`)
           .then(response => {
             if (!response.ok) throw new Error('Error generando audio');
@@ -42,13 +51,40 @@ function renderNumbers() {
             const url = URL.createObjectURL(blob);
             const audio = new Audio(url);
             audio.play();
+
           })
           .catch(err => {
             console.error('Error al reproducir número:', err);
-            alert('No se pudo generar el audio. Revisa consola del servidor para más detalles.');
+            Swal.fire({
+              icon: 'error',
+              title: 'Error al reproducir número',
+              text: 'No se pudo generar el audio. Intenta nuevamente.',
+              confirmButtonColor: '#3085d6'
+            });
           });
-      } else if (title === 'Escribir') {
-        alert(`Abrir pantalla de escritura para ${numberName}`);
+      } 
+      
+      // =============== ESCRIBIR ===============
+      else if (title === 'Escribir') {
+
+          const card = button.closest('.number-card'); // ✅ obtiene el card real
+        const numberId = card.getAttribute('data-id'); // ✅ obtiene el id desde el atributo
+        const numberText = card.querySelector('.number-text').textContent.trim();
+
+        Swal.fire({
+          title: `¿Quieres practicar el número ${numberText}?`,
+          text: "Esto abrirá la pantalla de escritura.",
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonText: 'Sí, practicar',
+          cancelButtonText: 'Cancelar',
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = `/trazos/numero/${numberId}/`;
+          }
+        });
       }
     });
   });
@@ -66,6 +102,7 @@ function renderNumbers() {
 function createNumberCard(item) {
   const card = document.createElement('div');
   card.className = 'number-card';
+  card.setAttribute('data-id', item.id);
 
   const dificultadColors = {
     'Fácil': '#4CAF50',
