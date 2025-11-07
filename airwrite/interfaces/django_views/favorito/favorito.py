@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from airwrite.application.use_cases.favorito.favorito_use_case import (
      ListFavoritosQuery,
      ListFavoritosUseCase,
@@ -24,7 +25,7 @@ import json
 
 from airwrite.infrastructure.models import Letra
 
-
+@login_required
 class FavoritoListView( LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/modules/favorito.html'
 
@@ -59,6 +60,8 @@ class FavoritoListView( LoginRequiredMixin, TemplateView):
 
         context['modules'] = modules_list
         return context
+    
+    
 
 @method_decorator(csrf_exempt, name='dispatch')
 class FavoritoAddView(LoginRequiredMixin, View):

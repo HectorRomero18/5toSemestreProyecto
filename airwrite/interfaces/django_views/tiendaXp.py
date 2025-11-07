@@ -10,10 +10,11 @@ from airwrite.infrastructure.repositories.django_letra_repository import (
 from django.contrib.auth.mixins import LoginRequiredMixin
 from airwrite.domain.constants.xp_reward import DIFICULTADES, CATEGORIAS_LETRAS
 from airwrite.infrastructure.models.letra_compra import LetraCompra
+from django.contrib.auth.decorators import login_required
 
 DIFICULTADES_DICT = dict(DIFICULTADES)
 CATEGORIAS_LETRAS_DICT = dict(CATEGORIAS_LETRAS)
-
+@login_required
 class TiendaXpListView( LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/tiendaXp/tiendaXp.html'
 

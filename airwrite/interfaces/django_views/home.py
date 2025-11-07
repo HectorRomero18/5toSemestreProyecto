@@ -8,9 +8,10 @@ from airwrite.infrastructure.repositories.django_module_repository import (
     DjangoModuleRepository,
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 
 
-
+@login_required
 class ModuleListView( LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/home/home.html'
 

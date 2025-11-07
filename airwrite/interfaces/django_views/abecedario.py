@@ -10,12 +10,14 @@ from airwrite.infrastructure.repositories.django_letra_repository import (
 from django.contrib.auth.mixins import LoginRequiredMixin
 from airwrite.domain.constants.xp_reward import DIFICULTADES
 from airwrite.domain.services.bloquear import esta_bloqueada
+from django.contrib.auth.decorators import login_required
 
 
 
 # views.py
 
 DIFICULTADES_DICT = dict(DIFICULTADES)
+@login_required
 class AbecedarioListView(LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/modules/abecedario.html'
 
