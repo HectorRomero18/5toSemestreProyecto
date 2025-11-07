@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from airwrite.domain.constants.xp_reward import DIFICULTADES, CATEGORIAS_LETRAS
 from airwrite.infrastructure.models.letra_compra import LetraCompra
 
+
 DIFICULTADES_DICT = dict(DIFICULTADES)
 CATEGORIAS_LETRAS_DICT = dict(CATEGORIAS_LETRAS)
 

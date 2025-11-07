@@ -13,6 +13,8 @@ from airwrite.domain.constants.xp_reward import DIFICULTADES
 
 DIFICULTADES_DICT = dict(DIFICULTADES)
 
+
+
 class NumeroListView(LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/modules/numeros.html'
 

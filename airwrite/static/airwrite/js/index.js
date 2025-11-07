@@ -260,3 +260,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+// Limpiar canvas cuando se cierra la página
+window.addEventListener('beforeunload', function(event) {
+    // Usar sendBeacon para una petición confiable durante el cierre de la página
+    if (navigator.sendBeacon) {
+        const data = new FormData();
+        data.append('csrfmiddlewaretoken', csrftoken);
+        navigator.sendBeacon(window.urls.clear_canvas, data);
+    } else {
+        // Fallback para navegadores que no soportan sendBeacon
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', window.urls.clear_canvas, false); // false hace la petición síncrona
+        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+        xhr.send();
+    }
+});

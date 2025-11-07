@@ -13,9 +13,11 @@ from airwrite.domain.services.bloquear import esta_bloqueada
 
 
 
+
 # views.py
 
 DIFICULTADES_DICT = dict(DIFICULTADES)
+
 class AbecedarioListView(LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/modules/abecedario.html'
 

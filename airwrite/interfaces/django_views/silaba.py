@@ -12,6 +12,7 @@ from airwrite.domain.constants.xp_reward import DIFICULTADES
 from airwrite.domain.services.bloquear_silaba import esta_bloqueada_silaba
 
 
+
 # Convertimos la tupla DIFICULTADES en un diccionario para fácil acceso
 DIFICULTADES_DICT = dict(DIFICULTADES)
 
