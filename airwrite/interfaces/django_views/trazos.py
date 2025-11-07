@@ -65,10 +65,14 @@ def index(request, letra_id=None, numero_id=None, silaba_id=None, tipo='letra'):
     elif numero_id:
         objeto = get_object_or_404(Numero, id=numero_id)
         tipo = 'numero'
-    
+
     elif silaba_id:
         objeto = get_object_or_404(Silaba, id=silaba_id)
         tipo = 'silaba'
+
+    # Enable tracing mode for trazos (letters, numbers, syllables)
+    if objeto is not None:
+        _loop.enable_tracing_mode()
 
     context = {
         'objeto': objeto,  # Puede ser Letra o Número
@@ -260,3 +264,13 @@ def set_grosor(request):
     if ok:
         return JsonResponse({"status": "ok"})
     return JsonResponse({"status": "error", "error": "grosor_invalid"}, status=400)
+
+
+@require_POST
+def toggle_drawing(request):
+    """Endpoint to toggle drawing on/off in tracing mode"""
+    try:
+        _loop.toggle_drawing()
+        return JsonResponse({"status": "ok"})
+    except Exception as e:
+        return JsonResponse({"status": "error", "error": str(e)}, status=500)

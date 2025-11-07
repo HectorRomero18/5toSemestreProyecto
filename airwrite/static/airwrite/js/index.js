@@ -205,3 +205,30 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 });
+
+// Función para manejar la tecla A para alternar el trazo (iniciar/detener)
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'a' || event.key === 'A') {
+        // Prevenir comportamiento por defecto si es necesario
+        event.preventDefault();
+
+        // Enviar solicitud para alternar el dibujo
+        fetch(window.urls.toggle_drawing, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                console.log('Dibujo alternado');
+            } else {
+                console.error('Error al alternar dibujo:', data);
+            }
+        })
+        .catch(err => console.error('Error en fetch:', err));
+    }
+});
