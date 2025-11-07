@@ -133,7 +133,7 @@ class DrawingLoop:
                 if self.state.tracing_mode:
                     # In tracing mode, only draw if drawing is active and enough time has passed
                     if (self.state.drawing_active and self.state.x1 is not None and self.state.y1 is not None and
-                        not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.1):
+                        not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.04):
                         self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
                         self.state.last_draw_time = current_time
                 else:

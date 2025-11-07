@@ -232,3 +232,31 @@ document.addEventListener('keydown', (event) => {
         .catch(err => console.error('Error en fetch:', err));
     }
 });
+
+
+// JavaScript para el select de navegación
+document.addEventListener('DOMContentLoaded', function() {
+    const selectContainer = document.querySelector('.nav-select-container');
+    const selectTrigger = document.querySelector('.nav-select-trigger');
+    
+    if (selectTrigger) {
+        selectTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            selectContainer.classList.toggle('open');
+        });
+        
+        // Cerrar al hacer click fuera
+        document.addEventListener('click', function(e) {
+            if (!selectContainer.contains(e.target)) {
+                selectContainer.classList.remove('open');
+            }
+        });
+        
+        // Cerrar después de seleccionar una opción
+        document.querySelectorAll('.nav-option').forEach(option => {
+            option.addEventListener('click', function() {
+                selectContainer.classList.remove('open');
+            });
+        });
+    }
+});
