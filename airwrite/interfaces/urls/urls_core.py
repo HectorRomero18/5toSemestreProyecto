@@ -8,7 +8,7 @@ from airwrite.interfaces.django_views.silaba import  SilabaListView as SilabaMod
 from airwrite.interfaces.django_views.comprada import CompradaListView as CompradaModuleListView
 from airwrite.interfaces.django_views.numeros import NumeroListView as NumerosModuleListView
 from airwrite.interfaces.django_views.favorito.favorito import FavoritoListView, FavoritoAddView, FavoritoDeleteView, FavoritoExistsView
-from airwrite.interfaces.django_views.trazos import index, video_feed_cam, video_feed_canvas, clear_canvas, set_color, set_grosor
+from airwrite.interfaces.django_views.trazos import index, video_feed_cam, video_feed_canvas, clear_canvas, set_color, set_grosor, toggle_drawing
 from airwrite.interfaces.django_views.compra_letra import comprar_letra
 #from core.views.login import login_view
 
@@ -41,6 +41,7 @@ urlpatterns = [
     path('set_grosor/', set_grosor, name='set_grosor'),
 
     path('color/', set_color, name='set_color'),
+    path('toggle_drawing/', toggle_drawing, name='toggle_drawing'),
 
     path('abecedario/', AbecedarioListView.as_view(), name='abecedario'),
     path('tienda/', TiendaXpModuleListView.as_view(), name='tienda'),

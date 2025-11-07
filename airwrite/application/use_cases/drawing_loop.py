@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 import cv2
 import numpy as np
+import time
 from typing import Optional, Tuple
 from airwrite.domain.ports.camera import CameraPort
 from airwrite.domain.ports.canvas import CanvasPort
@@ -28,6 +29,9 @@ class DrawingState:
         # UI thickness boxes (for UI highlight)
         self.grosor_celeste, self.grosor_amarillo, self.grosor_rosa, self.grosor_verde = 6, 2, 2, 2
         self.grosor_peque, self.grosor_medio, self.grosor_grande = 6, 1, 1
+        self.tracing_mode: bool = False
+        self.drawing_active: bool = False
+        self.last_draw_time: float = 0.0
 
 
 class DrawingLoop:
@@ -125,13 +129,22 @@ class DrawingLoop:
                 # if 590 < x2 < 640 and 0 < y2 < 50:
                 #     self._set_thickness(11, (1, 1, 6))
                 # dibujar
-                if self.state.x1 is not None and self.state.y1 is not None and not (0 < y2 < 60):
-                    self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
-                self.state.x1, self.state.y1 = x2, y2
-                
-                cv2.circle(frame, (x2, y2), self.state.thickness, self.state.color, 3)
+                current_time = time.time()
+                if self.state.tracing_mode:
+                    # In tracing mode, only draw if drawing is active and enough time has passed
+                    if (self.state.drawing_active and self.state.x1 is not None and self.state.y1 is not None and
+                        not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.04):
+                        self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
+                        self.state.last_draw_time = current_time
+                else:
+                    # Normal mode: draw automatically
+                    if self.state.x1 is not None and self.state.y1 is not None and not (0 < y2 < 60):
+                        self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
 
                 self.state.x1, self.state.y1 = x2, y2
+
+                cv2.circle(frame, (x2, y2), self.state.thickness, self.state.color, 3)
+
                 # dibujar puntero en canvas
                 self.canvas.draw_temp_pointer((x2, y2), self.state.color, self.state.thickness*2)
 
@@ -181,6 +194,25 @@ class DrawingLoop:
         thickness, ui = entry
         self._set_thickness(thickness, ui)
         return True
+
+    def enable_tracing_mode(self) -> None:
+        """Enable tracing mode where drawing requires manual activation"""
+        self.state.tracing_mode = True
+        self.state.drawing_active = False
+
+    def disable_tracing_mode(self) -> None:
+        """Disable tracing mode and return to automatic drawing"""
+        self.state.tracing_mode = False
+        self.state.drawing_active = False
+
+    def toggle_drawing(self) -> None:
+        """Toggle drawing on/off in tracing mode"""
+        if self.state.tracing_mode:
+            self.state.drawing_active = not self.state.drawing_active
+
+    def stop_drawing(self) -> None:
+        """Stop drawing in tracing mode"""
+        self.state.drawing_active = False
     
 
     def _apply_voice_command(self, cmd: str) -> None:

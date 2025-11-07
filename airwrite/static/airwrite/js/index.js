@@ -206,6 +206,60 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// Función para manejar la tecla A para alternar el trazo (iniciar/detener)
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'a' || event.key === 'A') {
+        // Prevenir comportamiento por defecto si es necesario
+        event.preventDefault();
+
+        // Enviar solicitud para alternar el dibujo
+        fetch(window.urls.toggle_drawing, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'ok') {
+                console.log('Dibujo alternado');
+            } else {
+                console.error('Error al alternar dibujo:', data);
+            }
+        })
+        .catch(err => console.error('Error en fetch:', err));
+    }
+});
+
+
+// JavaScript para el select de navegación
+document.addEventListener('DOMContentLoaded', function() {
+    const selectContainer = document.querySelector('.nav-select-container');
+    const selectTrigger = document.querySelector('.nav-select-trigger');
+    
+    if (selectTrigger) {
+        selectTrigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            selectContainer.classList.toggle('open');
+        });
+        
+        // Cerrar al hacer click fuera
+        document.addEventListener('click', function(e) {
+            if (!selectContainer.contains(e.target)) {
+                selectContainer.classList.remove('open');
+            }
+        });
+        
+        // Cerrar después de seleccionar una opción
+        document.querySelectorAll('.nav-option').forEach(option => {
+            option.addEventListener('click', function() {
+                selectContainer.classList.remove('open');
+            });
+        });
+    }
+});
 // Limpiar canvas cuando se cierra la página
 window.addEventListener('beforeunload', function(event) {
     // Usar sendBeacon para una petición confiable durante el cierre de la página

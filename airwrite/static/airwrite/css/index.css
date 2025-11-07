@@ -22,7 +22,8 @@ body {
    SIDEBAR STYLES
    ============================================ */
 .sidebar {
-    width: 280px;
+  width: 280px;
+    height: 100vh;
     background: white;
     padding: 24px;
     display: flex;
@@ -90,6 +91,9 @@ body {
     transition: all 0.2s;
     color: #333;
     font-size: 14px;
+    margin-top: 30px;
+        margin-bottom: 20px; /* Agrega margin negativo(MUEVE USER Y XP) */
+
 }
 
 .menu-item:hover {
@@ -107,6 +111,12 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+.menu-icon svg {
+    width: 100%;
+    height: 100%;
+    fill: #666;
 }
 
 .camera-preview {
@@ -707,12 +717,183 @@ body {
   border-radius: 25px;
   font-weight: 700;
   font-size: 15px;
+  margin-left: 5px;
+
 }
 
 .star-icon {
-    top: -11px; /* mueve hacia abajo desde la posición original */
-    /* o con transform: */
-    transform: translateY(20px);
-    position: relative; /* asegúrate de que sea relativo si usas top */
+    width: 32px;
+    height: 32px;
+    margin-top: 2px; /* Ajusta la estrella si es necesario */
+    margin-left: -10px;
 }
 
+.xp-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 10px 0;
+    padding: 8px 15px;
+    background-color: rgba(28, 140, 255, 0.1);
+    border-radius: 12px;
+    width: fit-content;
+    min-width: 195px;
+    justify-content: flex-start;
+    margin-left: -1px; /* Compensa el padding del sidebar */
+}
+
+.cart-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #666;
+}
+
+.sidebar-item:hover {
+    background: #f5f5f5;
+}
+
+.nav-label {
+    font-family: 'Manrope', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #bdbdbd;
+}
+
+.nav-icon {
+    font-size: 16px;
+  color: #bdbdbd;
+  margin-left: 6px;
+  color: #369eff;
+}
+
+.nav-item.active .nav-icon {
+    stroke: #2196F3;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    margin-bottom: 4px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #333;
+    font-size: 14px;
+    text-decoration: none;
+}
+.nav-item:hover {
+    background: #f5f5f592;
+}
+
+/* ========== NAV SELECT STYLES ========== */
+.nav-select-container {
+    position: relative;
+    margin-bottom: 4px;
+}
+
+.nav-select-trigger {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #333;
+    font-size: 14px;
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    width: 100%;
+    font-family: inherit;
+}
+
+.nav-select-trigger:hover {
+    background: #f5f5f592;
+}
+
+.nav-select-trigger.active {
+    background: #e3f2fd;
+    color: #2196F3;
+}
+
+.chevron-icon {
+    margin-left: auto;
+    transition: transform 0.3s ease;
+}
+
+.nav-select-container.open .chevron-icon {
+    transform: rotate(180deg);
+}
+
+.nav-select-options {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    border: 1px solid #e0e0e0;
+    overflow: hidden;
+    z-index: 1000;
+    display: none;
+    margin-bottom: 8px;
+}
+
+.nav-select-container.open .nav-select-options {
+    display: block;
+}
+
+.nav-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.nav-option:last-child {
+    border-bottom: none;
+}
+
+.nav-option:hover {
+    background: #f8f9fa;
+    color: #2196F3;
+}
+
+.nav-option .nav-icon {
+    width: 20px;
+    height: 20px;
+    stroke: #666;
+}
+
+.nav-option:hover .nav-icon {
+    stroke: #2196F3;
+}
+
+/* Para cambiar el tamaño */
+.nav-option .bi {
+    font-size: 1.2rem; /* Cambia el tamaño de la fuente */
+}
+
+/* Para cambiar el color */
+.nav-option .bi {
+    color: #666; /* Color gris */
+}
+
+.nav-option:hover .bi {
+    color: #2196F3; /* Color azul al hacer hover */
+}
+
+/* Si usas SVG, cambia width y height */
+.nav-icon {
+    width: 20px;
+    height: 20px;
+}
