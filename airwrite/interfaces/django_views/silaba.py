@@ -10,13 +10,13 @@ from airwrite.infrastructure.repositories.django_silaba_repository import (
 )
 from airwrite.domain.constants.xp_reward import DIFICULTADES
 from airwrite.domain.services.bloquear_silaba import esta_bloqueada_silaba
-from django.contrib.auth.decorators import login_required
+
 
 
 # Convertimos la tupla DIFICULTADES en un diccionario para fácil acceso
 DIFICULTADES_DICT = dict(DIFICULTADES)
 
-@login_required
+
 class SilabaListView(LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/modules/silaba.html'
 

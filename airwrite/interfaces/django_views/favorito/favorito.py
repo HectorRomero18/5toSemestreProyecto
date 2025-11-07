@@ -25,7 +25,7 @@ import json
 
 from airwrite.infrastructure.models import Letra
 
-@login_required
+
 class FavoritoListView( LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/modules/favorito.html'
 

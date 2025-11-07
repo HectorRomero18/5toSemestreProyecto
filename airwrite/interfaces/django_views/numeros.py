@@ -12,9 +12,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from airwrite.domain.constants.xp_reward import DIFICULTADES
 
 DIFICULTADES_DICT = dict(DIFICULTADES)
-from django.contrib.auth.decorators import login_required
 
-@login_required
+
+
 class NumeroListView(LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/modules/numeros.html'
 

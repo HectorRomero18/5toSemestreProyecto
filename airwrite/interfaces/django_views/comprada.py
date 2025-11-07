@@ -8,9 +8,9 @@ from airwrite.infrastructure.repositories.django_letras_compradas_repository imp
     DjangoLetrasCompradasList,
 )
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 
-@login_required
+
+
 class CompradaListView(LoginRequiredMixin, TemplateView):
     template_name = 'airwrite/modules/comprada.html'
 
