@@ -150,6 +150,8 @@ DATABASES = {
     }
 }
 
+CSRF_TRUSTED_ORIGINS = ['https://airwrite.onrender.com']
+
 
 
 # Password validation
