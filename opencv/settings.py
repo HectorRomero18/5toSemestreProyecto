@@ -194,6 +194,9 @@ STATICFILES_DIRS = [
     BASE_DIR / 'airwrite' / 'static',  # estáticos de airwrite
 ]
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # <--- añade esto
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 MEDIA_URL = '/media/'  # URL pública para acceder a los archivos
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Carpeta física donde se guardan los archivos
 

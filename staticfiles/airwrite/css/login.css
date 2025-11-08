@@ -1,0 +1,658 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/meyer-reset/2.0/reset.min.css");
+@import url("https://fonts.googleapis.com/css?family=Red+Hat+Display:700,800,500,400,600|Inter:400|Rubik:800");
+
+* {
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0px;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+button:focus-visible {
+  outline: 2px solid #4a90e2 !important;
+  outline: -webkit-focus-ring-color auto 5px !important;
+}
+
+a {
+  text-decoration: none;
+}
+
+.login-jorge {
+  background-color: #f6f6f6;
+  overflow: hidden;
+  width: 100%;
+  min-width: 1536px;
+  min-height: 864px;
+  position: relative;
+}
+
+.login-jorge .background {
+  position: absolute;
+  top: 210px;
+  left: 139px;
+  width: 346px;
+  height: 394px;
+  z-index: 5;
+}
+
+.login-jorge .ellipse {
+  position: absolute;
+  top: 213px;
+  left: 163px;
+  width: 181px;
+  height: 181px;
+  background-color: #4461f2;
+  border-radius: 90.5px;
+  filter: blur(126.8px);
+}
+
+.login-jorge .no-tienes-una-cuenta {
+  position: absolute;
+  top: 177px;
+  left: 27px;
+  width: 232px;
+  font-family: "Red Hat Display", Helvetica;
+  font-weight: 400;
+  color: transparent;
+  font-size: 18.4px;
+  letter-spacing: 0;
+  line-height: normal;
+  z-index: 10;
+}
+
+.login-jorge .text-wrapper {
+  color: #000000;
+}
+
+.login-jorge .span {
+  font-weight: 700;
+  color: #4461f2;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.login-jorge .span:hover {
+  opacity: 0.8;
+}
+
+.login-jorge .div {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 181px;
+  height: 181px;
+  background-color: #dda82a;
+  border-radius: 90.5px;
+  filter: blur(126.8px);
+  opacity: 0.45;
+}
+
+.login-jorge .top-side {
+  position: absolute;
+  top: 40px;
+  left: 702px;
+  width: 834px;
+  height: 43px;
+  display: flex;
+}
+
+.login-jorge .language {
+  margin-top: 10px;
+  width: 96px;
+  height: 24px;
+  position: relative;
+  margin-left: 530px;
+}
+
+.login-jorge .language select {
+  width: 100%;
+  height: 100%;
+  font-family: "Red Hat Display", Helvetica;
+  font-weight: 400;
+  color: #000000;
+  font-size: 12.8px;
+  letter-spacing: 0.82px;
+  border: 2px solid #e0e0e0;
+  background-color: #ffffff;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  padding: 4px 24px 4px 10px;
+  border-radius: 6.4px;
+  transition: all 0.3s;
+}
+
+.login-jorge .language select:hover {
+  border-color: #4461f2;
+}
+
+.login-jorge .language select:focus {
+  border-color: #4461f2;
+  box-shadow: 0 0 0 3px rgba(68, 97, 242, 0.1);
+}
+
+.login-jorge .language::after {
+  content: '▼';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 8px;
+  color: #4461f2;
+  font-weight: bold;
+}
+
+.login-jorge .virtual-meeting {
+  position: absolute;
+  right: 1089px;
+  bottom: 765px;
+  width: 199px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Rubik", Helvetica;
+  font-weight: 800;
+  color: #1c8cff;
+  font-size: 28.8px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.login-jorge .output {
+  position: absolute;
+  top: 280px;
+  left: 432px;
+  width: 561px;
+  height: 561px;
+  object-fit: cover;
+}
+
+.login-jorge .bienvenido-al-blog {
+  position: absolute;
+  top: 222px;
+  left: 25px;
+  font-family: "Red Hat Display", Helvetica;
+  font-weight: 700;
+  color: #000000;
+  font-size: 46.4px;
+  letter-spacing: 0;
+  line-height: 62px;
+}
+
+.login-jorge .ellipse-2 {
+  position: absolute;
+  top: -201px;
+  left: -174px;
+  width: 422px;
+  height: 422px;
+  background-color: #1c8bff;
+  border-radius: 211px;
+}
+
+.login-jorge .output-2 {
+  position: absolute;
+  top: 368px;
+  left: -72px;
+  width: 622px;
+  height: 614px;
+  object-fit: cover;
+  z-index: 1;
+}
+
+/* ========== DISEÑO PROFESIONAL MEJORADO ========== */
+.auth-container {
+    position: absolute;
+    top: 220px;
+    right: 120px;
+    z-index: 20;
+}
+
+/* Tarjeta principal de autenticación mejorada */
+.auth-card {
+    width: 440px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #f0f0f5;
+    transition: all 0.3s ease;
+}
+
+.auth-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+}
+
+.auth-header {
+    padding: 48px 48px 32px;
+    text-align: center;
+    background: linear-gradient(135deg, #f8f9ff 0%, #ffffff 100%);
+    border-bottom: 1px solid #f0f0f5;
+}
+
+.auth-logo {
+    margin: 0 auto 24px;
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, #4461f2 0%, #1c8cff 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 24px rgba(68, 97, 242, 0.2);
+}
+
+.auth-header h1 {
+    font-family: "Red Hat Display", Helvetica;
+    font-weight: 700;
+    font-size: 32px;
+    color: #1a1a1a;
+    margin-bottom: 12px;
+    letter-spacing: -0.5px;
+}
+
+.auth-header p {
+    font-family: "Red Hat Display", Helvetica;
+    font-weight: 500;
+    font-size: 16px;
+    color: #667085;
+    line-height: 1.5;
+}
+
+/* Cuerpo de la tarjeta mejorado */
+.auth-body {
+    padding: 40px 48px 48px;
+}
+
+/* Botón de Google mejorado */
+.google-btn {
+    width: 100%;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-family: "Red Hat Display", Helvetica;
+    font-weight: 600;
+    font-size: 16px;
+    color: #1a1a1a;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+}
+
+.google-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(68, 97, 242, 0.1), transparent);
+    transition: left 0.6s;
+}
+
+.google-btn:hover::before {
+    left: 100%;
+}
+
+.google-btn:hover {
+    background: #f8f9ff;
+    border-color: #4461f2;
+    box-shadow: 0 8px 25px rgba(68, 97, 242, 0.15);
+    transform: translateY(-2px);
+}
+
+.google-btn:active {
+    transform: translateY(0);
+}
+
+.google-btn svg {
+    width: 22px;
+    height: 22px;
+    transition: transform 0.3s ease;
+}
+
+.google-btn:hover svg {
+    transform: scale(1.1);
+}
+
+/* Información de cuenta automática mejorada */
+.auto-account-info {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px;
+    background: linear-gradient(135deg, #f0f7ff 0%, #f8f9ff 100%);
+    border-radius: 12px;
+    border: 1px solid #d6e9ff;
+    transition: all 0.3s ease;
+}
+
+.auto-account-info:hover {
+    border-color: #4461f2;
+    background: linear-gradient(135deg, #e3f2fd 0%, #f0f7ff 100%);
+}
+
+.auto-account-info svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+    width: 20px;
+    height: 20px;
+}
+
+.auto-account-info p {
+    font-family: "Red Hat Display", Helvetica;
+    font-weight: 500;
+    font-size: 14px;
+    color: #4461f2;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Footer de la tarjeta mejorado */
+.auth-footer {
+    padding: 24px 48px;
+    background: #f9fafb;
+    border-top: 1px solid #f0f0f5;
+    text-align: center;
+}
+
+.auth-footer p {
+    font-family: "Red Hat Display", Helvetica;
+    font-weight: 400;
+    font-size: 14px;
+    color: #667085;
+    margin: 0;
+}
+
+.auth-footer a {
+    color: #4461f2;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.auth-footer a::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #4461f2;
+    transition: width 0.3s ease;
+}
+
+.auth-footer a:hover::after {
+    width: 100%;
+}
+
+.auth-footer a:hover {
+    color: #2c4fd8;
+}
+
+/* ========== RESPONSIVE MEJORADO ========== */
+
+@media screen and (max-width: 1440px) {
+    .auth-container {
+        right: 80px;
+        top: 200px;
+    }
+    
+    .auth-card {
+        width: 420px;
+    }
+    
+    .login-jorge {
+        min-width: 1200px;
+    }
+
+    .login-jorge .output {
+        left: 350px;
+        width: 500px;
+        height: 500px;
+    }
+
+    .login-jorge .top-side {
+        left: 580px;
+        width: 700px;
+    }
+}
+
+@media screen and (max-width: 1280px) {
+    .auth-container {
+        right: 60px;
+    }
+    
+    .auth-card {
+        width: 400px;
+    }
+    
+    .login-jorge {
+        min-width: 1024px;
+    }
+
+    .login-jorge .output {
+        left: 280px;
+        width: 450px;
+        height: 450px;
+    }
+
+    .login-jorge .top-side {
+        left: 480px;
+        width: 600px;
+    }
+
+    .login-jorge .bienvenido-al-blog {
+        font-size: 40px;
+        line-height: 54px;
+    }
+
+    .login-jorge .background {
+        left: 80px;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .auth-container {
+        position: static;
+        margin: 300px auto 0;
+        padding: 0 24px;
+    }
+    
+    .auth-card {
+        width: 100%;
+        max-width: 480px;
+        margin: 0 auto;
+    }
+    
+    .login-jorge {
+        min-width: 768px;
+        min-height: 100vh;
+    }
+
+    .login-jorge .output,
+    .login-jorge .output-2,
+    .login-jorge .ellipse-2,
+    .login-jorge .background,
+    .login-jorge .ellipse {
+        display: none;
+    }
+
+    .login-jorge .bienvenido-al-blog {
+        top: 150px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        font-size: 36px;
+        line-height: 48px;
+        width: 90%;
+    }
+
+    .login-jorge .no-tienes-una-cuenta {
+        top: 240px;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        width: auto;
+    }
+
+    .login-jorge .top-side {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 700px;
+    }
+
+    .login-jorge .virtual-meeting {
+        left: 50%;
+        transform: translateX(-50%);
+        right: auto;
+        bottom: auto;
+        top: 60px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .auth-container {
+        margin-top: 340px;
+    }
+    
+    .auth-header {
+        padding: 40px 32px 28px;
+    }
+    
+    .auth-header h1 {
+        font-size: 28px;
+    }
+    
+    .auth-body {
+        padding: 32px 32px 40px;
+    }
+    
+    .login-jorge {
+        min-width: 100%;
+        padding: 20px;
+    }
+
+    .login-jorge .virtual-meeting {
+        top: 30px;
+        font-size: 24px;
+    }
+
+    .login-jorge .top-side {
+        top: 80px;
+        flex-wrap: wrap;
+        height: auto;
+        gap: 20px;
+    }
+
+    .login-jorge .bienvenido-al-blog {
+        top: 180px;
+        font-size: 32px;
+        line-height: 42px;
+    }
+
+    .login-jorge .no-tienes-una-cuenta {
+        top: 280px;
+        font-size: 16px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .auth-container {
+        padding: 0 20px;
+        margin-top: 280px;
+    }
+    
+    .auth-card {
+        border-radius: 12px;
+    }
+    
+    .auth-header {
+        padding: 32px 24px 24px;
+    }
+    
+    .auth-header h1 {
+        font-size: 24px;
+    }
+    
+    .auth-header p {
+        font-size: 15px;
+    }
+    
+    .auth-body {
+        padding: 24px;
+    }
+    
+    .google-btn {
+        height: 52px;
+        font-size: 15px;
+        gap: 12px;
+    }
+    
+    .auth-footer {
+        padding: 20px 24px;
+    }
+    
+    .login-jorge {
+        padding: 15px;
+    }
+
+    .login-jorge .virtual-meeting {
+        font-size: 20px;
+        top: 20px;
+    }
+
+    .login-jorge .top-side {
+        top: 70px;
+    }
+
+    .login-jorge .bienvenido-al-blog {
+        top: 220px;
+        font-size: 26px;
+        line-height: 36px;
+        padding: 0 10px;
+    }
+
+    .login-jorge .no-tienes-una-cuenta {
+        top: 320px;
+        font-size: 14px;
+        width: 90%;
+    }
+}
+
+@media screen and (max-width: 360px) {
+    .auth-header h1 {
+        font-size: 22px;
+    }
+    
+    .google-btn {
+        font-size: 14px;
+        height: 48px;
+    }
+    
+    .login-jorge .bienvenido-al-blog {
+        font-size: 22px;
+        line-height: 32px;
+    }
+
+    .login-jorge .virtual-meeting {
+        font-size: 18px;
+    }
+}
+
