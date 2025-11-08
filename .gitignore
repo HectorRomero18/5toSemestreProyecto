@@ -140,3 +140,8 @@ media/*.wav
 
 # Google Cloud credentials
 airwrite/airwrite-tts-c49efee304cc.json
+
+
+
+# audio de mrd 
+"media/temp_audio.wav" 

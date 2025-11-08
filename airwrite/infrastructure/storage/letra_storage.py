@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Dict , Optional
 from airwrite.domain.entities.letra import LetraEntity
-from infrastructure.opencv.trazo_extractor import generar_trazo_desde_imagen
+from airwrite.infrastructure.opencv.trazo_extractor import generar_trazo_desde_imagen
 from airwrite.domain.entities.trazo import Trazo
 import logging
 
