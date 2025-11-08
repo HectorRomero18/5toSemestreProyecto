@@ -11,7 +11,7 @@ class CameraAdapter(CameraPort):
     def start(self) -> None:
         self._camera.start()
 
-    def read(self):
+    def read(self):                                       
         return self._camera.read()
 
 class CanvasAdapter(CanvasPort):
