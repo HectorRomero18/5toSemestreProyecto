@@ -31,7 +31,7 @@ def requiere_desbloqueo(view_func):
         elif silaba_id:
             objeto = get_object_or_404(Silaba, id=silaba_id)
             desbloqueada = (
-                objeto.nombre in ["Silaba ba", "Silaba be", "Silaba bi"] or
+                objeto.nombre in ["Silaba ba", "Silaba be", "Silaba ca"] or
                 objeto in perfil.silabas_desbloqueadas.all()
             )
             tipo = "silaba"

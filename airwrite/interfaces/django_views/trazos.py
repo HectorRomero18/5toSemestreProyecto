@@ -118,7 +118,7 @@ def video_feed_canvas(request, tipo, objeto_id):
 
     elif tipo == 'silaba':
         objeto = get_object_or_404(Silaba, id=objeto_id)
-        desbloqueada = (perfil and objeto in perfil.silabas_desbloqueadas.all()) or objeto.nombre in ["Silaba ba", "Silaba be", "Silaba bi"]
+        desbloqueada = (perfil and objeto in perfil.silabas_desbloqueadas.all()) or objeto.nombre in ["Silaba ba", "Silaba be", "Silaba ca"]
     else:
         raise ValueError("Tipo inválido")
 
