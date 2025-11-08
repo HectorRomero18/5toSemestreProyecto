@@ -275,3 +275,7 @@ window.addEventListener('beforeunload', function(event) {
         xhr.send();
     }
 });
+
+
+
+console.log('Hola mundo')
