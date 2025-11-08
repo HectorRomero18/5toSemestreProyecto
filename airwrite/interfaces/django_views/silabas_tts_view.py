@@ -7,7 +7,7 @@ class PlaySilabaView(View):
     def get(self, request, silaba):
         try:
             tts_service = TextToSpeechService()
-            texto = f"Sílaba {silaba}"
+            texto = silaba
             audio_path = tts_service.synthesize_text(texto)
             if not os.path.exists(audio_path):
                 raise Http404("Audio no encontrado")

@@ -23,18 +23,20 @@ def comprar_letra(request):
         # Intentar por PK si es dígito, si no por campos comunes (nombre, caracter, simbolo)
         try:
             if letra.isdigit():
-                letra_obj = Letra.objects.filter(pk=int(letra)).first()
+                letra_obj = Letra.objects.exclude(nombre__in=["Letra A", "Letra B", "Letra C"]).filter(pk=int(letra)).first()
             if letra_obj is None:
-                letra_obj = Letra.objects.filter(nombre__iexact=letra).first()
+                letra_obj = Letra.objects.exclude(nombre__in=["Letra A", "Letra B", "Letra C"]).filter(nombre__iexact=letra).first()
             if letra_obj is None:
-                letra_obj = Letra.objects.filter(caracter__iexact=letra).first()
+                letra_obj = Letra.objects.exclude(nombre__in=["Letra A", "Letra B", "Letra C"]).filter(caracter__iexact=letra).first()
             if letra_obj is None:
-                letra_obj = Letra.objects.filter(simbolo__iexact=letra).first()
+                letra_obj = Letra.objects.exclude(nombre__in=["Letra A", "Letra B", "Letra C"]).filter(simbolo__iexact=letra).first()
+
         except Exception as e:
             return JsonResponse({'success': False, 'message': f'Error al buscar letra: {e}'}, status=500)
 
         if letra_obj is None:
             return JsonResponse({'success': False, 'message': 'Letra no encontrada'}, status=404)
+        
 
         perfil_repo = DjangoPerfilRepository()
         compra_repo = DjangoLetraCompraRepository()

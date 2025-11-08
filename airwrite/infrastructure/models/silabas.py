@@ -9,6 +9,7 @@ class Silaba(models.Model):
     imagen = models.ImageField(upload_to='silabas')
     contorno = models.JSONField(default=list, blank=True)
     trazos = models.JSONField(default=list, blank=True)
+    
 
     class Meta:
         verbose_name_plural = "Silabas"

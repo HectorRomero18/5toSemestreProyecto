@@ -42,8 +42,6 @@ class DjangoLetraCompraRepository(LetraCompraRepositoryPort):
             precio=precio
         )
 
-        letra_instance.bloqueada = False
-        letra_instance.save()
 
         perfil_model = PerfilUsuario.objects.get(user_id=user_model)
         perfil_model.letras_desbloqueadas.add(letra_instance)

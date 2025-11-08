@@ -13,6 +13,7 @@ class DjangoNumeroRepository(NumerosPort):
         return [
 
             NumeroEntity(
+                id=numero.id,
                 caracter=numero.nombre,
                 imagen=numero.imagen.url,
                 contorno=list(numero.contorno),

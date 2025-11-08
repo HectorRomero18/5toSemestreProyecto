@@ -8,7 +8,7 @@ from airwrite.interfaces.django_views.silaba import  SilabaListView as SilabaMod
 from airwrite.interfaces.django_views.comprada import CompradaListView as CompradaModuleListView
 from airwrite.interfaces.django_views.numeros import NumeroListView as NumerosModuleListView
 from airwrite.interfaces.django_views.favorito.favorito import FavoritoListView, FavoritoAddView, FavoritoDeleteView, FavoritoExistsView
-from airwrite.interfaces.django_views.trazos import index, video_feed_cam, video_feed_canvas, clear_canvas, set_color, set_grosor
+from airwrite.interfaces.django_views.trazos import index, video_feed_cam, video_feed_canvas, clear_canvas, set_color, set_grosor, toggle_drawing
 from airwrite.interfaces.django_views.compra_letra import comprar_letra
 from airwrite.interfaces.django_views.validar_trazo_view import ValidarTrazoView
 #from core.views.login import login_view
@@ -28,13 +28,21 @@ urlpatterns = [
     path('logout/', CustomLogoutView.as_view(), name='logout'),
 
 
-    path('trazos/<int:letra_id>/', index, name='trazos'),
+    path('trazos/<int:letra_id>/', index, {'tipo': 'letra'}, name='trazos_letra'),
+    path('trazos/numero/<int:numero_id>/', index, {'tipo': 'numero'}, name='trazos_numero'),
+    path('trazos/silaba/<int:silaba_id>/', index, {'tipo': 'silaba'}, name='trazos_silaba'),
+
+    # Feeds de video
     path('video/cam/', video_feed_cam, name='video_feed_cam'),
-    path('video/canvas/<int:letra_id>/', video_feed_canvas, name='video_feed_canvas'),
+    path('video/canvas/<str:tipo>/<int:objeto_id>/', video_feed_canvas, name='video_feed_canvas'),
+
+    # ruta para números
+    path('video/numero/<int:objeto_id>/', video_feed_canvas, {'tipo': 'numero'}, name='video_feed_numero'),
     path('clear/', clear_canvas, name='clear_canvas'),
     path('set_grosor/', set_grosor, name='set_grosor'),
 
     path('color/', set_color, name='set_color'),
+    path('toggle_drawing/', toggle_drawing, name='toggle_drawing'),
 
     path('abecedario/', AbecedarioListView.as_view(), name='abecedario'),
     path('tienda/', TiendaXpModuleListView.as_view(), name='tienda'),

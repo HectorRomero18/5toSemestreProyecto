@@ -8,6 +8,9 @@ import json
 
 from django.views.decorators.http import require_POST
 from airwrite.infrastructure.models.letra import Letra
+from airwrite.infrastructure.models.numeros import Numero
+from airwrite.infrastructure.models.silabas import Silaba
+from airwrite.infrastructure.decoradores.decorador import requiere_desbloqueo
 
 from airwrite.application.use_cases.drawing_loop import DrawingLoop, DrawingConfig, DrawingState
 from airwrite.infrastructure.repositories.state import OpenCVCamera, CanvasState, CommandState
@@ -48,12 +51,33 @@ _state = DrawingState()
 _loop = DrawingLoop(_cam_port, _canvas_port, _cmd_port, _cfg, _state)
 
 
+@requiere_desbloqueo
 @login_required
-def index(request, letra_id=None):
+def index(request, letra_id=None, numero_id=None, silaba_id=None, tipo='letra'):
+    objeto = None
+
+    # Si se pasa letra_id, obtiene una Letra
+    if letra_id:
+        objeto = get_object_or_404(Letra, id=letra_id)
+        tipo = 'letra'
+
+    # Si se pasa numero_id, obtiene un Número
+    elif numero_id:
+        objeto = get_object_or_404(Numero, id=numero_id)
+        tipo = 'numero'
+
+    elif silaba_id:
+        objeto = get_object_or_404(Silaba, id=silaba_id)
+        tipo = 'silaba'
+
+    # Enable tracing mode for trazos (letters, numbers, syllables)
+    if objeto is not None:
+        _loop.enable_tracing_mode()
+
     context = {
-        'letra_id': letra_id,
+        'objeto': objeto,  # Puede ser Letra o Número
+        'tipo': tipo,
     }
-    # Usar plantilla en airwrite/templates/airwrite/index.html
     return render(request, 'airwrite/index.html', context)
 
 
@@ -76,9 +100,29 @@ def video_feed_cam(request):
             yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
     return StreamingHttpResponse(gen(), content_type='multipart/x-mixed-replace; boundary=frame')
 
-def video_feed_canvas(request, letra_id=None):
-    letra = get_object_or_404(Letra, id=letra_id)
-    texto = DIFICULTADES_DICT.get(letra.dificultad, '')
+def video_feed_canvas(request, tipo, objeto_id):
+    """
+    Muestra en streaming la imagen de una letra o número centrada en el lienzo.
+    tipo: 'letra' o 'numero'
+    objeto_id: id del objeto en su respectivo modelo
+    """
+    perfil = getattr(request.user, 'perfilusuario', None)
+    no_bloqueadas = ["Letra A", "Letra B", "Letra C"]
+    # Validar tipo y obtener objeto
+    if tipo == 'numero':
+        objeto = get_object_or_404(Numero, id=objeto_id)
+        desbloqueada = True  # Números siempre desbloqueados
+    elif tipo == 'letra':
+        objeto = get_object_or_404(Letra, id=objeto_id)
+        desbloqueada = (perfil and objeto in perfil.letras_desbloqueadas.all()) or objeto.nombre in no_bloqueadas
+
+    elif tipo == 'silaba':
+        objeto = get_object_or_404(Silaba, id=objeto_id)
+        desbloqueada = (perfil and objeto in perfil.silabas_desbloqueadas.all()) or objeto.nombre in ["Silaba ba", "Silaba be", "Silaba ca"]
+    else:
+        raise ValueError("Tipo inválido")
+
+    texto = DIFICULTADES_DICT.get(objeto.dificultad, '')
     texto_sin_tilde = quitar_tildes(texto)
 
     def gen():
@@ -91,63 +135,81 @@ def video_feed_canvas(request, letra_id=None):
                 time.sleep(0.01)
                 continue
 
-            no_bloqueadas = ["Letra A", "Letra B", "Letra C"]
+            # Imagen desbloqueada o permitida
 
-            # cargar la imagen de la letra con transparencia
-            if letra.bloqueada == False or letra.nombre in no_bloqueadas:
-                img_path = letra.imagen.path
-                letra_img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)  # RGBA
+            if (desbloqueada):
+                img_path = objeto.imagen.path
+                objeto_img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
 
-                if letra_img is None:
-                    print(f"Error al leer la imagen de la letra con ID {letra.id}.")
+                if objeto_img is None:
+                    print(f"Error al leer la imagen con ID {objeto.id}.")
                     continue
 
-                # Redimensionar la letra a 500x499 píxeles
-                letra_img = cv2.resize(letra_img, (500, 499), interpolation=cv2.INTER_AREA)
+                # --- Ajuste dinámico del lienzo ---
+                h_img, w_img = objeto_img.shape[:2]
+                h_canvas, w_canvas = canvas.shape[:2]
 
-                # Coordenadas para centrar la letra en el lienzo
-                y1 = max((canvas.shape[0] - letra_img.shape[0]) // 2, 0)
-                x1 = max((canvas.shape[1] - letra_img.shape[1]) // 2, 0)
-                y2 = y1 + letra_img.shape[0]
-                x2 = x1 + letra_img.shape[1]
+                if h_canvas < h_img + 200 or w_canvas < w_img + 200:
+                    new_h = max(h_canvas, h_img + 200)
+                    new_w = max(w_canvas, w_img + 200)
+                    canvas = cv2.resize(canvas, (new_w, new_h), interpolation=cv2.INTER_LINEAR)
 
-                # Ajustar si la imagen se pasa del lienzo
-                y2 = min(y2, canvas.shape[0])
-                x2 = min(x2, canvas.shape[1])
-                letra_img = letra_img[:y2-y1, :x2-x1]
+                # Redimensionar imagen proporcionalmente
+                max_width = 500
+                scale = min(max_width / w_img, 1.0)
+                new_size = (int(w_img * scale), int(h_img * scale))
+                objeto_img = cv2.resize(objeto_img, new_size, interpolation=cv2.INTER_AREA)
 
-                # Mezclar imagen con transparencia si tiene canal alfa
-                if letra_img.shape[2] == 4:
-                    b, g, r, a = cv2.split(letra_img)
-                    alpha_mask = a / 255.0
-                    alpha_inv = 1.0 - alpha_mask
+                # Centrar
+                y1 = (canvas.shape[0] - objeto_img.shape[0]) // 2
+                x1 = (canvas.shape[1] - objeto_img.shape[1]) // 2
+                y2, x2 = y1 + objeto_img.shape[0], x1 + objeto_img.shape[1]
 
-                    for c, channel in enumerate([b, g, r]):
-                        canvas[y1:y2, x1:x2, c] = (alpha_mask * channel + alpha_inv * canvas[y1:y2, x1:x2, c])
+                # Mezcla alfa si aplica
+                if objeto_img.shape[2] == 4:
+                    b, g, r, a = cv2.split(objeto_img)
+                    alpha = a / 255.0
+                    for c, ch in enumerate([b, g, r]):
+                        canvas[y1:y2, x1:x2, c] = (
+                            alpha * ch + (1 - alpha) * canvas[y1:y2, x1:x2, c]
+                        )
                 else:
-                    canvas[y1:y2, x1:x2, :] = letra_img
+                    canvas[y1:y2, x1:x2, :] = objeto_img
 
-                # agregar el nombre y la categoria de la letra
-                cv2.putText(canvas, f"{letra.nombre}", (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (((50, 50, 50))), 2)
-                cv2.putText(canvas, f"{CATEGORIAS_DICT.get(letra.categoria, '')}", (10, 150), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2)
-                if texto_sin_tilde == 'Dificil':
-                    cv2.putText(canvas, f"Dificultad: {texto_sin_tilde}", (800, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                elif texto_sin_tilde == 'Media':
-                    cv2.putText(canvas, f"Dificultad: {texto_sin_tilde}", (800, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
-                elif texto_sin_tilde == 'Facil':
-                    cv2.putText(canvas, f"Dificultad: {texto_sin_tilde}", (800, 100), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                # --- Texto de información ---
+                color_dif = {
+                    'Facil': (0, 255, 0),
+                    'Media': (0, 255, 255),
+                    'Dificil': (0, 0, 255)
+                }.get(texto_sin_tilde, (255, 255, 255))
 
-            # convertir a JPEG y enviar como respuesta
+                # Texto principal (más abajo)
+                cv2.putText(canvas, f"{objeto.nombre}", (20, 150),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1.2, (50, 50, 50), 3)
+
+                # Texto de dificultad (posición fija a la derecha)
+                cv2.putText(canvas, f"Dificultad: {texto_sin_tilde}", (760, 150),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1.2, color_dif, 3)
+
+                if tipo == 'letra':
+                    if objeto.categoria == 'V':
+                        cv2.putText(canvas, f"{CATEGORIAS_DICT[objeto.categoria]}",
+                                    (20, 200), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 3)
+                    elif objeto.categoria == 'C':
+                        cv2.putText(canvas, f"{CATEGORIAS_DICT[objeto.categoria]}",
+                                (20, 200), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 0, 0), 3)
+
+
+
+            # Convertir a JPEG
             ret, jpeg = cv2.imencode('.jpg', canvas)
             if not ret:
                 continue
 
-            yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' + jpeg.tobytes() + b'\r\n')
+            yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n' +
+                   jpeg.tobytes() + b'\r\n')
 
     return StreamingHttpResponse(gen(), content_type='multipart/x-mixed-replace; boundary=frame')
-
-
-
 
 
 def set_voice_command(text: str | None):
@@ -202,3 +264,13 @@ def set_grosor(request):
     if ok:
         return JsonResponse({"status": "ok"})
     return JsonResponse({"status": "error", "error": "grosor_invalid"}, status=400)
+
+
+@require_POST
+def toggle_drawing(request):
+    """Endpoint to toggle drawing on/off in tracing mode"""
+    try:
+        _loop.toggle_drawing()
+        return JsonResponse({"status": "ok"})
+    except Exception as e:
+        return JsonResponse({"status": "error", "error": str(e)}, status=500)

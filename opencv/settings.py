@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import config
+from decouple import config, Csv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -33,7 +33,9 @@ SECRET_KEY = 'django-insecure-$@p84*fx@vqq)lh0kc+qwe1g8n^8f974--bagwzh@kwhyqvb0f
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
+
+
 
 
 # Application definition
@@ -58,6 +60,7 @@ ASGI_APPLICATION = "opencv.asgi.application"
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # 'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -74,20 +77,33 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SOCIALACCOUNT_PROVIDERS = {
-    'google': {
-        'APP': {
-            'client_id': config('GOOGLE_CLIENT_ID', default='fake-client-id'),
-            'secret': config('GOOGLE_CLIENT_SECRET', default='fake-client-secret'),
-        }
-    }
+    "google": {
+        "APP": {
+            "client_id": config("GOOGLE_CLIENT_ID", default="fake-client-id"),
+            "secret": config("GOOGLE_CLIENT_SECRET", default="fake-client-secret"),
+        },
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+    },
 }
 
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_EMAIL_VERIFICATION = "optional"
+SOCIALACCOUNT_AUTO_SIGNUP = True  # evita el formulario extra
+ACCOUNT_SIGNUP_ENABLED = False  # Desactiva el registro manual por formulario
+ACCOUNT_SIGNUP_FORM_CLASS = None
+
 SOCIALACCOUNT_AUTO_SIGNUP = True
 ACCOUNT_SIGNUP_ENABLED = False
+ACCOUNT_USERNAME_REQUIRED = False  # No pedirá username manualmente
+ACCOUNT_EMAIL_VERIFICATION = "none"  # Evita verificación por correo
 
 LOGIN_URL = '/login/'         
 LOGIN_REDIRECT_URL = '/home/'  
@@ -135,6 +151,8 @@ DATABASES = {
     }
 }
 
+CSRF_TRUSTED_ORIGINS = ['https://airwrite.onrender.com']
+
 
 
 # Password validation
@@ -175,6 +193,12 @@ STATIC_URL = 'static/'
 STATICFILES_DIRS = [
     BASE_DIR / 'airwrite' / 'static',  # estáticos de airwrite
 ]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # <--- añade esto
+# STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 MEDIA_URL = '/media/'  # URL pública para acceder a los archivos
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')  # Carpeta física donde se guardan los archivos
