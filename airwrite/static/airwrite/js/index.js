@@ -276,6 +276,84 @@ window.addEventListener('beforeunload', function(event) {
     }
 });
 
+// =======================
+// ENVÍO DE TRAZO PARA VALIDACIÓN
+// =======================
 
+function enviarTrazo(coordenadas, caracter) {
+    if (!coordenadas || coordenadas.length === 0) {
+        console.warn("No hay coordenadas para enviar");
+        return;
+    }
 
-console.log('Hola mundo')
+    fetch("/validar_trazo/", {  // Ajusta la URL según tu urls.py
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken
+        },
+        body: JSON.stringify({
+            caracter: window.currentCaracter || "A",       // La letra que se está trazando
+            coordenadas: coordenadas   // Array de [x, y]
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            console.error("Error al validar trazo:", data.error);
+        } else {
+            console.log("Resultado de validación:", data.resultado);
+            // Aquí puedes mostrar el resultado al usuario en el HTML
+            alert(`Letra: ${data.caracter}\nResultado: ${data.resultado}`);
+        }
+    })
+    .catch(err => console.error("Error en fetch de validar trazo:", err));
+}
+
+// EJEMPLO DE USO:
+// enviarTrazo([[10,20],[15,25],[20,30]], 'A');
+// =======================
+// CAPTURA AUTOMÁTICA DE TRAZOS
+// =======================
+
+const canvasImg = document.querySelector('.canvas-feed');
+let coordenadas = [];
+let dibujando = false;
+
+if (canvasImg) {
+    canvasImg.addEventListener('mousedown', e => {
+        dibujando = true;
+        coordenadas.push({ x: e.offsetX, y: e.offsetY });
+    });
+
+    canvasImg.addEventListener('mousemove', e => {
+        if (!dibujando) return;
+        coordenadas.push({ x: e.offsetX, y: e.offsetY });
+    });
+
+    canvasImg.addEventListener('mouseup', async () => {
+        if (!dibujando) return;
+        dibujando = false;
+
+        if (coordenadas.length > 0) {
+            try {
+                const response = await fetch(window.urls.validar_trazo, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({ 
+                        caracter: window.currentCaracter || "A",
+                        coordenadas })
+                });
+                const data = await response.json();
+                console.log('Resultado del trazo automático:', data);
+            } catch (err) {
+                console.error('Error al enviar trazo automáticamente:', err);
+            } finally {
+                coordenadas = [];
+            }
+        }
+    });
+}

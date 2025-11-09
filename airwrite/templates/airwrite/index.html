@@ -174,9 +174,7 @@
                 <button id="clearButton" class="tool-btn" title="limpiar pantalla">
                     <span class="material-icons">delete</span>
                 </button>
-                <button id="finishButton" class="tool-btn" title="Terminar trazo">
-                  <span class="material-icons">done</span>
-                </button>
+                
 
                 {% comment %} <button id="recordButton" class="mic-btn" title="Hablar">
                     <svg viewBox="0 0 24 24">
@@ -306,48 +304,7 @@
       btn.classList.add('selected');
     });
   });
-  const csrftoken = getCookie('csrftoken');
-  let trazos = [];  // Aquí se guardarán las coordenadas del trazo actual
 
-  // 🔹 Simula la captura del trazo desde el canvas (ajústalo a tu lógica real)
-  // Esto debe llenarse mientras el usuario dibuja.
-  // Ejemplo: trazos.push([x, y]);
-
-  // 🔹 Botón para terminar trazo y enviar los datos
-  document.getElementById("finishButton").addEventListener("click", async () => {
-    if (trazos.length === 0) {
-      alert("No hay coordenadas para enviar");
-      return;
-    }
-
-    const payload = {
-      caracter: "{{ objeto.nombre|default:'A' }}", // usa el carácter actual
-      coordenadas: trazos
-    };
-
-    console.log("📤 Enviando coordenadas:", payload);
-
-    const response = await fetch(window.urls.validar_trazo, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRFToken": csrftoken
-      },
-      body: JSON.stringify(payload)
-    });
-
-    const data = await response.json();
-    console.log("📥 Respuesta del backend:", data);
-
-    if (data.resultado) {
-      alert(`✅ Validación exitosa\nSimilitud: ${data.resultado.similitud}%`);
-    } else {
-      alert(`❌ Error: ${data.error || "Error desconocido"}`);
-    }
-
-    // Limpia el trazo después
-    trazos = [];
-  });
 </script>
         </main>
     </div>
