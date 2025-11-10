@@ -285,8 +285,10 @@ function enviarTrazo(coordenadas, caracter) {
         console.warn("No hay coordenadas para enviar");
         return;
     }
+    // Transformar {x, y} → [x, y] para Python
+    const coordsPython = coordenadas.map(pt => [pt.x, pt.y]);
 
-    fetch("/validar_trazo/", {  // Ajusta la URL según tu urls.py
+    fetch(window.urls.validar_trazo, {  // Ajusta la URL según tu urls.py
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -294,7 +296,7 @@ function enviarTrazo(coordenadas, caracter) {
         },
         body: JSON.stringify({
             caracter: window.currentCaracter || "A",       // La letra que se está trazando
-            coordenadas: coordenadas   // Array de [x, y]
+            coordenadas: coordsPython   // Array de [x, y]
         })
     })
     .then(response => response.json())
@@ -349,6 +351,17 @@ if (canvasImg) {
                 });
                 const data = await response.json();
                 console.log('Resultado del trazo automático:', data);
+
+                // =======================
+            // Feedback inmediato
+            // =======================
+                const resultado = data.resultado;
+                 if (resultado.es_correcto) {
+                    alert(`✅ Muy bien ${resultado.usuario}! La letra ${resultado.letra} fue correcta con ${(resultado.similitud * 100).toFixed(1)}% de similitud.`);
+                } else {
+                    alert(`❌ ${resultado.usuario}, la letra ${resultado.letra} no coincide. Similitud: ${(resultado.similitud * 100).toFixed(1)}%`);
+                }
+
             } catch (err) {
                 console.error('Error al enviar trazo automáticamente:', err);
             } finally {

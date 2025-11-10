@@ -10,56 +10,6 @@ from airwrite.domain.entities.trazo import Trazo
 # def _remuestrear_contorno(...):
 # def _normalizar_puntos(...):
 
-""" def _remuestrear_contorno(points: np.ndarray, n_points: int = 64) -> List[Tuple[int,int]]:
-    pts= points.reshape(-1, 2).astype(np.float64)
-    Distancia entre puntos consecutivos
-    diffs = np.linalg.norm(pts[1:] - pts[:-1], axis=1)
-    dists = np.concatenate(([0.0], diffs))
-    cum = np.cumsum(dists)
-    total = cum[-1] if len(cum) else 0.0
-    if total == 0.0:
-        p = pts[0]
-        return [(int(p[0]), int(p[1]))] * n_points
-    
-    alphas = np.linspace(0.0, total, n_points , endpoint=False)
-    res = []
-    j = 0
-    for a in alphas:
-        while j < len(cum)-1 and cum[j+1] < a:
-            j += 1
-        if j >= len(pts)-1:
-            p= pts[-1]
-        else:
-            denom =  (cum[j+1] - cum[j]) if (cum[j+1] - cum[j]) != 0 else 1e-6
-            t = (a - cum[j]) / denom
-            p = (1 - t) * pts[j] + t * pts[j+1]
-        res.append((int(round(p[0])),int(round(p[1]))))
-    return res
-
-def _normalizar_puntos(points: List[Tuple[int,int]], target_size: int = 256 , pad: int = 8,
-                       original_shape:Tuple[int,int]= (256,256)) -> List[Tuple[int,int]]:
-    arr = np.array(points, dtype= np.float64)
-    calcula los limites de los puntos
-    minxy = arr.min(axis=0)
-    maxxy = arr.max(axis=0)
-    center = (minxy + maxxy) / 2.0
-    
-   Centrar puntos alrededor del origen 
-    arr_centered = arr - center
-    w , h = original_shape[:2]
-    max_dim = max(w,h)
-    if max_dim == 0:
-        scale = 1.0
-    else:
-        scale = (target_size - 2*pad) / max_dim
-        
-    arr_scaled = arr_centered * scale + (target_size/2.0, target_size/2.0)
-    # arr_final = arr_scaled + (target_size/2.0, target_size/2.0)
-    arr_int = np.round(arr_scaled).astype(int)
-    arr_int[:,0]= np.clip(arr_int[:,0], pad , target_size-pad)
-    arr_int[:,1]= np.clip(arr_int[:,1], pad , target_size-pad)
-    return [(int(x), int(y)) for x,y in arr_int]
- """
 """ 
 Lee una imagen y devuelve un Trazo con los puntos remuestreados y normalizados.
  - path_image: ruta a la imagen (png).

@@ -2,15 +2,14 @@ from pathlib import Path
 from typing import Dict , Optional
 from airwrite.domain.entities.letra import LetraEntity
 from airwrite.infrastructure.opencv.trazo_extractor import generar_trazo_desde_imagen
-from airwrite.domain.entities.trazo import Trazo
 import logging
 
 logger = logging.getLogger(__name__)
-
+ 
 """ Carga las letras desde la carpeta 'media/' """
 class LetraStorage:
     def __init__(self, carpeta_media: str = "media"):
-        self.carpeta_media = Path(carpeta_media)
+        self.carpeta_media = Path(carpeta_media).resolve()
         self._cache:Dict[str,LetraEntity]= {}
         
     
@@ -19,6 +18,7 @@ class LetraStorage:
             raise FileNotFoundError(f"No se encontro la carpeta : {self.carpeta_media}") 
         
         letras : Dict[str, LetraEntity]= {}
+        letra_id = 1
         
         """ Recorre las subcarpetas de media (letra , numero) """
         for subcarpeta in sorted(self.carpeta_media.iterdir()):
@@ -38,7 +38,8 @@ class LetraStorage:
                     caracter = nombre
                        
                 imagen_ruta = str(archivo.resolve())
-                letra = LetraEntity(caracter=caracter, imagen=imagen_ruta)
+                letra = LetraEntity(id=letra_id, caracter=caracter, imagen=imagen_ruta)
+                letra_id += 1 
                 
                 """ Generar trazo de referencia si se solicita """
                 if generate_trazos:
@@ -57,16 +58,25 @@ class LetraStorage:
         c = caracter.upper()
         if c in self._cache:
             return self._cache[c]
+        letra_id = max([l.id for l in self._cache.values()], default=0) + 1
         """ Intentar cargar la letra directamente (sin generar trazo)"""
-        folder = self.carpeta_media
-        for sub in folder.iterdir():
-            posible= sub/ f"{c}.png"
-            if posible.exists():
-                letra = LetraEntity(caracter=c , imagen =str(posible.resolve()))
-                self._cache[c]= letra
-                return letra
+        for posible in self.carpeta_media.rglob(f"{c}.png"):
+            imagen_ruta = str(posible.resolve())
+            letra = LetraEntity(caracter=c, imagen=imagen_ruta)
+            letra_id += 1
+
+            try:
+                trazo_ref = generar_trazo_desde_imagen(imagen_ruta, n_points=64)
+                letra.trazos = [trazo_ref]
+                letra.contorno = trazo_ref.coordenadas[:]
+            except Exception as e:
+                logger.warning("No se pudo generar trazo para %s: %s", imagen_ruta, e)
+
+            self._cache[c] = letra
+            return letra
+
+        logger.error(f"No se encontró la imagen para el caracter '{caracter}' en {self.carpeta_media}")
         return None
-        raise FileNotFoundError(f"No se encontro la imagen para el caracter '{caracter}'")
-    
+
     def listar_letras_disponibles(self):
         return list(self._cache.keys())
