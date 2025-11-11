@@ -8,7 +8,7 @@ from typing import Dict, Any
 
 """ Caso de uso que valida el trazo de un usuario comparándolo con la letra de referencia """
 class ValidadorEscrituraUseCase:
-    def __init__(self, usuario: Usuario, umbral_similitud: float = 0.85):
+    def __init__(self, usuario: Usuario, umbral_similitud: float = 0.60):
         self.usuario = usuario
         self.validador = ValidarTrazo(umbral_similitud=umbral_similitud)
         self.estadisticas = EstadisticasService(usuario)

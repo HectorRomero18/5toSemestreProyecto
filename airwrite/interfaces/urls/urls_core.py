@@ -11,7 +11,8 @@ from airwrite.interfaces.django_views.favorito.favorito import FavoritoListView,
 from airwrite.interfaces.django_views.trazos import index, video_feed_cam, video_feed_canvas, clear_canvas, set_color, set_grosor, toggle_drawing
 from airwrite.interfaces.django_views.compra_letra import comprar_letra
 from airwrite.interfaces.django_views.validar_trazo_view import ValidarTrazoView
-#from core.views.login import login_view
+from airwrite.interfaces.django_views.capturar_trazo_view import CapturarTrazoView
+# from core.views.login import login_view
 
 urlpatterns = [
     # Rutas actuales
@@ -56,4 +57,6 @@ urlpatterns = [
     path('favoritos/exists/', FavoritoExistsView.as_view(), name='favorito_exists'),
 
     path("validar_trazo/",ValidarTrazoView.as_view() , name="validar_trazo"),
+    path("capturar_trazo/", CapturarTrazoView.as_view(), name="capturar_trazo"),
+
 ]

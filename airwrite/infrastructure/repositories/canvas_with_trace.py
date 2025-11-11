@@ -1,60 +1,51 @@
-from typing import List,Tuple
+# canvas_with_trace_opencv.py
+from typing import List, Tuple
 import time
-import json
 import math
 import numpy as np
+import cv2
+import json
 
-from airwrite.infrastructure.repositories.adapters import CanvasAdapter
-
-
-""" 
-Extension de CanvasAdapter para capturar y expotar los puntos del trazo mientra 
-dibuja el usuario
-"""
-class CanvasAdapterWithTrace(CanvasAdapter):
-    def __init__(self, state, N_points: int = 64) -> None:
-        super().__init__(state)
-        self._trace_points: List[tuple[float, float]] = []
-        self._last_append_time = 0.0
-        self.min_dist = 1.0
-        self.min_interval = 0.01
+class CanvasAdapterWithTrace:
+    """
+    Captura el trazo del usuario mediante cámara y marcador azul.
+    Resamplea y normaliza automáticamente los puntos.
+    """
+    def __init__(self, N_points: int = 64, min_dist: float = 1.3, min_interval: float = 0.02):
+        self._trace_points: List[Tuple[float, float]] = []
         self.N_points = N_points
-        
-    def draw_line(self, p1, p2, color, thickness):
-        super().draw_line(p1, p2, color, thickness)
-        self._maybe_append_point(p2)
-        
-    def _maybe_append_point(self, p:Tuple[int,int]):
+        self.min_dist = min_dist          # distancia mínima entre puntos para registrar
+        self.min_interval = min_interval  # intervalo mínimo de tiempo entre puntos
+        self._last_append_time = 0.0
+        self.last_point: Tuple[int, int] = None
+
+    def _maybe_append_point(self, p: Tuple[int, int]):
         now = time.time()
         if (now - self._last_append_time) < self.min_interval:
             return
-        px , py = float(p[0]) , float(p[1])
+        px, py = float(p[0]), float(p[1])
         if not self._trace_points:
-            self._trace_points.append((px,py))
+            self._trace_points.append((px, py))
             self._last_append_time = now
             return
-        lx , ly = self._trace_points[-1]
-        
-        
+        lx, ly = self._trace_points[-1]
         if math.hypot(px - lx, py - ly) >= self.min_dist:
-            self._trace_points.append((px,py))
+            self._trace_points.append((px, py))
             self._last_append_time = now
-            
-    def get_trace_points(self) -> List[Tuple[float,float]]:
-        return list(self._trace_points)
-    
+
     def clear_trace(self):
         self._trace_points = []
-    
-    def _resample_trace(self, points: List[Tuple[float, float]], n_points: int) -> List[Tuple[float, float]]:
+        self.last_point = None
+
+    def _resample_trace(self, points: List[Tuple[float, float]]) -> List[Tuple[float, float]]:
         if len(points) < 2:
-            return points * n_points if points else [(0.0, 0.0)] * n_points
+            return points * self.N_points if points else [(0.0, 0.0)] * self.N_points
         pts = np.array(points, dtype=np.float64)
         diffs = np.linalg.norm(pts[1:] - pts[:-1], axis=1)
         dists = np.concatenate(([0.0], diffs))
         cum = np.cumsum(dists)
         total = cum[-1]
-        alphas = np.linspace(0, total, n_points, endpoint=False)
+        alphas = np.linspace(0, total, self.N_points, endpoint=False)
         sampled = []
         j = 0
         for a in alphas:
@@ -65,34 +56,67 @@ class CanvasAdapterWithTrace(CanvasAdapter):
             p = (1 - t) * pts[j] + t * pts[j + 1]
             sampled.append(p)
         return [(float(x), float(y)) for x, y in np.array(sampled)]
-    
-    def _normalize_points(self, points: List[Tuple[float, float]], target_size: int = 256, pad: int = 8) -> List[Tuple[int, int]]:
+
+    def _normalize_points(self, points: List[Tuple[float, float]], target_size: int = 256, pad: int = 8):
         if not points:
             return []
-        img = self._state.get() if self._state else np.zeros((256, 256, 3), dtype=np.uint8)
-        h, w = img.shape[:2]
+        pts = np.array(points, dtype=np.float64)
+        pts_min = pts.min(axis=0)
+        pts_max = pts.max(axis=0)
+        scale = (target_size - 2 * pad) / max(pts_max - pts_min)
+        pts_scaled = (pts - pts_min) * scale + pad
+        return [(int(x), int(y)) for x, y in pts_scaled]
 
-        arr = np.array(points, dtype=np.float64)
-        arr[:, 0] = arr[:, 0] / float(w)
-        arr[:, 1] = arr[:, 1] / float(h)
-        usable = target_size - 2 * pad
-        arr[:, 0] = np.clip(arr[:, 0] * usable + pad, pad, target_size - pad)
-        arr[:, 1] = np.clip(arr[:, 1] * usable + pad, pad, target_size - pad)
-        arr_int = np.round(arr).astype(int)
-        return [(int(x), int(y)) for x, y in arr_int]
-    
-    def trace_to_payload(self, usuario: str = "Anonimo", letra: str = "A", target_size: int = 256, pad: int = 8):
-        resampled = self._resample_trace(self._trace_points, self.N_points)
-        pts = self._normalize_points(resampled, target_size, pad)
-        payload = {
+    def trace_to_payload(self, usuario: str = "Anonimo", letra: str = None):
+        if letra is None:
+            raise ValueError("Debe especificarse la letra del trazo antes de generar el payload")
+        resampled = self._resample_trace(self._trace_points)
+        normalized = self._normalize_points(resampled)
+        return {
             "usuario": usuario,
             "letra": letra,
-            "trazo": pts
+            "trazo": normalized
         }
-        return payload
-    
-    def export_trace_to_file(self, filename: str = "trazo.json"):
-        payload = self.trace_to_payload()
+
+    def export_trace_to_file(self, filename: str = "trazo.json", usuario: str = "Anonimo", letra: str = "A"):
+        payload = self.trace_to_payload(usuario, letra)
         with open(filename, "w", encoding="utf-8") as f:
             json.dump(payload, f, ensure_ascii=False, indent=2)
         return filename
+
+    def capture_trazo_camera(self):
+        """
+        Abre la cámara y captura el trazo del usuario con marcador azul.
+        Presiona 'q' para finalizar el trazo.
+        """
+        cap = cv2.VideoCapture(0)
+        self.clear_trace()
+
+        while True:
+            ret, frame = cap.read()
+            if not ret:
+                break
+
+            hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+            lower_blue = np.array([100, 150, 50])
+            upper_blue = np.array([140, 255, 255])
+            mask = cv2.inRange(hsv, lower_blue, upper_blue)
+
+            contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            if contours:
+                c = max(contours, key=cv2.contourArea)
+                M = cv2.moments(c)
+                if M["m00"] != 0:
+                    cx = int(M["m10"] / M["m00"])
+                    cy = int(M["m01"] / M["m00"])
+                    self._maybe_append_point((cx, cy))
+                    # Dibujar en pantalla
+                    cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
+            cv2.imshow("Trazo del usuario", frame)
+
+            if cv2.waitKey(1) & 0xFF == ord('q'):
+                break
+
+        cap.release()
+        cv2.destroyAllWindows()
+        return self.trace_to_payload()

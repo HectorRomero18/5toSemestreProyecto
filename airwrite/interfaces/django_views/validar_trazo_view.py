@@ -44,19 +44,7 @@ class ValidarTrazoView(View):
                     {"error": f"No se encontró la letra '{caracter}' o no tiene trazos."},
                     status=404,
                 )
-                
-            """ letra_ref = self.storage.obtener_letra(caracter)
-            if not letra_ref:
-                return JsonResponse(
-                    {"error": f"No se encontró la letra '{caracter}' en la carpeta media."},
-                    status=404,
-                )
-            if not letra_ref.trazos:
-                return JsonResponse(
-                    {"error": f"La letra '{caracter}' no tiene trazos generados."},
-                    status=404,
-                )
- """
+
             # Si el front envía [{x:…, y:…}], convertir a [(x,y)]
             if isinstance(coords_usuario[0], dict):
                 coords_usuario = [(pt["x"], pt["y"]) for pt in coords_usuario]
@@ -82,3 +70,45 @@ class ValidarTrazoView(View):
         except Exception as e:
             print("\n❌ ERROR EN VALIDAR_TRAZO:", str(e))
             return JsonResponse({"error": str(e)}, status=500)
+
+
+# from django.http import JsonResponse
+# from django.views.decorators.csrf import csrf_exempt
+# import json
+
+# from airwrite.infrastructure.repositories.canvas_with_trace import CanvasAdapterWithTrace
+# from airwrite.domain.entities.usuario import Usuario
+# from airwrite.domain.entities.letra import LetraEntity
+# from airwrite.application.use_cases.validar_escritura import ValidadorEscrituraUseCase
+
+# # Mantener CSRF protegido si se llama desde JS con token
+# @csrf_exempt
+# def validar_trazo(request):
+#     if request.method != "POST":
+#         return JsonResponse({"error": "Método no permitido"}, status=405)
+
+#     try:
+#         data = json.loads(request.body)
+#         caracter = data.get("caracter")
+#         coordenadas = data.get("coordenadas", [])
+
+#         if not caracter or not coordenadas:
+#             return JsonResponse({"error": "Faltan datos de trazo"}, status=400)
+
+#         # Inicializar CanvasAdapter con estado vacío (o imagen de fondo si se usa)
+#         canvas = CanvasAdapterWithTrace(state=None, N_points=64)
+#         # Agregar los puntos recibidos desde JS
+#         for x, y in coordenadas:
+#             canvas._maybe_append_point((x, y))
+
+#         # Generar payload con letra seleccionada y usuario simulado
+#         payload = canvas.trace_to_payload(usuario="UsuarioPrueba", letra=caracter)
+
+#         # Validar trazo usando el use_case
+#         validador = ValidadorEscrituraUseCase()
+#         resultado = validador.validar_trazo(payload)  # Devuelve dict con similitud, correcto, etc.
+
+#         return JsonResponse({"resultado": resultado, "caracter": caracter})
+
+#     except Exception as e:
+#         return JsonResponse({"error": str(e)}, status=500)
