@@ -188,9 +188,9 @@ async function enviarTrazo(coordenadas, letra) {
             console.log("Resultado de validación:", data.resultado);
             const resultado = data.resultado;
             if (resultado.es_correcto) {
-                alert(`✅ Muy bien ${resultado.usuario}! La letra ${resultado.letra} fue correcta con ${(resultado.similitud * 100).toFixed(1)}% de similitud.`);
+                alert(`Muy bien ${resultado.usuario}! La letra ${resultado.letra} fue correcta con ${(resultado.similitud * 100).toFixed(1)}% de similitud.`);
             } else {
-                alert(`❌ ${resultado.usuario}, la letra ${resultado.letra} no coincide. Similitud: ${(resultado.similitud * 100).toFixed(1)}%`);
+                alert(`${resultado.usuario}, la letra ${resultado.letra} no coincide. Similitud: ${(resultado.similitud * 100).toFixed(1)}%`);
             }
         }
     } catch (err) {
@@ -264,6 +264,7 @@ const csrftoken = getCookie('csrftoken');
 let mediaRecorder;
 let audioChunks = [];
 let dibujando = false;
+let autoCaptureInterval = null;
 if (typeof window.currentCaracter === 'undefined') {
   window.currentCaracter = null;
 }
@@ -350,13 +351,14 @@ document.addEventListener("DOMContentLoaded", () => {
 // =======================
 // TECLA “A” — alternar captura automática
 // =======================
+// TECLA "A" — alternar captura de dibujo (NO validación automática)
 document.addEventListener('keydown', (event) => {
   if (event.key === 'a' || event.key === 'A') {
     event.preventDefault();
     dibujando = !dibujando;
-    console.log(dibujando ? "🟢 Iniciando captura automática" : "⏸️ Captura detenida");
+    console.log(dibujando ? "Captura de dibujo activada" : "Captura de dibujo detenida");
 
-    // avisar al backend (mantiene compatibilidad con el original)
+    // avisar al backend para alternar el modo de dibujo
     fetch(window.urls.toggle_drawing, {
       method: 'POST',
       headers: {
@@ -366,7 +368,7 @@ document.addEventListener('keydown', (event) => {
       body: JSON.stringify({})
     }).catch(err => console.error('Error alternando dibujo:', err));
 
-    if (dibujando) capturarTrazoAutomatico();
+    // NO activar validación automática - solo controlar captura de dibujo
   }
 });
 
@@ -395,7 +397,7 @@ document.addEventListener('DOMContentLoaded', function() {
         window.currentCaracter = caracter;
         console.log("Caracter seleccionado:", window.currentCaracter);
         selectContainer.classList.remove('open');
-        capturarTrazoAutomatico(); // mismo comportamiento que antes
+        // No llamar automáticamente capturarTrazoAutomatico() al seleccionar letra
       });
     });
   }
@@ -420,7 +422,14 @@ window.addEventListener('beforeunload', function(event) {
 // =======================
 // FUNCIÓN — CAPTURAR TRAZO AUTOMÁTICO
 // =======================
+
 async function capturarTrazoAutomatico() {
+  console.log("Ejecutando captura automática para:", window.currentCaracter, "dibujando:", dibujando);
+  if (!dibujando) {
+    console.log("Captura automática cancelada porque dibujando es false");
+    stopAutoCapture(); // Asegurar que se detenga
+    return;
+  }
   const caracterSeleccionado = window.currentCaracter;
   if (!caracterSeleccionado) {
     console.warn("No hay caracter seleccionado");
@@ -444,12 +453,29 @@ async function capturarTrazoAutomatico() {
     }
 
     await enviarTrazo(data.trazo, caracterSeleccionado);
-
-    if (dibujando) capturarTrazoAutomatico(); // recursivo si se sigue dibujando
   } catch (err) {
     console.error("Error al capturar trazo automáticamente:", err);
   }
 }
+
+function startAutoCapture() {
+  if (autoCaptureInterval) return; // Ya está ejecutándose
+  console.log("Iniciando captura automática cada 2 segundos");
+  autoCaptureInterval = setInterval(capturarTrazoAutomatico, 2000); // Cada 2 segundos
+}
+
+function stopAutoCapture() {
+  if (autoCaptureInterval) {
+    clearInterval(autoCaptureInterval);
+    autoCaptureInterval = null;
+    console.log("Captura automática detenida");
+  }
+  // Also ensure dibujando is false
+  dibujando = false;
+}
+
+// Asegurar que la captura automática esté detenida al cargar la página
+stopAutoCapture();
 
 // =======================
 // FUNCIÓN — ENVIAR TRAZO
@@ -483,9 +509,9 @@ async function enviarTrazo(coordenadas, caracter) {
 
     const resultado = data.resultado;
     if (resultado.es_correcto) {
-      alert(`✅ Muy bien ${resultado.usuario}! ${resultado.letra} fue correcta con ${(resultado.similitud * 100).toFixed(1)}% de similitud.`);
+      alert(`Muy bien ${resultado.usuario}! ${resultado.letra} fue correcta con ${(resultado.similitud * 100).toFixed(1)}% de similitud.`);
     } else {
-      alert(`❌ ${resultado.usuario}, ${resultado.letra} no coincide. Similitud: ${(resultado.similitud * 100).toFixed(1)}%`);
+      alert(`${resultado.usuario}, ${resultado.letra} no coincide. Similitud: ${(resultado.similitud * 100).toFixed(1)}%`);
     }
   } catch (err) {
     console.error("Error en fetch de validar trazo:", err);
@@ -494,45 +520,46 @@ async function enviarTrazo(coordenadas, caracter) {
 // =======================
 // TECLA “E” — Enviar trazo actual al backend
 // =======================
-document.addEventListener('keydown', async (event) => {
-  if (event.key === 'e' || event.key === 'E') {
-    event.preventDefault();
+// DESHABILITADO: Solo validación manual
+// document.addEventListener('keydown', async (event) => {
+//   if (event.key === 'e' || event.key === 'E') {
+//     event.preventDefault();
 
-    console.log("📤 Enviando trazo manualmente con tecla 'E'...");
+//     console.log("Enviando trazo manualmente con tecla 'E'...");
 
-    // Obtener la letra seleccionada y capturar el trazo actual
-    const caracterSeleccionado = window.currentCaracter;
-    if (!caracterSeleccionado) {
-      alert("⚠️ No hay letra seleccionada.");
-      return;
-    }
+//     // Obtener la letra seleccionada y capturar el trazo actual
+//     const caracterSeleccionado = window.currentCaracter;
+//     if (!caracterSeleccionado) {
+//       alert("No hay letra seleccionada.");
+//       return;
+//     }
 
-    try {
-      // Pedimos el trazo actual (igual que hace capturarTrazoAutomatico)
-      const response = await fetch(window.urls.capturar_trazo, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRFToken": csrftoken
-        },
-        body: JSON.stringify({ letra: caracterSeleccionado })
-      });
+//     try {
+//       // Pedimos el trazo actual (igual que hace capturarTrazoAutomatico)
+//       const response = await fetch(window.urls.capturar_trazo, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           "X-CSRFToken": csrftoken
+//         },
+//         body: JSON.stringify({ letra: caracterSeleccionado })
+//       });
 
-      const data = await response.json();
-      if (!data.trazo || data.trazo.length === 0) {
-        alert("⚠️ No se encontró ningún trazo para enviar.");
-        return;
-      }
+//       const data = await response.json();
+//       if (!data.trazo || data.trazo.length === 0) {
+//         alert("No se encontró ningún trazo para enviar.");
+//         return;
+//       }
 
-      // Enviar trazo a la vista ValidarTrazoView
-      await enviarTrazo(data.trazo, caracterSeleccionado);
-      console.log("✅ Trazo enviado con éxito mediante la tecla 'E'.");
+//       // Enviar trazo a la vista ValidarTrazoView
+//       await enviarTrazo(data.trazo, caracterSeleccionado);
+//       console.log("Trazo enviado con éxito mediante la tecla 'E'.");
 
-    } catch (err) {
-      console.error("❌ Error al enviar trazo con tecla E:", err);
-    }
-  }
-});
+//     } catch (err) {
+//       console.error("Error al enviar trazo con tecla E:", err);
+//     }
+//   }
+// });
 
 // =======================
 // BOTÓN VERIFICAR — Verificar trazo actual
@@ -543,7 +570,7 @@ document.addEventListener('DOMContentLoaded', () => {
     verificarBtn.addEventListener('click', async () => {
       const caracterSeleccionado = window.currentCaracter;
       if (!caracterSeleccionado) {
-        alert("⚠️ No hay letra seleccionada.");
+        alert("No hay letra seleccionada.");
         return;
       }
 
@@ -559,14 +586,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const data = await response.json();
         if (!data.trazo || data.trazo.length === 0) {
-          alert("⚠️ No se encontró ningún trazo para verificar.");
+          alert("No se encontró ningún trazo para verificar.");
           return;
         }
 
         await enviarTrazo(data.trazo, caracterSeleccionado);
       } catch (err) {
-        console.error("❌ Error al verificar trazo:", err);
-        alert("❌ Error al verificar el trazo.");
+        console.error("Error al verificar trazo:", err);
+        alert("Error al verificar el trazo.");
       }
     });
   }

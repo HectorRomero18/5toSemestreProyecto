@@ -34,7 +34,7 @@ class CapturarTrazoView(View):
                 return JsonResponse({"error": "Canvas vacío o no disponible."}, status=400)
 
             gray = cv2.cvtColor(canvas_img, cv2.COLOR_BGR2GRAY)
-            _, binary = cv2.threshold(gray, 10, 255, cv2.THRESH_BINARY)
+            _, binary = cv2.threshold(gray, 180, 255, cv2.THRESH_BINARY_INV)
             
             if cv2.countNonZero(binary) == 0:
                 return JsonResponse({"error": "No hay trazo dibujado en el canvas."}, status=400)
