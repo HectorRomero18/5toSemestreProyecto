@@ -84,7 +84,22 @@ class CanvasAdapterWithTrace:
             json.dump(payload, f, ensure_ascii=False, indent=2)
         return filename
 
-    def capture_trazo_camera(self):
+    def get_user_trace_coordinates(self):
+        resampled = self._resample_trace(self._trace_points)
+        normalized = self._normalize_points(resampled)
+        return normalized
+
+    def compare_with_reference(self, reference_coordinates: List[Tuple[int, int]], tolerancia: float = 15.0):
+        from airwrite.domain.entities.trazo import Trazo
+        from airwrite.domain.services.comparador_trazos import comparar_trazos
+        
+        user_coords = self.get_user_trace_coordinates()
+        trazo_usuario = Trazo(coordenadas=user_coords)
+        trazo_referencia = Trazo(coordenadas=reference_coordinates)
+        
+        return comparar_trazos(trazo_usuario, trazo_referencia, tolerancia=tolerancia)
+
+    def capture_trazo_camera(self, letra: str = "A", usuario: str = "Anonimo"):
         """
         Abre la cámara y captura el trazo del usuario con marcador azul.
         Presiona 'q' para finalizar el trazo.
@@ -110,7 +125,6 @@ class CanvasAdapterWithTrace:
                     cx = int(M["m10"] / M["m00"])
                     cy = int(M["m01"] / M["m00"])
                     self._maybe_append_point((cx, cy))
-                    # Dibujar en pantalla
                     cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
             cv2.imshow("Trazo del usuario", frame)
 
@@ -119,4 +133,4 @@ class CanvasAdapterWithTrace:
 
         cap.release()
         cv2.destroyAllWindows()
-        return self.trace_to_payload()
+        return self.trace_to_payload(usuario=usuario, letra=letra)

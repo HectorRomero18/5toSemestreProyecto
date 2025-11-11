@@ -264,7 +264,9 @@ const csrftoken = getCookie('csrftoken');
 let mediaRecorder;
 let audioChunks = [];
 let dibujando = false;
-window.currentCaracter = null;
+if (typeof window.currentCaracter === 'undefined') {
+  window.currentCaracter = null;
+}
 
 // =======================
 // BOTONES DE CANVAS
@@ -529,5 +531,43 @@ document.addEventListener('keydown', async (event) => {
     } catch (err) {
       console.error("❌ Error al enviar trazo con tecla E:", err);
     }
+  }
+});
+
+// =======================
+// BOTÓN VERIFICAR — Verificar trazo actual
+// =======================
+document.addEventListener('DOMContentLoaded', () => {
+  const verificarBtn = document.getElementById('verificarButton');
+  if (verificarBtn) {
+    verificarBtn.addEventListener('click', async () => {
+      const caracterSeleccionado = window.currentCaracter;
+      if (!caracterSeleccionado) {
+        alert("⚠️ No hay letra seleccionada.");
+        return;
+      }
+
+      try {
+        const response = await fetch(window.urls.capturar_trazo, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": csrftoken
+          },
+          body: JSON.stringify({ letra: caracterSeleccionado })
+        });
+
+        const data = await response.json();
+        if (!data.trazo || data.trazo.length === 0) {
+          alert("⚠️ No se encontró ningún trazo para verificar.");
+          return;
+        }
+
+        await enviarTrazo(data.trazo, caracterSeleccionado);
+      } catch (err) {
+        console.error("❌ Error al verificar trazo:", err);
+        alert("❌ Error al verificar el trazo.");
+      }
+    });
   }
 });

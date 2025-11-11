@@ -43,6 +43,9 @@ class CanvasAdapter(CanvasPort):
                        -1)
         return img
 
+    def get_canvas(self):
+        return self._state.get()
+
 
 
 class CommandAdapter(CommandPort):

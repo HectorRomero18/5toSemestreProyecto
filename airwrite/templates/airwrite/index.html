@@ -16,8 +16,15 @@
     set_color: "{% url 'set_color' %}",
     set_grosor: "{% url 'set_grosor' %}",
     toggle_drawing: "{% url 'toggle_drawing' %}",
-    validar_trazo: "{% url 'validar_trazo' %}"
+    validar_trazo: "{% url 'validar_trazo' %}",
+    capturar_trazo: "{% url 'capturar_trazo' %}"
   };
+  
+  {% if objeto %}
+  window.currentCaracter = "{{ objeto.nombre }}".split(' ').pop();
+  {% else %}
+  window.currentCaracter = null;
+  {% endif %}
     </script>
     <script src="{% static 'airwrite/js/index.js' %}" defer></script>
 </head>
@@ -173,6 +180,10 @@
 
                 <button id="clearButton" class="tool-btn" title="limpiar pantalla">
                     <span class="material-icons">delete</span>
+                </button>
+
+                <button id="verificarButton" class="tool-btn" title="Verificar trazo">
+                    <span class="material-icons">check_circle</span>
                 </button>
                 
 

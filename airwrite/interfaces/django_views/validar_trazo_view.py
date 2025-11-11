@@ -50,7 +50,7 @@ class ValidarTrazoView(View):
                 coords_usuario = [(pt["x"], pt["y"]) for pt in coords_usuario]
 
             # --- 3️ Crear trazo del usuario ---
-            adapter = CanvasAdapterWithTrace(state=None)
+            adapter = CanvasAdapterWithTrace()
             coords_normalizadas = adapter._normalize_points(coords_usuario, target_size=256, pad=8)
             trazo_usuario = Trazo(coordenadas=coords_normalizadas)
 
@@ -64,6 +64,8 @@ class ValidarTrazoView(View):
                 "caracter": caracter,
                 "usuario": nombre_usuario,
                 "resultado": resultado,
+                "coordenadas_usuario": coords_normalizadas,
+                "coordenadas_referencia": letra_ref.trazos[0].coordenadas if letra_ref.trazos else [],
                 "mensaje": f"Validación completada para la letra '{caracter}'."
             }, status=200)
 
