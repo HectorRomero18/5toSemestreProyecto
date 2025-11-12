@@ -25,12 +25,11 @@ class ValidarTrazoView(View):
             coords_usuario = data.get("coordenadas", [])
             nombre_usuario = data.get("usuario", "Anonimo")
 
-            # 🧭 Depuración temporal
-            print("\n--- PETICIÓN RECIBIDA EN VALIDAR_TRAZO ---")
-            print("Letra recibida:", caracter)
-            print("Primeras coordenadas:", coords_usuario[:5])
-            print("Total de puntos:", len(coords_usuario))
-            print("------------------------------------------\n")
+            # Logging
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.info(f"Validando trazo para letra: {caracter}, usuario: {nombre_usuario}, puntos: {len(coords_usuario)}")
+            print(f"Letra actual: {caracter}")
 
             if not caracter or not coords_usuario:
                 return JsonResponse(
@@ -50,22 +49,24 @@ class ValidarTrazoView(View):
                 coords_usuario = [(pt["x"], pt["y"]) for pt in coords_usuario]
 
             # --- 3️ Crear trazo del usuario ---
-            adapter = CanvasAdapterWithTrace()
-            coords_normalizadas = adapter._normalize_points(coords_usuario, target_size=256, pad=8)
-            trazo_usuario = Trazo(coordenadas=coords_normalizadas)
+            trazo_usuario = Trazo(coordenadas=coords_usuario)
+
+            print(f"Número de puntos usuario: {len(coords_usuario)}")
+            print(f"Número de puntos referencia: {len(letra_ref.trazos[0].coordenadas) if letra_ref.trazos else 0}")
 
             # --- 4️ Ejecutar el caso de uso de validación ---
             usuario = Usuario(nombre=nombre_usuario)
             validador = ValidadorEscrituraUseCase(usuario=usuario, umbral_similitud=0.85)
             resultado = validador.ejecutar_validacion(letra_ref, trazo_usuario)
 
+            # Logging del resultado
+            logger.info(f"Resultado validación: similitud {resultado['similitud']}, correcto: {resultado['es_correcto']}")
+
             # --- 5️ Devolver respuesta JSON ---
             return JsonResponse({
                 "caracter": caracter,
                 "usuario": nombre_usuario,
                 "resultado": resultado,
-                "coordenadas_usuario": coords_normalizadas,
-                "coordenadas_referencia": letra_ref.trazos[0].coordenadas if letra_ref.trazos else [],
                 "mensaje": f"Validación completada para la letra '{caracter}'."
             }, status=200)
 

@@ -32,6 +32,7 @@ class DrawingState:
         self.tracing_mode: bool = False
         self.drawing_active: bool = False
         self.last_draw_time: float = 0.0
+        self.user_trace: list[tuple[int, int]] = []
 
 
 class DrawingLoop:
@@ -41,6 +42,7 @@ class DrawingLoop:
         self.commands = commands
         self.cfg = cfg
         self.state = state
+        self.min_dist = 5.0  # Aumentar distancia mínima entre puntos
 
     def step(self) -> None:
         ok, frame = self.cam.read()
@@ -135,11 +137,13 @@ class DrawingLoop:
                     if (self.state.drawing_active and self.state.x1 is not None and self.state.y1 is not None and
                         not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.04):
                         self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
+                        self.state.user_trace.append((x2, y2))
                         self.state.last_draw_time = current_time
                 else:
                     # Normal mode: draw automatically
                     if self.state.x1 is not None and self.state.y1 is not None and not (0 < y2 < 60):
                         self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
+                        self.state.user_trace.append((x2, y2))
 
                 self.state.x1, self.state.y1 = x2, y2
 
@@ -213,12 +217,16 @@ class DrawingLoop:
     def stop_drawing(self) -> None:
         """Stop drawing in tracing mode"""
         self.state.drawing_active = False
-    
+
+    def get_user_trace(self) -> list[tuple[int, int]]:
+        """Get the raw user trace coordinates in canvas space"""
+        return self.state.user_trace
 
     def _apply_voice_command(self, cmd: str) -> None:
         c = cmd.lower()
         if 'limpiar' in c or 'clear' in c:
             self.canvas.clear(self.current_shape)
+            self.state.user_trace = []
             return
         for name in ('amarillo', 'rosa', 'verde', 'celeste'):
             if name in c:

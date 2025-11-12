@@ -509,9 +509,9 @@ async function enviarTrazo(coordenadas, caracter) {
 
     const resultado = data.resultado;
     if (resultado.es_correcto) {
-      alert(`Muy bien ${resultado.usuario}! ${resultado.letra} fue correcta con ${(resultado.similitud * 100).toFixed(1)}% de similitud.`);
+      alert(`Muy bien ${resultado.usuario}! ${resultado.letra} fue correcta con ${resultado.similitud.toFixed(1)}% de similitud.`);
     } else {
-      alert(`${resultado.usuario}, ${resultado.letra} no coincide. Similitud: ${(resultado.similitud * 100).toFixed(1)}%`);
+      alert(`${resultado.usuario}, ${resultado.letra} no coincide. Similitud: ${resultado.similitud.toFixed(1)}%`);
     }
   } catch (err) {
     console.error("Error en fetch de validar trazo:", err);

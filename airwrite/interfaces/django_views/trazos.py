@@ -74,6 +74,8 @@ def index(request, letra_id=None, numero_id=None, silaba_id=None, tipo='letra'):
     if objeto is not None:
         _loop.enable_tracing_mode()
 
+    if objeto:
+        print(f"Letra cargada: {objeto.nombre}")
     context = {
         'objeto': objeto,  # Puede ser Letra o Número
         'tipo': tipo,
