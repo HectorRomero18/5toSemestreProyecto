@@ -140,43 +140,34 @@ def video_feed_canvas(request, tipo, objeto_id):
             # Imagen desbloqueada o permitida
 
             if (desbloqueada):
-                img_path = objeto.imagen.path
-                objeto_img = cv2.imread(img_path, cv2.IMREAD_UNCHANGED)
+                objeto_nombre = objeto.nombre
 
-                if objeto_img is None:
-                    print(f"Error al leer la imagen con ID {objeto.id}.")
+                if objeto_nombre is None:
+                    print(f"Error al leer el objeto con ID {objeto.id}.")
                     continue
 
-                # --- Ajuste dinámico del lienzo ---
-                h_img, w_img = objeto_img.shape[:2]
-                h_canvas, w_canvas = canvas.shape[:2]
-
-                if h_canvas < h_img + 200 or w_canvas < w_img + 200:
-                    new_h = max(h_canvas, h_img + 200)
-                    new_w = max(w_canvas, w_img + 200)
-                    canvas = cv2.resize(canvas, (new_w, new_h), interpolation=cv2.INTER_LINEAR)
-
-                # Redimensionar imagen proporcionalmente
-                max_width = 500
-                scale = min(max_width / w_img, 1.0)
-                new_size = (int(w_img * scale), int(h_img * scale))
-                objeto_img = cv2.resize(objeto_img, new_size, interpolation=cv2.INTER_AREA)
-
-                # Centrar
-                y1 = (canvas.shape[0] - objeto_img.shape[0]) // 2
-                x1 = (canvas.shape[1] - objeto_img.shape[1]) // 2
-                y2, x2 = y1 + objeto_img.shape[0], x1 + objeto_img.shape[1]
-
-                # Mezcla alfa si aplica
-                if objeto_img.shape[2] == 4:
-                    b, g, r, a = cv2.split(objeto_img)
-                    alpha = a / 255.0
-                    for c, ch in enumerate([b, g, r]):
-                        canvas[y1:y2, x1:x2, c] = (
-                            alpha * ch + (1 - alpha) * canvas[y1:y2, x1:x2, c]
-                        )
+               # Mostrar texto de objeto con las mismas dimensiones que en generar_modelo_texto
+                if tipo == 'silaba':
+                    text = f"{objeto_nombre.split()[-1].upper()[-2:]}"
                 else:
-                    canvas[y1:y2, x1:x2, :] = objeto_img
+                    text = f"{objeto_nombre[-1].upper()}"
+
+                font_scale = 17
+                thickness = 37
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                color = (255, 255, 255)        # blanco
+                y_offset = 585                 # posicion en y
+
+                # Calcular posición centrada
+                (text_width, text_height), baseline = cv2.getTextSize(text, font, font_scale, thickness)
+                canvas_height, canvas_width = canvas.shape[:2]
+                x = (canvas_width - text_width) // 2
+                y = (canvas_height + text_height) // 2 - (canvas_height - y_offset)
+
+                # Dibujar texto guía
+                cv2.putText(canvas, text, (x, y), font, font_scale, color, thickness)
+
+
 
                 # --- Texto de información ---
                 color_dif = {

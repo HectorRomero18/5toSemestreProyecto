@@ -6,7 +6,7 @@ from airwrite.infrastructure.repositories.compra_letra import DjangoPerfilReposi
 from airwrite.infrastructure.models.letra_compra import LetraCompra
 # Añadir import del modelo Letra
 from airwrite.infrastructure.models.letra import Letra
-
+ 
 @require_POST
 @login_required
 def comprar_letra(request):
