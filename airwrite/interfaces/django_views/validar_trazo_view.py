@@ -1,114 +1,78 @@
-import json
-from django.http import JsonResponse
-from django.views import View
-from django.utils.decorators import method_decorator
+# airwrite/interface/django_views/validador_trazo_view.py
+import base64
+import cv2
+import numpy as np
+from io import BytesIO
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+from django.utils.decorators import method_decorator
+from django.views import View
 
-from airwrite.domain.entities.trazo import Trazo
-from airwrite.domain.entities.usuario import Usuario
-from airwrite.application.use_cases.validar_escritura import ValidadorEscrituraUseCase
-from airwrite.infrastructure.storage.letra_storage import LetraStorage
-from airwrite.infrastructure.repositories.canvas_with_trace import CanvasAdapterWithTrace
+# IMPORTS — ajusta rutas si tus módulos quedaron en otro sitio
+# reiniciar_lienzo: crea base_canvas y modelo_gray (usa generar_modelo_texto internamente)
+# evaluar_trazo_por_contorno: devuelve (score, overlay_bgr)
+from airwrite.infrastructure.opencv.trazo_extractor import reiniciar_lienzo
+from airwrite.domain.services.evaluar_trazo import evaluar_trazo_por_contorno
 
-@method_decorator(csrf_exempt, name='dispatch')
-class ValidarTrazoView(View):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        # Instancia de LetraStorage (carga letras desde 'media/')
-        self.storage = LetraStorage(carpeta_media="media")
-        self.storage.cargar_letras()
+
+def _b64_to_cv2_img(b64string):
+    # acepta "data:image/png;base64,..." o solo el base64
+    if b64string.startswith("data:"):
+        b64string = b64string.split(",", 1)[1]
+    img_data = base64.b64decode(b64string)
+    nparr = np.frombuffer(img_data, np.uint8)
+    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+    return img
+
+
+def _cv2_img_to_datauri_png(img):
+    _, buff = cv2.imencode(".png", img)
+    b64 = base64.b64encode(buff).decode("utf-8")
+    return f"data:image/png;base64,{b64}"
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class ValidarTrazoApiView(View):
+    """
+    POST expected JSON:
+      { "image_base64": "data:image/png;base64,...", "texto": "A" }
+    or multipart/form-data with file field 'image' and optional 'texto'.
+    Response:
+      { "score": 92.5, "overlay": "data:image/png;base64,..." }
+    """
     def post(self, request, *args, **kwargs):
-        try:
-            # --- 1️ Parsear el JSON recibido ---
-            data = json.loads(request.body.decode("utf-8"))
-            caracter = data.get("caracter", "").upper()
-            coords_usuario = data.get("coordenadas", [])
-            nombre_usuario = data.get("usuario", "Anonimo")
+        # 1) obtener texto objetivo
+        texto = request.POST.get("texto") or (request.GET.get("texto") or "A")
 
-            # 🧭 Depuración temporal
-            print("\n--- PETICIÓN RECIBIDA EN VALIDAR_TRAZO ---")
-            print("Letra recibida:", caracter)
-            print("Primeras coordenadas:", coords_usuario[:5])
-            print("Total de puntos:", len(coords_usuario))
-            print("------------------------------------------\n")
+        # 2) obtener imagen (file o base64)
+        img_file = request.FILES.get("image")
+        img_b64 = request.POST.get("image_base64") or (request.body and None)
 
-            if not caracter or not coords_usuario:
-                return JsonResponse(
-                    {"error": "Faltan datos: caracter o coordenadas."}, status=400
-                )
+        frame = None
+        if img_file:
+            data = img_file.read()
+            nparr = np.frombuffer(data, np.uint8)
+            frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        else:
+            # intenta leer JSON body si es JSON
+            # si te mandan JSON con image_base64, Django no lo pone en POST; tenemos que parsearlo.
+            try:
+                import json
+                payload = json.loads(request.body.decode("utf-8"))
+                img_b64 = payload.get("image_base64") or img_b64
+                texto = payload.get("texto") or texto
+            except Exception:
+                pass
+            if img_b64:
+                frame = _b64_to_cv2_img(img_b64)
 
-            # --- 2️ Obtener trazo de referencia ---
-            letra_ref = self.storage.obtener_letra(caracter)
-            if not letra_ref or not letra_ref.trazos:
-                return JsonResponse(
-                    {"error": f"No se encontró la letra '{caracter}' o no tiene trazos."},
-                    status=404,
-                )
+        if frame is None:
+            return JsonResponse({"error": "No se recibió imagen. Enviar 'image' (file) o 'image_base64' (string)."}, status=400)
 
-            # Si el front envía [{x:…, y:…}], convertir a [(x,y)]
-            if isinstance(coords_usuario[0], dict):
-                coords_usuario = [(pt["x"], pt["y"]) for pt in coords_usuario]
+        # 3) preparar base/modelo y evaluar
+        base_canvas, modelo_gray = reiniciar_lienzo(frame.shape, texto)
+        score, overlay = evaluar_trazo_por_contorno(frame, base_canvas, modelo_gray)
 
-            # --- 3️ Crear trazo del usuario ---
-            adapter = CanvasAdapterWithTrace(state=None)
-            coords_normalizadas = adapter._normalize_points(coords_usuario, target_size=256, pad=8)
-            trazo_usuario = Trazo(coordenadas=coords_normalizadas)
+        overlay_datauri = _cv2_img_to_datauri_png(overlay)
 
-            # --- 4️ Ejecutar el caso de uso de validación ---
-            usuario = Usuario(nombre=nombre_usuario)
-            validador = ValidadorEscrituraUseCase(usuario=usuario, umbral_similitud=0.85)
-            resultado = validador.ejecutar_validacion(letra_ref, trazo_usuario)
-
-            # --- 5️ Devolver respuesta JSON ---
-            return JsonResponse({
-                "caracter": caracter,
-                "usuario": nombre_usuario,
-                "resultado": resultado,
-                "mensaje": f"Validación completada para la letra '{caracter}'."
-            }, status=200)
-
-        except Exception as e:
-            print("\n❌ ERROR EN VALIDAR_TRAZO:", str(e))
-            return JsonResponse({"error": str(e)}, status=500)
-
-
-# from django.http import JsonResponse
-# from django.views.decorators.csrf import csrf_exempt
-# import json
-
-# from airwrite.infrastructure.repositories.canvas_with_trace import CanvasAdapterWithTrace
-# from airwrite.domain.entities.usuario import Usuario
-# from airwrite.domain.entities.letra import LetraEntity
-# from airwrite.application.use_cases.validar_escritura import ValidadorEscrituraUseCase
-
-# # Mantener CSRF protegido si se llama desde JS con token
-# @csrf_exempt
-# def validar_trazo(request):
-#     if request.method != "POST":
-#         return JsonResponse({"error": "Método no permitido"}, status=405)
-
-#     try:
-#         data = json.loads(request.body)
-#         caracter = data.get("caracter")
-#         coordenadas = data.get("coordenadas", [])
-
-#         if not caracter or not coordenadas:
-#             return JsonResponse({"error": "Faltan datos de trazo"}, status=400)
-
-#         # Inicializar CanvasAdapter con estado vacío (o imagen de fondo si se usa)
-#         canvas = CanvasAdapterWithTrace(state=None, N_points=64)
-#         # Agregar los puntos recibidos desde JS
-#         for x, y in coordenadas:
-#             canvas._maybe_append_point((x, y))
-
-#         # Generar payload con letra seleccionada y usuario simulado
-#         payload = canvas.trace_to_payload(usuario="UsuarioPrueba", letra=caracter)
-
-#         # Validar trazo usando el use_case
-#         validador = ValidadorEscrituraUseCase()
-#         resultado = validador.validar_trazo(payload)  # Devuelve dict con similitud, correcto, etc.
-
-#         return JsonResponse({"resultado": resultado, "caracter": caracter})
-
-#     except Exception as e:
-#         return JsonResponse({"error": str(e)}, status=500)
+        return JsonResponse({"score": float(score), "overlay": overlay_datauri})

@@ -1,76 +1,121 @@
 import cv2
 import numpy as np
-import os
-from typing import List, Tuple
-from airwrite.domain.entities.trazo import Trazo
+import random
+from airwrite.domain.services.generar_modelo_texto import generar_modelo_texto
+from airwrite.domain.services.generar_lista import generar_lista
+from airwrite.domain.services.evaluar_trazo import evaluar_trazo_por_contorno
 
-# Estas funciones se dejaron fuera de uso
-# dado que ahora el trazo se genera directamente
-# con las coordenadas reales del contorno de la imagen.
-# def _remuestrear_contorno(...):
-# def _normalizar_puntos(...):
+# Colores y parámetros
+celesteBajo = np.array([75, 185, 88], np.uint8)
+celesteAlto = np.array([112, 255, 255], np.uint8)
+colorDibujo = (255, 113, 82)
+colorPuntero = (255, 0, 0)
+fondo_color = (0, 255, 255)
+BAND_DILATE = 15
+STROKE_DILATE = 8
 
-""" 
-Lee una imagen y devuelve un Trazo con los puntos remuestreados y normalizados.
- - path_image: ruta a la imagen (png).
-    - n_points: número de puntos del trazo de referencia.
-    - target_size: tamaño de normalización (coordenadas en 0..target_size).
-"""
-def generar_trazo_desde_imagen(path_image: str, n_points: int = 64, target_size: int = 256) -> Trazo:
-    if not os.path.exists(path_image):
-        raise FileNotFoundError(f"No se encontró la imagen: {path_image}")
-    
-    img = cv2.imread(path_image, cv2.IMREAD_UNCHANGED)
-    if img is None:
-        raise ValueError(f"No se pudo leer la imagen: {path_image}")
-    
-    # Detectar máscara (canal alfa o binarización)
-    if img.shape[-1] == 4:
-        alpha = img[:, :, 3]
-        mask = cv2.threshold(alpha, 1, 255, cv2.THRESH_BINARY)[1]
-    else:
-        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        mask = cv2.threshold(gray, 50, 255, cv2.THRESH_BINARY_INV)[1]
-    
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    if not contours:
-        raise ValueError(f"No se encontraron contornos en {path_image}")
-    
-    # Tomar el contorno más grande (la letra principal)
-    best_contour = max(contours, key=cv2.contourArea)
-    points = best_contour.squeeze()
-    if len(points.shape) == 1:
-        points = np.array([points])
-    
-    # --- Re-muestrear para obtener puntos equidistantes ---
-    pts = points.reshape(-1, 2).astype(np.float64)
-    diffs = np.linalg.norm(pts[1:] - pts[:-1], axis=1)
-    dists = np.concatenate(([0.0], diffs))
-    cum = np.cumsum(dists)
-    total = cum[-1] if len(cum) else 0.0
-    if total == 0.0:
-        sampled = np.tile(pts[0], (n_points, 1))
-    else:
-        alphas = np.linspace(0.0, total, n_points, endpoint=False)
-        sampled = []
-        j = 0
-        for a in alphas:
-            while j < len(cum)-1 and cum[j+1] < a:
-                j += 1
-            if j >= len(pts)-1:
-                p = pts[-1]
-            else:
-                denom = (cum[j+1] - cum[j]) or 1e-6
-                t = (a - cum[j]) / denom
-                p = (1 - t) * pts[j] + t * pts[j+1]
-            sampled.append(p)
-        sampled = np.array(sampled)
-    
-    # --- Normalizar al rango [0, target_size] ---
-    minxy = sampled.min(axis=0)
-    maxxy = sampled.max(axis=0)
-    size = max(maxxy - minxy)
-    scale = (target_size - 16) / size if size > 0 else 1
-    normalized = (sampled - minxy) * scale + 8  # margen
-    
-    return Trazo(coordenadas=[(int(x), int(y)) for x, y in normalized])
+def reiniciar_lienzo(frame_shape, texto):
+    """Crea el lienzo y el modelo base de la letra/sílaba/numero."""
+    h, w = frame_shape[:2]
+    modelo = generar_modelo_texto((h, w), texto)
+    letra_bgr = cv2.cvtColor(modelo, cv2.COLOR_GRAY2BGR)
+    fondo = np.full((h, w, 3), fondo_color, dtype=np.uint8)
+    base = cv2.addWeighted(fondo, 1.0, letra_bgr, 0.95, 0)
+    return base.copy(), modelo
+
+def iniciar_practica(modo="letras"):
+    """Inicia el flujo de práctica (con cámara y reconocimiento del trazo)."""
+    elementos = generar_lista(modo)
+    random.shuffle(elementos)
+
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    if not cap.isOpened():
+        raise RuntimeError("No se pudo abrir la cámara")
+
+    ret, frame = cap.read()
+    if not ret:
+        raise RuntimeError("No se pudo leer la cámara")
+
+    frame = cv2.flip(frame, 1)
+    indice = 0
+    elemento_actual = elementos[indice]
+    base_canvas, modelo_gray = reiniciar_lienzo(frame.shape, elemento_actual)
+    imAux = base_canvas.copy()
+
+    grosor = 28
+    dibujando = False
+    x1 = y1 = None
+
+    print("\nControles: [A] dibujar/pause | [E] evaluar | [ESP] limpiar | [←][→] siguiente/anterior | [ESC] salir")
+
+    while True:
+        ret, frame = cap.read()
+        if not ret:
+            break
+        frame = cv2.flip(frame, 1)
+        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+
+        mask = cv2.inRange(hsv, celesteBajo, celesteAlto)
+        mask = cv2.erode(mask, None, iterations=1)
+        mask = cv2.dilate(mask, None, iterations=2)
+        mask = cv2.medianBlur(mask, 7)
+        cnts, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        cursor = None
+        if cnts:
+            c = max(cnts, key=cv2.contourArea)
+            if cv2.contourArea(c) > 800:
+                x, y, w, h = cv2.boundingRect(c)
+                cx = x + w // 2
+                cy = y + h // 2
+                cursor = (cx, cy)
+                if dibujando:
+                    if x1 is not None:
+                        cv2.line(imAux, (x1, y1), (cx, cy), colorDibujo, grosor, cv2.LINE_AA)
+                    x1, y1 = cx, cy
+                else:
+                    x1, y1 = cx, cy
+        else:
+            x1, y1 = None, None
+
+        view = imAux.copy()
+        if cursor:
+            cv2.circle(view, cursor, 10, colorPuntero, -1)
+
+        cv2.imshow("Camara", frame)
+        cv2.imshow(f"Lienzo - {elemento_actual}", view)
+
+        key = cv2.waitKey(1) & 0xFF
+        if key == 27:  # ESC
+            break
+        elif key in (ord('a'), ord('A')):
+            dibujando = not dibujando
+        elif key == 32:
+            base_canvas, modelo_gray = reiniciar_lienzo(frame.shape, elemento_actual)
+            imAux = base_canvas.copy()
+        elif key in (ord('e'), ord('E')):
+            score, overlay = evaluar_trazo_por_contorno(imAux, base_canvas, modelo_gray,
+                                                         band_dilate=BAND_DILATE,
+                                                         stroke_dilate=STROKE_DILATE)
+            print(f"Precisión: {score:.2f}%")
+            cv2.imshow("Evaluación", overlay)
+            cv2.waitKey(800)
+            cv2.destroyWindow("Evaluación")
+            if score >= 95:
+                indice = (indice + 1) % len(elementos)
+                elemento_actual = elementos[indice]
+                base_canvas, modelo_gray = reiniciar_lienzo(frame.shape, elemento_actual)
+                imAux = base_canvas.copy()
+        elif key == 81:
+            indice = (indice - 1) % len(elementos)
+            elemento_actual = elementos[indice]
+            base_canvas, modelo_gray = reiniciar_lienzo(frame.shape, elemento_actual)
+            imAux = base_canvas.copy()
+        elif key == 83:
+            indice = (indice + 1) % len(elementos)
+            elemento_actual = elementos[indice]
+            base_canvas, modelo_gray = reiniciar_lienzo(frame.shape, elemento_actual)
+            imAux = base_canvas.copy()
+
+    cap.release()
+    cv2.destroyAllWindows()
