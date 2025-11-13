@@ -19,6 +19,7 @@ from airwrite.infrastructure.repositories.adapters import CameraAdapter, CanvasA
 
 from airwrite.domain.constants.xp_reward import DIFICULTADES, CATEGORIAS_LETRAS
 import unicodedata
+from airwrite.domain.services.evaluar_trazo import evaluar_trazo_por_contorno
 
 def quitar_tildes(texto: str) -> str:
     return ''.join(
@@ -74,6 +75,14 @@ def index(request, letra_id=None, numero_id=None, silaba_id=None, tipo='letra'):
     # Enable tracing mode for trazos (letters, numbers, syllables)
     if objeto is not None:
         _loop.enable_tracing_mode()
+
+        from airwrite.infrastructure.opencv.trazo_extractor import reiniciar_lienzo
+        texto = objeto.nombre.split()[-1].upper()[-2:] if tipo == 'silaba' else objeto.nombre[-1].upper()
+        frame_shape = (600, 1080, 3)
+        base, modelo = reiniciar_lienzo(frame_shape, texto)
+        _state.base_canvas = base
+        _state.modelo_gray = modelo
+        _state.current_texto = texto
 
     if objeto:
         print(f"Letra cargada: {objeto.nombre}")
@@ -138,11 +147,14 @@ def video_feed_canvas(request, tipo, objeto_id):
                 time.sleep(0.01)
                 continue
 
-            # Crear lienzo base con cuadrícula
-            blank_canvas = np.ones(canvas.shape, dtype=np.uint8) * 200
-            grid_size = 17
-            blank_canvas[::grid_size, :] = 150
-            blank_canvas[:, ::grid_size] = 150
+            # Usar base_canvas si existe, sino crear lienzo base con cuadrícula
+            if _state.base_canvas is not None:
+                blank_canvas = _state.base_canvas.copy()
+            else:
+                blank_canvas = np.ones(canvas.shape, dtype=np.uint8) * 200
+                grid_size = 17
+                blank_canvas[::grid_size, :] = 150
+                blank_canvas[:, ::grid_size] = 150
 
             # Imagen desbloqueada o permitida
 
@@ -152,27 +164,6 @@ def video_feed_canvas(request, tipo, objeto_id):
                 if objeto_nombre is None:
                     print(f"Error al leer el objeto con ID {objeto.id}.")
                     continue
-
-
-                if tipo == 'silaba':
-                    text = f"{objeto_nombre.split()[-1].upper()[-2:]}"
-                else:
-                    text = f"{objeto_nombre[-1].upper()}"
-
-                font_scale = 13
-                thickness = 33
-                font = cv2.FONT_HERSHEY_SIMPLEX
-                color = (255, 255, 255)        # blanco
-                y_offset = 585                 # posicion en y
-
-                # Calcular posición centrada
-                (text_width, text_height), baseline = cv2.getTextSize(text, font, font_scale, thickness)
-                canvas_height, canvas_width = canvas.shape[:2]
-                x = (canvas_width - text_width) // 2
-                y = (canvas_height + text_height) // 2 - (canvas_height - y_offset)
-
-                # Dibujar texto guía en el lienzo base
-                cv2.putText(blank_canvas, text, (x, y), font, font_scale, color, thickness)
 
 
 
@@ -280,3 +271,17 @@ def toggle_drawing(request):
         return JsonResponse({"status": "ok"})
     except Exception as e:
         return JsonResponse({"status": "error", "error": str(e)}, status=500)
+
+
+@require_POST
+def validar_trazo(request):
+    """Evaluar la precisión del trazo dibujado"""
+    if _state.base_canvas is None or _state.modelo_gray is None:
+        return JsonResponse({"status": "error", "error": "no_modelo"})
+
+    canvas = _canvas_port.get()
+    if canvas is None:
+        return JsonResponse({"status": "error", "error": "no_canvas"})
+
+    score, overlay = evaluar_trazo_por_contorno(canvas, _state.base_canvas, _state.modelo_gray)
+    return JsonResponse({"status": "ok", "score": score})

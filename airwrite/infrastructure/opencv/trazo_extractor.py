@@ -28,7 +28,7 @@ def iniciar_practica(modo="letras"):
     elementos = generar_lista(modo)
     random.shuffle(elementos)
 
-    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)
     if not cap.isOpened():
         raise RuntimeError("No se pudo abrir la cámara")
 

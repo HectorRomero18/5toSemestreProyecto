@@ -8,9 +8,8 @@ from airwrite.interfaces.django_views.silaba import  SilabaListView as SilabaMod
 from airwrite.interfaces.django_views.comprada import CompradaListView as CompradaModuleListView
 from airwrite.interfaces.django_views.numeros import NumeroListView as NumerosModuleListView
 from airwrite.interfaces.django_views.favorito.favorito import FavoritoListView, FavoritoAddView, FavoritoDeleteView, FavoritoExistsView
-from airwrite.interfaces.django_views.trazos import index, video_feed_cam, video_feed_canvas, clear_canvas, set_color, set_grosor, toggle_drawing
+from airwrite.interfaces.django_views.trazos import index, video_feed_cam, video_feed_canvas, clear_canvas, set_color, set_grosor, toggle_drawing, validar_trazo
 from airwrite.interfaces.django_views.compra_letra import comprar_letra
-from airwrite.interfaces.django_views.validar_trazo_view import ValidarTrazoApiView as ValidarTrazoView
 from airwrite.interfaces.django_views.capturar_trazo_view import capturar_trazo as CapturarTrazoView
 # from core.views.login import login_view
 
@@ -44,6 +43,7 @@ urlpatterns = [
 
     path('color/', set_color, name='set_color'),
     path('toggle_drawing/', toggle_drawing, name='toggle_drawing'),
+    path('validar_trazo/', validar_trazo, name='validar_trazo'),
 
     path('abecedario/', AbecedarioListView.as_view(), name='abecedario'),
     path('tienda/', TiendaXpModuleListView.as_view(), name='tienda'),
@@ -55,8 +55,6 @@ urlpatterns = [
     path('favoritos/add/', FavoritoAddView.as_view(), name='favorito_add'),
     path('favoritos/delete/', FavoritoDeleteView.as_view(), name='favorito_delete'),
     path('favoritos/exists/', FavoritoExistsView.as_view(), name='favorito_exists'),
-
-    path("validar_trazo/",ValidarTrazoView.as_view() , name="validar_trazo"),
     path("capturar_trazo/", CapturarTrazoView, name="capturar_trazo"),
 
 ]

@@ -275,3 +275,27 @@ window.addEventListener('beforeunload', function(event) {
         xhr.send();
     }
 });
+
+// Función para verificar el trazo
+document.addEventListener("DOMContentLoaded", () => {
+    const verificarButton = document.getElementById('verificarButton');
+    if (verificarButton) {
+        verificarButton.onclick = async function() {
+            try {
+                const response = await fetch(window.urls.validar_trazo, {
+                    method: "POST",
+                    headers: { 'X-CSRFToken': csrftoken }
+                });
+                const data = await response.json();
+                if (data.status === "ok") {
+                    alert(`Precisión: ${data.score}%`);
+                } else {
+                    alert("Error: " + data.error);
+                }
+            } catch (err) {
+                console.error("Error al verificar trazo:", err);
+                alert("Error al verificar trazo");
+            }
+        };
+    }
+});

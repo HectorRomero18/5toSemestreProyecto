@@ -33,6 +33,9 @@ class DrawingState:
         self.drawing_active: bool = False
         self.last_draw_time: float = 0.0
         self.user_trace: list[tuple[int, int]] = []
+        self.base_canvas: Optional[np.ndarray] = None
+        self.modelo_gray: Optional[np.ndarray] = None
+        self.current_texto: str = ""
 
 
 class DrawingLoop:
@@ -96,64 +99,59 @@ class DrawingLoop:
         # cv2.rectangle(frame, (590, 0), (640, 50), (0, 0, 0), self.state.grosor_grande)
         # cv2.circle(frame, (615, 25), 11, (0, 0, 0), -1)
 
-        # Deteccion del marcador color celeste (más ligero)
+        # Deteccion del marcador color celeste (sin contornos)
         mask = cv2.inRange(frame_hsv, self.cfg.celeste_low, self.cfg.celeste_high)
         mask = cv2.erode(mask, None, iterations=1)
         mask = cv2.dilate(mask, None, iterations=1)
-        mask = cv2.GaussianBlur(mask, (15, 15), 0)    
-        cnts, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        cnts = sorted(cnts, key=cv2.contourArea, reverse=True)[:1]
+        mask = cv2.GaussianBlur(mask, (15, 15), 0)
+        moments = cv2.moments(mask)
+        if moments["m00"] > 1000:
+            x2 = int(moments["m10"] / moments["m00"])
+            y2 = int(moments["m01"] / moments["m00"])
 
-        for c in cnts:
-            area = cv2.contourArea(c)
-            if area > 1000:
-                x, y, w, h = cv2.boundingRect(c)
-                x2, y2 = x + w // 2, y + h // 2
-                
-
-                # Color botones
-                # if 0 < x2 < 50 and 0 < y2 < 50:
-                #     self._set_color(self.cfg.color_amarillo, (6, 2, 2, 2))
-                # if 50 < x2 < 100 and 0 < y2 < 50:
-                #     self._set_color(self.cfg.color_rosa, (2, 6, 2, 2))
-                # if 100 < x2 < 150 and 0 < y2 < 50:
-                #     self._set_color(self.cfg.color_verde, (2, 2, 6, 2))
-                # if 150 < x2 < 200 and 0 < y2 < 50:
-                #     self._set_color(self.cfg.color_celeste, (2, 2, 2, 6))
-                # # Clear button
-                # if 300 < x2 < 400 and 0 < y2 < 50:
-                #     self.canvas.clear(self.current_shape)
-                # # Thickness
-                # if 490 < x2 < 540 and 0 < y2 < 50:
-                #     self._set_thickness(3, (6, 1, 1))
-                # if 540 < x2 < 590 and 0 < y2 < 50:
-                #     self._set_thickness(7, (1, 6, 1))
-                # if 590 < x2 < 640 and 0 < y2 < 50:
-                #     self._set_thickness(11, (1, 1, 6))
-                # dibujar
-                current_time = time.time()
-                if self.state.tracing_mode:
-                    # In tracing mode, only draw if drawing is active and enough time has passed
-                    if (self.state.drawing_active and self.state.x1 is not None and self.state.y1 is not None and
-                        not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.04):
-                        self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
-                        self.state.user_trace.append((x2, y2))
-                        self.state.last_draw_time = current_time
-                else:
-                    # Normal mode: draw automatically
-                    if self.state.x1 is not None and self.state.y1 is not None and not (0 < y2 < 60):
-                        self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
-                        self.state.user_trace.append((x2, y2))
-
-                self.state.x1, self.state.y1 = x2, y2
-
-                cv2.circle(frame, (x2, y2), self.state.thickness, self.state.color, 3)
-
-                # dibujar puntero en canvas
-                self.canvas.draw_temp_pointer((x2, y2), self.state.color, self.state.thickness*2)
-
+            # Color botones
+            # if 0 < x2 < 50 and 0 < y2 < 50:
+            #     self._set_color(self.cfg.color_amarillo, (6, 2, 2, 2))
+            # if 50 < x2 < 100 and 0 < y2 < 50:
+            #     self._set_color(self.cfg.color_rosa, (2, 6, 2, 2))
+            # if 100 < x2 < 150 and 0 < y2 < 50:
+            #     self._set_color(self.cfg.color_verde, (2, 2, 6, 2))
+            # if 150 < x2 < 200 and 0 < y2 < 50:
+            #     self._set_color(self.cfg.color_celeste, (2, 2, 2, 6))
+            # # Clear button
+            # if 300 < x2 < 400 and 0 < y2 < 50:
+            #     self.canvas.clear(self.current_shape)
+            # # Thickness
+            # if 490 < x2 < 540 and 0 < y2 < 50:
+            #     self._set_thickness(3, (6, 1, 1))
+            # if 540 < x2 < 590 and 0 < y2 < 50:
+            #     self._set_thickness(7, (1, 6, 1))
+            # if 590 < x2 < 640 and 0 < y2 < 50:
+            #     self._set_thickness(11, (1, 1, 6))
+            # dibujar
+            current_time = time.time()
+            if self.state.tracing_mode:
+                # In tracing mode, only draw if drawing is active and enough time has passed
+                if (self.state.drawing_active and self.state.x1 is not None and self.state.y1 is not None and
+                    not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.04):
+                    self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
+                    self.state.user_trace.append((x2, y2))
+                    self.state.last_draw_time = current_time
             else:
-                self.state.x1, self.state.y1 = None, None
+                # Normal mode: draw automatically
+                if self.state.x1 is not None and self.state.y1 is not None and not (0 < y2 < 60):
+                    self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
+                    self.state.user_trace.append((x2, y2))
+
+            self.state.x1, self.state.y1 = x2, y2
+
+            cv2.circle(frame, (x2, y2), self.state.thickness, self.state.color, 3)
+
+            # dibujar puntero en canvas
+            self.canvas.draw_temp_pointer((x2, y2), self.state.color, self.state.thickness*2)
+
+        else:
+            self.state.x1, self.state.y1 = None, None
 
         # Store last frame for streaming
         self._last_frame_cam = frame.copy()
