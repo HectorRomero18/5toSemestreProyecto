@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404
 import cv2
+import numpy as np
 import time
 import json
 
@@ -137,6 +138,12 @@ def video_feed_canvas(request, tipo, objeto_id):
                 time.sleep(0.01)
                 continue
 
+            # Crear lienzo base con cuadrícula
+            blank_canvas = np.ones(canvas.shape, dtype=np.uint8) * 200
+            grid_size = 17
+            blank_canvas[::grid_size, :] = 150
+            blank_canvas[:, ::grid_size] = 150
+
             # Imagen desbloqueada o permitida
 
             if (desbloqueada):
@@ -146,14 +153,14 @@ def video_feed_canvas(request, tipo, objeto_id):
                     print(f"Error al leer el objeto con ID {objeto.id}.")
                     continue
 
-               # Mostrar texto de objeto con las mismas dimensiones que en generar_modelo_texto
+
                 if tipo == 'silaba':
                     text = f"{objeto_nombre.split()[-1].upper()[-2:]}"
                 else:
                     text = f"{objeto_nombre[-1].upper()}"
 
-                font_scale = 17
-                thickness = 37
+                font_scale = 13
+                thickness = 33
                 font = cv2.FONT_HERSHEY_SIMPLEX
                 color = (255, 255, 255)        # blanco
                 y_offset = 585                 # posicion en y
@@ -164,8 +171,9 @@ def video_feed_canvas(request, tipo, objeto_id):
                 x = (canvas_width - text_width) // 2
                 y = (canvas_height + text_height) // 2 - (canvas_height - y_offset)
 
-                # Dibujar texto guía
-                cv2.putText(canvas, text, (x, y), font, font_scale, color, thickness)
+                # Dibujar texto guía en el lienzo base
+                cv2.putText(blank_canvas, text, (x, y), font, font_scale, color, thickness)
+
 
 
 
@@ -177,25 +185,30 @@ def video_feed_canvas(request, tipo, objeto_id):
                 }.get(texto_sin_tilde, (255, 255, 255))
 
                 # Texto principal (más abajo)
-                cv2.putText(canvas, f"{objeto.nombre}", (20, 150),
+                cv2.putText(blank_canvas, f"{objeto.nombre}", (20, 150),
                             cv2.FONT_HERSHEY_SIMPLEX, 1.2, (50, 50, 50), 3)
 
                 # Texto de dificultad (posición fija a la derecha)
-                cv2.putText(canvas, f"Dificultad: {texto_sin_tilde}", (760, 150),
+                cv2.putText(blank_canvas, f"Dificultad: {texto_sin_tilde}", (760, 150),
                             cv2.FONT_HERSHEY_SIMPLEX, 1.2, color_dif, 3)
 
                 if tipo == 'letra':
                     if objeto.categoria == 'V':
-                        cv2.putText(canvas, f"{CATEGORIAS_DICT[objeto.categoria]}",
+                        cv2.putText(blank_canvas, f"{CATEGORIAS_DICT[objeto.categoria]}",
                                     (20, 200), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 3)
                     elif objeto.categoria == 'C':
-                        cv2.putText(canvas, f"{CATEGORIAS_DICT[objeto.categoria]}",
+                        cv2.putText(blank_canvas, f"{CATEGORIAS_DICT[objeto.categoria]}",
                                 (20, 200), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 0, 0), 3)
 
+            # Copiar los trazos del usuario sobre el lienzo base
+            bg_mask = (canvas == 200).all(axis=2)
+            grid_mask = (canvas == 150).all(axis=2)
+            drawing_mask = ~(bg_mask | grid_mask)
+            blank_canvas[drawing_mask] = canvas[drawing_mask]
 
 
             # Convertir a JPEG
-            ret, jpeg = cv2.imencode('.jpg', canvas)
+            ret, jpeg = cv2.imencode('.jpg', blank_canvas)
             if not ret:
                 continue
 
