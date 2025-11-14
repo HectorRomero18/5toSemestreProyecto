@@ -101,6 +101,12 @@
             <div class="camera-preview">
               <img src="{% url 'video_feed_cam' %}" alt="Vista previa de cámara">
             </div>
+            
+            {% comment %} <div class="action-buttons">
+                <button class="btn btn-primary">Escribir</button>
+                <button class="btn btn-secondary">Dibujar</button>
+            </div> {% endcomment %}
+
             <div class="config-section">
                 <div class="section-title">Mis Puntos Xp</div>
 
@@ -181,7 +187,38 @@
                     <span class="material-icons">check_circle</span>
                 </button>
                 
+
+                {% comment %} <button id="recordButton" class="mic-btn" title="Hablar">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3z"/>
+                        <path d="M17 11c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z"/>
+                    </svg>
+                </button> {% endcomment %}
             </div>
+
+            <!-- Status Messages -->
+            {% comment %} <div id="transcriptionAlert" class="transcription-alert">
+                <div class="alert-content">
+                    <div class="alert-icon" id="alertIcon">
+                        <!-- Ícono de temporizador mientras procesa -->
+                        <svg class="timer-icon" viewBox="0 0 24 24">
+                            <path d="M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                        </svg>
+                        <!-- Ícono de check para éxito -->
+                        <svg class="check-icon hidden" viewBox="0 0 24 24">
+                            <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                        </svg>
+                        <!-- Ícono de error -->
+                        <svg class="error-icon hidden" viewBox="0 0 24 24">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/>
+                        </svg>
+                    </div>
+                    <div class="alert-message" id="alertMessage">Transcribiendo...</div>
+                    <div class="alert-result" id="alertResult"></div>
+                </div>
+            </div> {% endcomment %}
+
+            <!-- reemplazar/eliminar el <div id="color-palette"> añadido previamente -->
 <script>
   function getCookie(name) {
     let cookieValue = null;

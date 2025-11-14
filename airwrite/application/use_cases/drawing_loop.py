@@ -17,7 +17,7 @@ class DrawingConfig:
     color_rosa: tuple[int, int, int]
     color_verde: tuple[int, int, int]
     color_clear: tuple[int, int, int]
-    target_size: Optional[Tuple[int, int]] = (400, 720)  # Reducido para mejor rendimiento
+    target_size: Optional[Tuple[int, int]] = (800, 1440)  # Aumentado para mejor calidad de imagen
 
 
 class DrawingState:
@@ -45,7 +45,7 @@ class DrawingLoop:
         self.commands = commands
         self.cfg = cfg
         self.state = state
-        self.min_dist = 12.0  # Aumentado para reducir frecuencia de dibujado y mejorar rendimiento
+        self.min_dist = 20.0  # Aumentado para reducir frecuencia de dibujado y mejorar fluidez
 
     def step(self) -> None:
         ok, frame = self.cam.read()
@@ -59,7 +59,7 @@ class DrawingLoop:
             if self.cfg.target_size:
                 tgt_h, tgt_w = self.cfg.target_size
                 if (frame.shape[0], frame.shape[1]) != (tgt_h, tgt_w):
-                    frame = cv2.resize(frame, (tgt_w, tgt_h), interpolation=cv2.INTER_LINEAR)
+                    frame = cv2.resize(frame, (tgt_w, tgt_h), interpolation=cv2.INTER_CUBIC)
 
             frame_hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -85,11 +85,13 @@ class DrawingLoop:
             return
 
 
-        # Deteccion del marcador color celeste (optimizada para rendimiento)
+        # Deteccion del marcador color celeste (optimizada para mejor deteccion)
         mask = cv2.inRange(frame_hsv, self.cfg.celeste_low, self.cfg.celeste_high)
-        mask = cv2.erode(mask, None, iterations=1)
-        mask = cv2.dilate(mask, None, iterations=1)
-        # Remover GaussianBlur para mejorar rendimiento
+        # Usar kernel pequeño para preservar detalles
+        kernel = np.ones((3, 3), np.uint8)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=1)
+        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, kernel, iterations=1)
+        mask = cv2.GaussianBlur(mask, (3, 3), 0)  # Blur mas suave
         moments = cv2.moments(mask)
         if moments["m00"] > 1000:
             x2 = int(moments["m10"] / moments["m00"])
@@ -119,22 +121,24 @@ class DrawingLoop:
             if self.state.tracing_mode:
                 # In tracing mode, only draw if drawing is active and enough time has passed
                 if (self.state.drawing_active and self.state.x1 is not None and self.state.y1 is not None and
-                    not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.04):
+                    not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.08):
                     self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
                     self.state.user_trace.append((x2, y2))
                     self.state.last_draw_time = current_time
             else:
-                # Normal mode: draw automatically
+                # Normal mode: draw automatically with distance check for smoother strokes
                 if self.state.x1 is not None and self.state.y1 is not None and not (0 < y2 < 60):
-                    self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
-                    self.state.user_trace.append((x2, y2))
+                    dist = np.sqrt((x2 - self.state.x1)**2 + (y2 - self.state.y1)**2)
+                    if dist > 5:  # Minimum distance to draw for smoother lines
+                        self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
+                        self.state.user_trace.append((x2, y2))
 
             self.state.x1, self.state.y1 = x2, y2
 
             cv2.circle(frame, (x2, y2), self.state.thickness, self.state.color, 3)
 
             # dibujar puntero en canvas
-            self.canvas.draw_temp_pointer((x2, y2), self.state.color, self.state.thickness*2)
+            self.canvas.draw_temp_pointer((x2, y2), self.state.color, 10)
 
         else:
             self.state.x1, self.state.y1 = None, None
