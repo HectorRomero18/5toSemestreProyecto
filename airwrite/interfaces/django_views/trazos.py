@@ -43,11 +43,11 @@ _cfg = DrawingConfig(
     celeste_low=(75, 185, 88),
     celeste_high=(112, 255, 255),
     color_celeste=(255, 113, 82),
-    color_amarillo=(89, 222, 255),
+    color_amarillo=(0, 0, 255),
     color_rosa=(128, 0, 255),
     color_verde=(0, 255, 36),
     color_clear=(29, 112, 246),
-    target_size=(400, 720)  # Reducido para mejor rendimiento
+    target_size=(720, 1080)  # Reducido para mejor rendimiento
 )
 _state = DrawingState()
 _loop = DrawingLoop(_cam_port, _canvas_port, _cmd_port, _cfg, _state)
@@ -79,7 +79,7 @@ def index(request, letra_id=None, numero_id=None, silaba_id=None, tipo='letra'):
 
         from airwrite.infrastructure.opencv.trazo_extractor import reiniciar_lienzo
         texto = objeto.nombre.split()[-1].upper()[-2:] if tipo == 'silaba' else objeto.nombre[-1].upper()
-        frame_shape = (400, 720, 3)  # Reducido para mejor rendimiento
+        frame_shape = (720, 1080, 3)  # Reducido para mejor rendimiento
         base, modelo = reiniciar_lienzo(frame_shape, texto)
         _state.base_canvas = base
         _state.modelo_gray = modelo
@@ -170,16 +170,16 @@ def video_feed_canvas(request, tipo, objeto_id):
                 # --- Texto de información ---
                 color_dif = {
                     'Facil': (0, 255, 0),
-                    'Media': (0, 255, 255),
+                    'Media': (211, 0, 148),
                     'Dificil': (0, 0, 255)
                 }.get(texto_sin_tilde, (255, 255, 255))
 
                 # Texto principal (más abajo)
-                cv2.putText(blank_canvas, f"{objeto.nombre}", (20, 150),
+                cv2.putText(blank_canvas, f"{objeto.nombre}", (20, 200),
                             cv2.FONT_HERSHEY_SIMPLEX, 1.2, (50, 50, 50), 3)
 
                 # Texto de dificultad (posición fija a la derecha)
-                cv2.putText(blank_canvas, f"Dificultad: {texto_sin_tilde}", (760, 150),
+                cv2.putText(blank_canvas, f"Dificultad: {texto_sin_tilde}", (730, 200),
                             cv2.FONT_HERSHEY_SIMPLEX, 1.2, color_dif, 3)
 
                 if tipo == 'letra':
