@@ -170,7 +170,7 @@ def video_feed_canvas(request, tipo, objeto_id):
                 # --- Texto de información ---
                 color_dif = {
                     'Facil': (0, 255, 0),
-                    'Media': (0, 255, 255),
+                    'Media': (0, 140, 255),
                     'Dificil': (0, 0, 255)
                 }.get(texto_sin_tilde, (255, 255, 255))
 
