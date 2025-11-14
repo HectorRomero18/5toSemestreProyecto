@@ -562,7 +562,7 @@ async function enviarTrazo(coordenadas, caracter) {
 // });
 
 // =======================
-// BOTÓN VERIFICAR — Verificar trazo actual
+// BOTÓN VERIFICAR — Verificar trazo actual con SweetAlert
 // =======================
 document.addEventListener('DOMContentLoaded', () => {
   const verificarBtn = document.getElementById('verificarButton');
@@ -582,13 +582,54 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
         console.log("Response data:", data);
         if (data.status === "ok") {
-          alert(`Precisión: ${data.score}%`);
+          const score = data.score;
+          let icon, title, text, color;
+          if (score < 30) {
+            icon = 'error';
+            title = '¡Inténtalo de nuevo!';
+            text = `Similitud: ${score}%. Necesitas mejorar tu trazo.`;
+            color = '#dc3545';
+          } else if (score >= 30 && score < 70) {
+            icon = 'warning';
+            title = '¡Casi lo tienes!';
+            text = `Similitud: ${score}%. Estás en el camino correcto.`;
+            color = '#ffc107';
+          } else {
+            icon = 'success';
+            title = '¡Excelente trabajo!';
+            text = `Similitud: ${score}%. ¡Perfecto!`;
+            color = '#28a745';
+          }
+
+          Swal.fire({
+            icon: icon,
+            title: title,
+            text: text,
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: color,
+            background: '#f8f9fa',
+            customClass: {
+              popup: 'animated fadeInDown'
+            }
+          });
         } else {
-          alert("Error: " + data.error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: data.error || 'Ocurrió un error al verificar el trazo.',
+            confirmButtonText: 'Aceptar',
+            confirmButtonColor: '#dc3545'
+          });
         }
       } catch (err) {
         console.error("Error al verificar trazo:", err);
-        alert("Error al verificar trazo");
+        Swal.fire({
+          icon: 'error',
+          title: 'Error de conexión',
+          text: 'No se pudo verificar el trazo. Inténtalo de nuevo.',
+          confirmButtonText: 'Aceptar',
+          confirmButtonColor: '#dc3545'
+        });
       }
     });
   } else {

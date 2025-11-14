@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
 
-BAND_DILATE = 15
-STROKE_DILATE = 8
+BAND_DILATE = 6  # Reducido para mejor rendimiento
+STROKE_DILATE = 3  # Reducido para mejor rendimiento
 
 def evaluar_trazo_por_contorno(imAux, base_canvas, modelo_gray,
                                band_dilate=BAND_DILATE, stroke_dilate=STROKE_DILATE):

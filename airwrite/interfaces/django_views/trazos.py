@@ -47,7 +47,7 @@ _cfg = DrawingConfig(
     color_rosa=(128, 0, 255),
     color_verde=(0, 255, 36),
     color_clear=(29, 112, 246),
-    target_size=(600, 1080)
+    target_size=(400, 720)  # Reducido para mejor rendimiento
 )
 _state = DrawingState()
 _loop = DrawingLoop(_cam_port, _canvas_port, _cmd_port, _cfg, _state)
@@ -79,7 +79,7 @@ def index(request, letra_id=None, numero_id=None, silaba_id=None, tipo='letra'):
 
         from airwrite.infrastructure.opencv.trazo_extractor import reiniciar_lienzo
         texto = objeto.nombre.split()[-1].upper()[-2:] if tipo == 'silaba' else objeto.nombre[-1].upper()
-        frame_shape = (600, 1080, 3)
+        frame_shape = (400, 720, 3)  # Reducido para mejor rendimiento
         base, modelo = reiniciar_lienzo(frame_shape, texto)
         _state.base_canvas = base
         _state.modelo_gray = modelo

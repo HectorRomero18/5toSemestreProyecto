@@ -11,8 +11,8 @@ celesteAlto = np.array([112, 255, 255], np.uint8)
 colorDibujo = (255, 113, 82)
 colorPuntero = (255, 0, 0)
 fondo_color = (0, 255, 255)
-BAND_DILATE = 15
-STROKE_DILATE = 8
+BAND_DILATE = 6  # Reducido para mejor rendimiento
+STROKE_DILATE = 3  # Reducido para mejor rendimiento
 
 def reiniciar_lienzo(frame_shape, texto):
     """Crea el lienzo y el modelo base de la letra/sílaba/numero."""

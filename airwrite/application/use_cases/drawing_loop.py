@@ -17,7 +17,7 @@ class DrawingConfig:
     color_rosa: tuple[int, int, int]
     color_verde: tuple[int, int, int]
     color_clear: tuple[int, int, int]
-    target_size: Optional[Tuple[int, int]] = None 
+    target_size: Optional[Tuple[int, int]] = (400, 720)  # Reducido para mejor rendimiento
 
 
 class DrawingState:
@@ -45,7 +45,7 @@ class DrawingLoop:
         self.commands = commands
         self.cfg = cfg
         self.state = state
-        self.min_dist = 5.0  # Aumentar distancia mínima entre puntos
+        self.min_dist = 12.0  # Aumentado para reducir frecuencia de dibujado y mejorar rendimiento
 
     def step(self) -> None:
         ok, frame = self.cam.read()
@@ -99,11 +99,11 @@ class DrawingLoop:
         # cv2.rectangle(frame, (590, 0), (640, 50), (0, 0, 0), self.state.grosor_grande)
         # cv2.circle(frame, (615, 25), 11, (0, 0, 0), -1)
 
-        # Deteccion del marcador color celeste (sin contornos)
+        # Deteccion del marcador color celeste (optimizada para rendimiento)
         mask = cv2.inRange(frame_hsv, self.cfg.celeste_low, self.cfg.celeste_high)
         mask = cv2.erode(mask, None, iterations=1)
         mask = cv2.dilate(mask, None, iterations=1)
-        mask = cv2.GaussianBlur(mask, (15, 15), 0)
+        # Remover GaussianBlur para mejorar rendimiento
         moments = cv2.moments(mask)
         if moments["m00"] > 1000:
             x2 = int(moments["m10"] / moments["m00"])
@@ -185,9 +185,9 @@ class DrawingLoop:
 
     def set_grosor(self, name: str) -> bool:
         mapping = {
-            'peque': (3, (6, 1, 1)),
-            'medio': (7, (1, 6, 1)),
-            'grande': (11, (1, 1, 6)),
+            'peque': (9, (6, 1, 1)),
+            'medio': (13, (1, 6, 1)),
+            'grande': (18, (1, 1, 6)),
         }
 
         entry = mapping.get(name)
