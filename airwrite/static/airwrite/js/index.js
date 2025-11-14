@@ -517,49 +517,7 @@ async function enviarTrazo(coordenadas, caracter) {
     console.error("Error en fetch de validar trazo:", err);
   }
 }
-// =======================
-// TECLA “E” — Enviar trazo actual al backend
-// =======================
-// DESHABILITADO: Solo validación manual
-// document.addEventListener('keydown', async (event) => {
-//   if (event.key === 'e' || event.key === 'E') {
-//     event.preventDefault();
 
-//     console.log("Enviando trazo manualmente con tecla 'E'...");
-
-//     // Obtener la letra seleccionada y capturar el trazo actual
-//     const caracterSeleccionado = window.currentCaracter;
-//     if (!caracterSeleccionado) {
-//       alert("No hay letra seleccionada.");
-//       return;
-//     }
-
-//     try {
-//       // Pedimos el trazo actual (igual que hace capturarTrazoAutomatico)
-//       const response = await fetch(window.urls.capturar_trazo, {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json",
-//           "X-CSRFToken": csrftoken
-//         },
-//         body: JSON.stringify({ letra: caracterSeleccionado })
-//       });
-
-//       const data = await response.json();
-//       if (!data.trazo || data.trazo.length === 0) {
-//         alert("No se encontró ningún trazo para enviar.");
-//         return;
-//       }
-
-//       // Enviar trazo a la vista ValidarTrazoView
-//       await enviarTrazo(data.trazo, caracterSeleccionado);
-//       console.log("Trazo enviado con éxito mediante la tecla 'E'.");
-
-//     } catch (err) {
-//       console.error("Error al enviar trazo con tecla E:", err);
-//     }
-//   }
-// });
 
 // =======================
 // BOTÓN VERIFICAR — Verificar trazo actual
