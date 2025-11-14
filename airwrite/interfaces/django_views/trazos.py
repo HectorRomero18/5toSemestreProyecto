@@ -72,9 +72,10 @@ def index(request, letra_id=None, numero_id=None, silaba_id=None, tipo='letra'):
         objeto = get_object_or_404(Silaba, id=silaba_id)
         tipo = 'silaba'
 
-    # Enable tracing mode for trazos (letters, numbers, syllables)
+    # Enable tracing mode for manual drawing control
     if objeto is not None:
         _loop.enable_tracing_mode()
+        _state.drawing_active = True  # Dibujo activo por defecto
 
         from airwrite.infrastructure.opencv.trazo_extractor import reiniciar_lienzo
         texto = objeto.nombre.split()[-1].upper()[-2:] if tipo == 'silaba' else objeto.nombre[-1].upper()
@@ -164,8 +165,6 @@ def video_feed_canvas(request, tipo, objeto_id):
                 if objeto_nombre is None:
                     print(f"Error al leer el objeto con ID {objeto.id}.")
                     continue
-
-
 
 
                 # --- Texto de información ---
@@ -279,9 +278,49 @@ def validar_trazo(request):
     if _state.base_canvas is None or _state.modelo_gray is None:
         return JsonResponse({"status": "error", "error": "no_modelo"})
 
-    canvas = _canvas_port.get()
-    if canvas is None:
-        return JsonResponse({"status": "error", "error": "no_canvas"})
+    try:
+        data = json.loads(request.body.decode("utf-8") or "{}")
+        puntos = data.get("puntos", [])
+    except json.JSONDecodeError:
+        puntos = []
 
-    score, overlay = evaluar_trazo_por_contorno(canvas, _state.base_canvas, _state.modelo_gray)
+    if not puntos:
+        # Fallback: intentar detectar trazos desde la cámara (método original)
+        canvas = _canvas_port.get()
+        if canvas is None:
+            return JsonResponse({"status": "error", "error": "no_canvas"})
+
+        # Crear imAux: base_canvas con trazos superpuestos
+        imAux = _state.base_canvas.copy()
+        bg_mask = (canvas == 200).all(axis=2)
+        grid_mask = (canvas == 150).all(axis=2)
+        drawing_mask = ~(bg_mask | grid_mask)
+
+        print(f"Drawing mask sum: {drawing_mask.sum()}")  # Debug
+
+        # Verificar si hay algún trazo dibujado
+        if not drawing_mask.any():
+            return JsonResponse({"status": "error", "error": "No se encontró ningún trazo para verificar."})
+
+        imAux[drawing_mask] = canvas[drawing_mask]
+    else:
+        # Usar puntos del mouse/touch para crear el trazo
+        imAux = _state.base_canvas.copy()
+        if puntos:
+            # Convertir puntos a coordenadas del canvas
+            # El canvas es de 600x1080, pero los puntos vienen del frontend que puede tener diferente tamaño
+            # Asumimos que los puntos están en la escala correcta o los escalamos
+            canvas_h, canvas_w = imAux.shape[:2]
+
+            # Dibujar líneas entre puntos consecutivos
+            for i in range(len(puntos) - 1):
+                p1 = tuple(puntos[i])
+                p2 = tuple(puntos[i + 1])
+                # Asegurarse de que las coordenadas estén dentro del canvas
+                p1 = (max(0, min(p1[0], canvas_w - 1)), max(0, min(p1[1], canvas_h - 1)))
+                p2 = (max(0, min(p2[0], canvas_w - 1)), max(0, min(p2[1], canvas_h - 1)))
+                cv2.line(imAux, p1, p2, (255, 113, 82), 3, cv2.LINE_AA)
+
+    score, overlay = evaluar_trazo_por_contorno(imAux, _state.base_canvas, _state.modelo_gray)
+    print(f"Score: {score}, Puntos: {len(puntos) if puntos else 'camera'}")  # Debug
     return JsonResponse({"status": "ok", "score": score})

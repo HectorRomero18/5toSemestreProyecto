@@ -206,8 +206,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Función para manejar la tecla A para alternar el trazo (iniciar/detener)
+// Función para manejar la tecla A para alternar el trazo (iniciar/detener) y E para validar
 document.addEventListener('keydown', (event) => {
+    console.log("Keydown event:", event.key);
     if (event.key === 'a' || event.key === 'A') {
         // Prevenir comportamiento por defecto si es necesario
         event.preventDefault();
@@ -230,6 +231,30 @@ document.addEventListener('keydown', (event) => {
             }
         })
         .catch(err => console.error('Error en fetch:', err));
+    } else if (event.key === 'e' || event.key === 'E') {
+        // Prevenir comportamiento por defecto
+        event.preventDefault();
+        console.log("Tecla E presionada");
+
+        // Enviar solicitud para validar trazo
+        fetch(window.urls.validar_trazo, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log("Response data para E:", data);
+            if (data.status === 'ok') {
+                alert(`Precisión: ${data.score}%`);
+            } else {
+                alert("Error: " + data.error);
+            }
+        })
+        .catch(err => console.error('Error al validar trazo:', err));
     }
 });
 
@@ -281,12 +306,18 @@ document.addEventListener("DOMContentLoaded", () => {
     const verificarButton = document.getElementById('verificarButton');
     if (verificarButton) {
         verificarButton.onclick = async function() {
+            console.log("Verificar button clicked");
             try {
                 const response = await fetch(window.urls.validar_trazo, {
                     method: "POST",
-                    headers: { 'X-CSRFToken': csrftoken }
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrftoken
+                    },
+                    body: JSON.stringify({})
                 });
                 const data = await response.json();
+                console.log("Response data:", data);
                 if (data.status === "ok") {
                     alert(`Precisión: ${data.score}%`);
                 } else {
@@ -297,5 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 alert("Error al verificar trazo");
             }
         };
+    } else {
+        console.error("Verificar button not found");
     }
 });
