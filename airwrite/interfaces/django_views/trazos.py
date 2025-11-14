@@ -43,7 +43,7 @@ _cfg = DrawingConfig(
     celeste_low=(75, 185, 88),
     celeste_high=(112, 255, 255),
     color_celeste=(255, 113, 82),
-    color_amarillo=(89, 222, 255),
+    color_amarillo=(0, 0, 255),
     color_rosa=(128, 0, 255),
     color_verde=(0, 255, 36),
     color_clear=(29, 112, 246),
@@ -170,7 +170,7 @@ def video_feed_canvas(request, tipo, objeto_id):
                 # --- Texto de información ---
                 color_dif = {
                     'Facil': (0, 255, 0),
-                    'Media': (0, 255, 255),
+                    'Media': (0, 140, 255),
                     'Dificil': (0, 0, 255)
                 }.get(texto_sin_tilde, (255, 255, 255))
 

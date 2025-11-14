@@ -84,20 +84,6 @@ class DrawingLoop:
         if frame is None:
             return
 
-        # UI buttons
-        # cv2.rectangle(frame, (0, 0), (50, 50), self.cfg.color_amarillo, self.state.grosor_amarillo)
-        # cv2.rectangle(frame, (50, 0), (100, 50), self.cfg.color_rosa, self.state.grosor_rosa)
-        # cv2.rectangle(frame, (100, 0), (150, 50), self.cfg.color_verde, self.state.grosor_verde)
-        # cv2.rectangle(frame, (150, 0), (200, 50), self.cfg.color_celeste, self.state.grosor_celeste)
-        # cv2.rectangle(frame, (300, 0), (400, 50), self.cfg.color_clear, 1)
-        # cv2.putText(frame, 'Limpiar', (320, 20), 6, 0.6, self.cfg.color_clear, 1, cv2.LINE_AA)
-        # cv2.putText(frame, 'pantalla', (320, 40), 6, 0.6, self.cfg.color_clear, 1, cv2.LINE_AA)
-        # cv2.rectangle(frame, (490, 0), (540, 50), (0, 0, 0), self.state.grosor_peque)
-        # cv2.circle(frame, (515, 25), 3, (0, 0, 0), -1)
-        # cv2.rectangle(frame, (540, 0), (590, 50), (0, 0, 0), self.state.grosor_medio)
-        # cv2.circle(frame, (565, 25), 7, (0, 0, 0), -1)
-        # cv2.rectangle(frame, (590, 0), (640, 50), (0, 0, 0), self.state.grosor_grande)
-        # cv2.circle(frame, (615, 25), 11, (0, 0, 0), -1)
 
         # Deteccion del marcador color celeste (optimizada para rendimiento)
         mask = cv2.inRange(frame_hsv, self.cfg.celeste_low, self.cfg.celeste_high)
@@ -226,15 +212,3 @@ class DrawingLoop:
             self.canvas.clear(self.current_shape)
             self.state.user_trace = []
             return
-        for name in ('amarillo', 'rosa', 'verde', 'celeste'):
-            if name in c:
-                self.set_color(name)
-                break
-            elif 'amarillo' in c:
-                self._set_color(self.cfg.color_amarillo, (6, 2, 2, 2))
-            elif 'rosa' in c:
-                self._set_color(self.cfg.color_rosa, (2, 6, 2, 2))
-            elif 'verde' in c:
-                self._set_color(self.cfg.color_verde, (2, 2, 6, 2))
-            elif 'celeste' in c:
-                self._set_color(self.cfg.color_celeste, (2, 2, 2, 6))
