@@ -308,18 +308,21 @@ document.addEventListener("DOMContentLoaded", () => {
         verificarButton.onclick = async function() {
             console.log("Verificar button clicked");
             try {
+                // Enviar el trazo actual para validación
                 const response = await fetch(window.urls.validar_trazo, {
                     method: "POST",
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': csrftoken
                     },
-                    body: JSON.stringify({})
+                    body: JSON.stringify({ puntos: currentPath })
                 });
                 const data = await response.json();
                 console.log("Response data:", data);
                 if (data.status === "ok") {
                     alert(`Precisión: ${data.score}%`);
+                    // Limpiar el trazo después de verificar
+                    currentPath = [];
                 } else {
                     alert("Error: " + data.error);
                 }

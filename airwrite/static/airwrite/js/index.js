@@ -568,33 +568,30 @@ document.addEventListener('DOMContentLoaded', () => {
   const verificarBtn = document.getElementById('verificarButton');
   if (verificarBtn) {
     verificarBtn.addEventListener('click', async () => {
-      const caracterSeleccionado = window.currentCaracter;
-      if (!caracterSeleccionado) {
-        alert("No hay letra seleccionada.");
-        return;
-      }
-
+      console.log("Verificar button clicked");
       try {
-        const response = await fetch(window.urls.capturar_trazo, {
+        const response = await fetch(window.urls.validar_trazo, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             "X-CSRFToken": csrftoken
           },
-          body: JSON.stringify({ letra: caracterSeleccionado })
+          body: JSON.stringify({})
         });
 
         const data = await response.json();
-        if (!data.trazo || data.trazo.length === 0) {
-          alert("No se encontró ningún trazo para verificar.");
-          return;
+        console.log("Response data:", data);
+        if (data.status === "ok") {
+          alert(`Precisión: ${data.score}%`);
+        } else {
+          alert("Error: " + data.error);
         }
-
-        await enviarTrazo(data.trazo, caracterSeleccionado);
       } catch (err) {
         console.error("Error al verificar trazo:", err);
-        alert("Error al verificar el trazo.");
+        alert("Error al verificar trazo");
       }
     });
+  } else {
+    console.error("Verificar button not found");
   }
 });

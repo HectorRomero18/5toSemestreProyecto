@@ -6,5 +6,5 @@ def capturar_trazo(request):
         data = json.loads(request.body)
         puntos = data.get('puntos', [])
         print("Trazo recibido:", puntos)
-        return JsonResponse({'status': 'ok', 'mensaje': 'Trazo capturado'})
+        return JsonResponse({'status': 'ok', 'trazo': puntos})
     return JsonResponse({'status': 'error', 'mensaje': 'Método no permitido'})
