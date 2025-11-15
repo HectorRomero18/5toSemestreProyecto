@@ -601,10 +601,21 @@ document.addEventListener('DOMContentLoaded', () => {
             color = '#28a745';
           }
 
+          // Determinar mensaje motivacional basado en el score
+          let mensajeMotivacional = '';
+          if (score < 30) {
+            mensajeMotivacional = '¡Sigue practicando! Cada intento te acerca más a la perfección.';
+          } else if (score >= 30 && score < 70) {
+            mensajeMotivacional = '¡Vas por buen camino! Un poco más de práctica y lo lograrás.';
+          } else {
+            mensajeMotivacional = '¡Fantástico! Tu trazo es excelente. ¡Sigue así!';
+          }
+
           Swal.fire({
             icon: icon,
             title: title,
             text: text,
+            html: `<p>${text}</p><p style="font-style: italic; margin-top: 10px;">${mensajeMotivacional}</p>`,
             confirmButtonText: 'Aceptar',
             confirmButtonColor: color,
             background: '#f8f9fa',

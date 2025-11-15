@@ -17,7 +17,7 @@ class DrawingConfig:
     color_rosa: tuple[int, int, int]
     color_verde: tuple[int, int, int]
     color_clear: tuple[int, int, int]
-    target_size: Optional[Tuple[int, int]] = (800, 1440)  # Aumentado para mejor calidad de imagen
+    target_size: Optional[Tuple[int, int]] = (480, 720)  # Optimizado para mejor rendimiento
 
 
 class DrawingState:
@@ -25,7 +25,7 @@ class DrawingState:
         self.x1: Optional[int] = None
         self.y1: Optional[int] = None
         self.color: tuple[int, int, int] = (255, 113, 82)
-        self.thickness: int = 3
+        self.thickness: int = 5
         # UI thickness boxes (for UI highlight)
         self.grosor_celeste, self.grosor_amarillo, self.grosor_rosa, self.grosor_verde = 6, 2, 2, 2
         self.grosor_peque, self.grosor_medio, self.grosor_grande = 6, 1, 1
@@ -45,7 +45,7 @@ class DrawingLoop:
         self.commands = commands
         self.cfg = cfg
         self.state = state
-        self.min_dist = 20.0  # Aumentado para reducir frecuencia de dibujado y mejorar fluidez
+        self.min_dist = 2.0  # Más fluido para niños
 
     def step(self) -> None:
         ok, frame = self.cam.read()
@@ -121,7 +121,7 @@ class DrawingLoop:
             if self.state.tracing_mode:
                 # In tracing mode, only draw if drawing is active and enough time has passed
                 if (self.state.drawing_active and self.state.x1 is not None and self.state.y1 is not None and
-                    not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.08):
+                    not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.05):
                     self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
                     self.state.user_trace.append((x2, y2))
                     self.state.last_draw_time = current_time
@@ -129,7 +129,7 @@ class DrawingLoop:
                 # Normal mode: draw automatically with distance check for smoother strokes
                 if self.state.x1 is not None and self.state.y1 is not None and not (0 < y2 < 60):
                     dist = np.sqrt((x2 - self.state.x1)**2 + (y2 - self.state.y1)**2)
-                    if dist > 5:  # Minimum distance to draw for smoother lines
+                    if dist > self.min_dist:  # Minimum distance to draw for smoother lines
                         self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
                         self.state.user_trace.append((x2, y2))
 
@@ -177,7 +177,7 @@ class DrawingLoop:
         mapping = {
             'peque': (9, (6, 1, 1)),
             'medio': (13, (1, 6, 1)),
-            'grande': (18, (1, 1, 6)),
+            'grande': (22, (1, 1, 6)),
         }
 
         entry = mapping.get(name)
