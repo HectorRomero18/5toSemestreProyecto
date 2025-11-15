@@ -22,6 +22,7 @@ import unicodedata
 from airwrite.domain.services.evaluar_trazo import evaluar_trazo_por_contorno
 from airwrite.domain.services.xp_reward_services import calcular_xp_ganado
 from airwrite.infrastructure.repositories.compra_letra import DjangoPerfilRepository
+from airwrite.infrastructure.models.PerfilUsuario import PerfilUsuario
 
 def quitar_tildes(texto: str) -> str:
     return ''.join(
@@ -365,20 +366,18 @@ def validar_trazo(request):
                 # Calcular XP ganado
                 xp_ganado = calcular_xp_ganado(objeto.dificultad)
 
-                # Obtener perfil y sumar XP
-                perfil_repo = DjangoPerfilRepository()
-                perfil = perfil_repo.get_perfil(request.user.id)
-                if perfil:
-                    perfil.xp += xp_ganado
-                    perfil_repo.save_perfil(perfil)
-                    nuevo_xp = perfil.xp
+                # Obtener perfil model y sumar XP
+                perfil_model = PerfilUsuario.objects.get(user_id=request.user.id)
+                perfil_model.xp += xp_ganado
+                # Agregar a letras practicadas si es letra
+                if tipo == 'letra':
+                    perfil_model.letras_practicadas.add(objeto)
+                perfil_model.save()
+                nuevo_xp = perfil_model.xp
 
-                    # Marcar como completado
-                    completados.append(objeto_key)
-                    request.session[completados_key] = completados
-                else:
-                    xp_ganado = 0
-                    nuevo_xp = 0
+                # Marcar como completado
+                completados.append(objeto_key)
+                request.session[completados_key] = completados
         else:
             xp_ganado = 0
             nuevo_xp = 0
