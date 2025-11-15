@@ -562,6 +562,74 @@ async function enviarTrazo(coordenadas, caracter) {
 // });
 
 // =======================
+// FUNCIÓN — Mostrar animación de estrella y suma XP
+// =======================
+function mostrarAnimacionEstrella(xpGanado, nuevoXp) {
+  const xpBadge = document.querySelector('.xp-badge');
+  const xpActual = parseInt(xpBadge.textContent.replace('Xp', '')) || 0;
+
+  // Crear estrella
+  const estrellaDiv = document.createElement('div');
+  estrellaDiv.innerHTML = `
+    <svg width="100%" height="100%" viewBox="0 0 32 32" fill="none">
+      <path d="M16 2l4.12 8.36L29 11.76l-6.5 6.34 1.54 8.9L16 22.68 7.96 27l1.54-8.9L3 11.76l8.88-1.4L16 2z" fill="#FFD700"/>
+    </svg>
+  `;
+
+  estrellaDiv.style.position = 'fixed';
+  estrellaDiv.style.top = '50%';
+  estrellaDiv.style.left = '50%';
+  estrellaDiv.style.width = '256px';
+  estrellaDiv.style.height = '256px';
+  estrellaDiv.style.transform = 'translate(-50%, -50%)';
+  estrellaDiv.style.zIndex = '9999';
+  estrellaDiv.style.pointerEvents = 'none';
+
+
+  estrellaDiv.style.transition = 'all 1s ease-in-out';
+
+  document.body.appendChild(estrellaDiv);
+
+  // Mover y reducir después de 1s
+  setTimeout(() => {
+    const xpContainer = document.querySelector('.xp-container');
+    const rect = xpContainer.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    estrellaDiv.style.top = centerY + 'px';
+    estrellaDiv.style.left = centerX + 'px';
+    estrellaDiv.style.width = '32px';
+    estrellaDiv.style.height = '32px';
+    estrellaDiv.style.transform = 'translate(-50%, -50%)';
+
+    animarSumaXp(xpBadge, xpActual, nuevoXp);
+
+    setTimeout(() => estrellaDiv.remove(), 1000);
+  }, 1000);
+}
+
+
+function animarSumaXp(elemento, inicio, fin) {
+  const duracion = 1000; // 1 segundo
+  const pasos = 60;
+  const incremento = (fin - inicio) / pasos;
+  let actual = inicio;
+  let paso = 0;
+
+  const intervalo = setInterval(() => {
+    paso++;
+    actual += incremento;
+    elemento.textContent = Math.round(actual) + 'Xp';
+
+    if (paso >= pasos) {
+      clearInterval(intervalo);
+      elemento.textContent = fin + 'Xp';
+    }
+  }, duracion / pasos);
+}
+
+// =======================
 // BOTÓN VERIFICAR — Verificar trazo actual con SweetAlert
 // =======================
 document.addEventListener('DOMContentLoaded', () => {
@@ -576,13 +644,18 @@ document.addEventListener('DOMContentLoaded', () => {
             "Content-Type": "application/json",
             "X-CSRFToken": csrftoken
           },
-          body: JSON.stringify({})
+          body: JSON.stringify({
+            tipo: window.tipo,
+            objeto_id: window.objeto_id
+          })
         });
 
         const data = await response.json();
         console.log("Response data:", data);
         if (data.status === "ok") {
           const score = data.score;
+          const xp_ganado = data.xp_ganado || 0;
+          const nuevo_xp = data.nuevo_xp || 0;
           let icon, title, text, color;
           if (score < 30) {
             icon = 'error';
@@ -601,15 +674,31 @@ document.addEventListener('DOMContentLoaded', () => {
             color = '#28a745';
           }
 
+          // Determinar mensaje motivacional basado en el score
+          let mensajeMotivacional = '';
+          if (score < 30) {
+            mensajeMotivacional = '¡Sigue practicando! Cada intento te acerca más a la perfección.';
+          } else if (score >= 30 && score < 70) {
+            mensajeMotivacional = '¡Vas por buen camino! Un poco más de práctica y lo lograrás.';
+          } else {
+            mensajeMotivacional = '¡Fantástico! Tu trazo es excelente. ¡Sigue así!';
+          }
+
           Swal.fire({
             icon: icon,
             title: title,
             text: text,
+            html: `<p>${text}</p><p style="font-style: italic; margin-top: 10px;">${mensajeMotivacional}</p>`,
             confirmButtonText: 'Aceptar',
             confirmButtonColor: color,
             background: '#f8f9fa',
             customClass: {
               popup: 'animated fadeInDown'
+            }
+          }).then(() => {
+            // Si score >=70, mostrar animación de estrella y sumar XP después de aceptar
+            if (score >= 70 && xp_ganado > 0) {
+              mostrarAnimacionEstrella(xp_ganado, nuevo_xp);
             }
           });
         } else {

@@ -12,12 +12,18 @@ from airwrite.domain.ports.commands import CommandPort
 class DrawingConfig:
     celeste_low: np.ndarray
     celeste_high: np.ndarray
+    # azul_low: np.ndarray
+    # azul_high: np.ndarray
+    # rojo_low: np.ndarray
+    # rojo_high: np.ndarray
     color_celeste: tuple[int, int, int]
     color_amarillo: tuple[int, int, int]
     color_rosa: tuple[int, int, int]
     color_verde: tuple[int, int, int]
+    color_uva: tuple[int, int, int]
+    color_menta: tuple[int, int, int]
     color_clear: tuple[int, int, int]
-    target_size: Optional[Tuple[int, int]] = (800, 1440)  # Aumentado para mejor calidad de imagen
+    target_size: Optional[Tuple[int, int]] = (480, 720)  # Optimizado para mejor rendimiento
 
 
 class DrawingState:
@@ -25,9 +31,9 @@ class DrawingState:
         self.x1: Optional[int] = None
         self.y1: Optional[int] = None
         self.color: tuple[int, int, int] = (255, 113, 82)
-        self.thickness: int = 3
+        self.thickness: int = 5
         # UI thickness boxes (for UI highlight)
-        self.grosor_celeste, self.grosor_amarillo, self.grosor_rosa, self.grosor_verde = 6, 2, 2, 2
+        self.grosor_celeste, self.grosor_amarillo, self.grosor_rosa, self.grosor_verde, self.grosor_uva, self.grosor_menta = 6, 2, 2, 2, 2, 2
         self.grosor_peque, self.grosor_medio, self.grosor_grande = 6, 1, 1
         self.tracing_mode: bool = False
         self.drawing_active: bool = False
@@ -45,7 +51,7 @@ class DrawingLoop:
         self.commands = commands
         self.cfg = cfg
         self.state = state
-        self.min_dist = 20.0  # Aumentado para reducir frecuencia de dibujado y mejorar fluidez
+        self.min_dist = 2.0  # Más fluido para niños
 
     def step(self) -> None:
         ok, frame = self.cam.read()
@@ -87,6 +93,8 @@ class DrawingLoop:
 
         # Deteccion del marcador color celeste (optimizada para mejor deteccion)
         mask = cv2.inRange(frame_hsv, self.cfg.celeste_low, self.cfg.celeste_high)
+        # mask = cv2.inRange(frame_hsv, self.cfg.azul_low, self.cfg.azul_high)
+        # mask = cv2.inRange(frame_hsv, self.cfg.rojo_low, self.cfg.rojo_high)
         # Usar kernel pequeño para preservar detalles
         kernel = np.ones((3, 3), np.uint8)
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=1)
@@ -121,7 +129,7 @@ class DrawingLoop:
             if self.state.tracing_mode:
                 # In tracing mode, only draw if drawing is active and enough time has passed
                 if (self.state.drawing_active and self.state.x1 is not None and self.state.y1 is not None and
-                    not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.08):
+                    not (0 < y2 < 60) and (current_time - self.state.last_draw_time) > 0.05):
                     self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
                     self.state.user_trace.append((x2, y2))
                     self.state.last_draw_time = current_time
@@ -129,7 +137,7 @@ class DrawingLoop:
                 # Normal mode: draw automatically with distance check for smoother strokes
                 if self.state.x1 is not None and self.state.y1 is not None and not (0 < y2 < 60):
                     dist = np.sqrt((x2 - self.state.x1)**2 + (y2 - self.state.y1)**2)
-                    if dist > 5:  # Minimum distance to draw for smoother lines
+                    if dist > self.min_dist:  # Minimum distance to draw for smoother lines
                         self.canvas.draw_line((self.state.x1, self.state.y1), (x2, y2), self.state.color, self.state.thickness)
                         self.state.user_trace.append((x2, y2))
 
@@ -150,16 +158,18 @@ class DrawingLoop:
         return getattr(self, '_last_frame_cam', None)
 
     # Cambiar color de linea
-    def _set_color(self, color: tuple[int, int, int], ui: tuple[int, int, int, int]) -> None:
+    def _set_color(self, color: tuple[int, int, int], ui: tuple[int, int, int, int, int, int]) -> None:
         self.state.color = color
-        self.state.grosor_amarillo, self.state.grosor_rosa, self.state.grosor_verde, self.state.grosor_celeste = ui
+        self.state.grosor_amarillo, self.state.grosor_rosa, self.state.grosor_verde, self.state.grosor_celeste, self.state.grosor_uva, self.state.grosor_menta = ui
     
     def set_color(self, name: str) -> bool:
         mapping = {
-            'amarillo': (self.cfg.color_amarillo, (6, 2, 2, 2)),
-            'rosa': (self.cfg.color_rosa, (2, 6, 2, 2)),
-            'verde': (self.cfg.color_verde, (2, 2, 6, 2)),
-            'celeste': (self.cfg.color_celeste, (2, 2, 2, 6)),
+            'amarillo': (self.cfg.color_amarillo, (6, 2, 2, 2, 2, 2)),
+            'rosa': (self.cfg.color_rosa, (2, 6, 2, 2, 2, 2)),
+            'verde': (self.cfg.color_verde, (2, 2, 6, 2, 2, 2)),
+            'celeste': (self.cfg.color_celeste, (2, 2, 2, 6, 2, 2)),
+            'uva': (self.cfg.color_uva, (2, 2, 2, 2, 6, 2)),
+            'menta': (self.cfg.color_menta, (2, 2, 2, 2, 2, 6)),
         }
         entry = mapping.get(name)
         if entry is None:
@@ -177,7 +187,7 @@ class DrawingLoop:
         mapping = {
             'peque': (9, (6, 1, 1)),
             'medio': (13, (1, 6, 1)),
-            'grande': (18, (1, 1, 6)),
+            'grande': (22, (1, 1, 6)),
         }
 
         entry = mapping.get(name)

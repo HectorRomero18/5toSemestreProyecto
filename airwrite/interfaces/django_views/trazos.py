@@ -20,6 +20,9 @@ from airwrite.infrastructure.repositories.adapters import CameraAdapter, CanvasA
 from airwrite.domain.constants.xp_reward import DIFICULTADES, CATEGORIAS_LETRAS
 import unicodedata
 from airwrite.domain.services.evaluar_trazo import evaluar_trazo_por_contorno
+from airwrite.domain.services.xp_reward_services import calcular_xp_ganado
+from airwrite.infrastructure.repositories.compra_letra import DjangoPerfilRepository
+from airwrite.infrastructure.models.PerfilUsuario import PerfilUsuario
 
 def quitar_tildes(texto: str) -> str:
     return ''.join(
@@ -40,14 +43,20 @@ _canvas_port = CanvasAdapter(_canvas_state)
 _cmd_port = CommandAdapter(_cmd_state)
 
 _cfg = DrawingConfig(
-    celeste_low=(0, 150, 120),
-    celeste_high=(10, 255, 255),
+    celeste_low=(105, 150, 40),
+    celeste_high=(130, 255, 150),
+    # azul_low=(105, 150, 40),
+    # azul_high=(130, 255, 150),
+    # rojo_low=(0, 120, 70),
+    # rojo_high=(10, 255, 255),
     color_celeste=(255, 113, 82),
     color_amarillo=(0, 0, 255),
     color_rosa=(128, 0, 255),
     color_verde=(0, 255, 36),
+    color_uva=(150, 50, 150),
+    color_menta=(212, 255, 127),
     color_clear=(29, 112, 246),
-    target_size=(720, 1080)  # Reducido para mejor rendimiento
+    target_size=(600, 800)  # Mejor calidad para trazos más suaves
 )
 _state = DrawingState()
 _loop = DrawingLoop(_cam_port, _canvas_port, _cmd_port, _cfg, _state)
@@ -79,7 +88,7 @@ def index(request, letra_id=None, numero_id=None, silaba_id=None, tipo='letra'):
 
         from airwrite.infrastructure.opencv.trazo_extractor import reiniciar_lienzo
         texto = objeto.nombre.split()[-1].upper()[-2:] if tipo == 'silaba' else objeto.nombre[-1].upper()
-        frame_shape = (720, 1080, 3)  # Reducido para mejor rendimiento
+        frame_shape = (600, 800, 3)  # Mejor calidad para trazos más suaves
         base, modelo = reiniciar_lienzo(frame_shape, texto)
         _state.base_canvas = base
         _state.modelo_gray = modelo
@@ -323,4 +332,57 @@ def validar_trazo(request):
 
     score, overlay = evaluar_trazo_por_contorno(imAux, _state.base_canvas, _state.modelo_gray)
     print(f"Score: {score}, Puntos: {len(puntos) if puntos else 'camera'}")  # Debug
-    return JsonResponse({"status": "ok", "score": score})
+
+    xp_ganado = 0
+    nuevo_xp = 0
+
+    if score >= 70:
+        # Obtener tipo y objeto_id del request
+        data = json.loads(request.body.decode("utf-8") or "{}")
+        tipo = data.get("tipo")
+        objeto_id = data.get("objeto_id")
+
+        if tipo and objeto_id:
+            # Verificar si ya se completó este objeto
+            completados_key = f'completados_{tipo}'
+            completados = request.session.get(completados_key, [])
+            objeto_key = f"{tipo}_{objeto_id}"
+
+            if objeto_key in completados:
+                # Ya completado, no sumar XP
+                xp_ganado = 0
+                nuevo_xp = 0
+            else:
+                # Obtener el objeto
+                if tipo == 'letra':
+                    objeto = get_object_or_404(Letra, id=objeto_id)
+                elif tipo == 'numero':
+                    objeto = get_object_or_404(Numero, id=objeto_id)
+                elif tipo == 'silaba':
+                    objeto = get_object_or_404(Silaba, id=objeto_id)
+                else:
+                    return JsonResponse({"status": "error", "error": "tipo_invalido"})
+
+                # Calcular XP ganado
+                xp_ganado = calcular_xp_ganado(objeto.dificultad)
+
+                # Obtener perfil model y sumar XP
+                perfil_model = PerfilUsuario.objects.get(user_id=request.user.id)
+                perfil_model.xp += xp_ganado
+                # Agregar a letras practicadas si es letra
+                if tipo == 'letra':
+                    perfil_model.letras_practicadas.add(objeto)
+                perfil_model.save()
+                nuevo_xp = perfil_model.xp
+
+                # Marcar como completado
+                completados.append(objeto_key)
+                request.session[completados_key] = completados
+        else:
+            xp_ganado = 0
+            nuevo_xp = 0
+    else:
+        xp_ganado = 0
+        nuevo_xp = 0
+
+    return JsonResponse({"status": "ok", "score": score, "xp_ganado": xp_ganado, "nuevo_xp": nuevo_xp})

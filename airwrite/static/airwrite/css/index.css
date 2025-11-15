@@ -264,6 +264,9 @@ body {
 .color-rosa {
     background: #ff0080;
 }
+.color-uva {
+    background: #9803a5;
+}
 
 .color-verde {
     background: #24ff00;
@@ -271,6 +274,9 @@ body {
 
 .color-celeste {
     background: #5271ff;
+}
+.color-menta {
+    background: #1be5a8;
 }
 
 .tool-btn {
@@ -858,6 +864,17 @@ body {
     from {
         opacity: 0;
         transform: translate3d(0, 30px, 0);
+    }
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translate3d(0, -30px, 0);
     }
     to {
         opacity: 1;
