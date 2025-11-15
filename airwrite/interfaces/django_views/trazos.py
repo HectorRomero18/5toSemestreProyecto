@@ -40,8 +40,8 @@ _canvas_port = CanvasAdapter(_canvas_state)
 _cmd_port = CommandAdapter(_cmd_state)
 
 _cfg = DrawingConfig(
-    celeste_low=(75, 185, 88),
-    celeste_high=(112, 255, 255),
+    celeste_low=(0, 150, 120),
+    celeste_high=(10, 255, 255),
     color_celeste=(255, 113, 82),
     color_amarillo=(0, 0, 255),
     color_rosa=(128, 0, 255),
@@ -179,16 +179,16 @@ def video_feed_canvas(request, tipo, objeto_id):
                             cv2.FONT_HERSHEY_SIMPLEX, 1.2, (50, 50, 50), 3)
 
                 # Texto de dificultad (posición fija a la derecha)
-                cv2.putText(blank_canvas, f"Dificultad: {texto_sin_tilde}", (730, 200),
+                cv2.putText(blank_canvas, f"Dificultad: {texto_sin_tilde}", (690, 200),
                             cv2.FONT_HERSHEY_SIMPLEX, 1.2, color_dif, 3)
 
                 if tipo == 'letra':
                     if objeto.categoria == 'V':
                         cv2.putText(blank_canvas, f"{CATEGORIAS_DICT[objeto.categoria]}",
-                                    (20, 200), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 3)
+                                    (20, 250), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 3)
                     elif objeto.categoria == 'C':
                         cv2.putText(blank_canvas, f"{CATEGORIAS_DICT[objeto.categoria]}",
-                                (20, 200), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 0, 0), 3)
+                                (20, 250), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (255, 0, 0), 3)
 
             # Copiar los trazos del usuario sobre el lienzo base
             bg_mask = (canvas == 200).all(axis=2)
