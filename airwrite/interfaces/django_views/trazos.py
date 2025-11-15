@@ -20,6 +20,8 @@ from airwrite.infrastructure.repositories.adapters import CameraAdapter, CanvasA
 from airwrite.domain.constants.xp_reward import DIFICULTADES, CATEGORIAS_LETRAS
 import unicodedata
 from airwrite.domain.services.evaluar_trazo import evaluar_trazo_por_contorno
+from airwrite.domain.services.xp_reward_services import calcular_xp_ganado
+from airwrite.infrastructure.repositories.compra_letra import DjangoPerfilRepository
 
 def quitar_tildes(texto: str) -> str:
     return ''.join(
@@ -50,6 +52,8 @@ _cfg = DrawingConfig(
     color_amarillo=(0, 0, 255),
     color_rosa=(128, 0, 255),
     color_verde=(0, 255, 36),
+    color_uva=(150, 50, 150),
+    color_menta=(212, 255, 127),
     color_clear=(29, 112, 246),
     target_size=(600, 800)  # Mejor calidad para trazos más suaves
 )
@@ -327,4 +331,59 @@ def validar_trazo(request):
 
     score, overlay = evaluar_trazo_por_contorno(imAux, _state.base_canvas, _state.modelo_gray)
     print(f"Score: {score}, Puntos: {len(puntos) if puntos else 'camera'}")  # Debug
-    return JsonResponse({"status": "ok", "score": score})
+
+    xp_ganado = 0
+    nuevo_xp = 0
+
+    if score >= 70:
+        # Obtener tipo y objeto_id del request
+        data = json.loads(request.body.decode("utf-8") or "{}")
+        tipo = data.get("tipo")
+        objeto_id = data.get("objeto_id")
+
+        if tipo and objeto_id:
+            # Verificar si ya se completó este objeto
+            completados_key = f'completados_{tipo}'
+            completados = request.session.get(completados_key, [])
+            objeto_key = f"{tipo}_{objeto_id}"
+
+            if objeto_key in completados:
+                # Ya completado, no sumar XP
+                xp_ganado = 0
+                nuevo_xp = 0
+            else:
+                # Obtener el objeto
+                if tipo == 'letra':
+                    objeto = get_object_or_404(Letra, id=objeto_id)
+                elif tipo == 'numero':
+                    objeto = get_object_or_404(Numero, id=objeto_id)
+                elif tipo == 'silaba':
+                    objeto = get_object_or_404(Silaba, id=objeto_id)
+                else:
+                    return JsonResponse({"status": "error", "error": "tipo_invalido"})
+
+                # Calcular XP ganado
+                xp_ganado = calcular_xp_ganado(objeto.dificultad)
+
+                # Obtener perfil y sumar XP
+                perfil_repo = DjangoPerfilRepository()
+                perfil = perfil_repo.get_perfil(request.user.id)
+                if perfil:
+                    perfil.xp += xp_ganado
+                    perfil_repo.save_perfil(perfil)
+                    nuevo_xp = perfil.xp
+
+                    # Marcar como completado
+                    completados.append(objeto_key)
+                    request.session[completados_key] = completados
+                else:
+                    xp_ganado = 0
+                    nuevo_xp = 0
+        else:
+            xp_ganado = 0
+            nuevo_xp = 0
+    else:
+        xp_ganado = 0
+        nuevo_xp = 0
+
+    return JsonResponse({"status": "ok", "score": score, "xp_ganado": xp_ganado, "nuevo_xp": nuevo_xp})

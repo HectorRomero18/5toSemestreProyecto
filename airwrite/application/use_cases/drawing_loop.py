@@ -20,6 +20,8 @@ class DrawingConfig:
     color_amarillo: tuple[int, int, int]
     color_rosa: tuple[int, int, int]
     color_verde: tuple[int, int, int]
+    color_uva: tuple[int, int, int]
+    color_menta: tuple[int, int, int]
     color_clear: tuple[int, int, int]
     target_size: Optional[Tuple[int, int]] = (480, 720)  # Optimizado para mejor rendimiento
 
@@ -31,7 +33,7 @@ class DrawingState:
         self.color: tuple[int, int, int] = (255, 113, 82)
         self.thickness: int = 5
         # UI thickness boxes (for UI highlight)
-        self.grosor_celeste, self.grosor_amarillo, self.grosor_rosa, self.grosor_verde = 6, 2, 2, 2
+        self.grosor_celeste, self.grosor_amarillo, self.grosor_rosa, self.grosor_verde, self.grosor_uva, self.grosor_menta = 6, 2, 2, 2, 2, 2
         self.grosor_peque, self.grosor_medio, self.grosor_grande = 6, 1, 1
         self.tracing_mode: bool = False
         self.drawing_active: bool = False
@@ -156,16 +158,18 @@ class DrawingLoop:
         return getattr(self, '_last_frame_cam', None)
 
     # Cambiar color de linea
-    def _set_color(self, color: tuple[int, int, int], ui: tuple[int, int, int, int]) -> None:
+    def _set_color(self, color: tuple[int, int, int], ui: tuple[int, int, int, int, int, int]) -> None:
         self.state.color = color
-        self.state.grosor_amarillo, self.state.grosor_rosa, self.state.grosor_verde, self.state.grosor_celeste = ui
+        self.state.grosor_amarillo, self.state.grosor_rosa, self.state.grosor_verde, self.state.grosor_celeste, self.state.grosor_uva, self.state.grosor_menta = ui
     
     def set_color(self, name: str) -> bool:
         mapping = {
-            'amarillo': (self.cfg.color_amarillo, (6, 2, 2, 2)),
-            'rosa': (self.cfg.color_rosa, (2, 6, 2, 2)),
-            'verde': (self.cfg.color_verde, (2, 2, 6, 2)),
-            'celeste': (self.cfg.color_celeste, (2, 2, 2, 6)),
+            'amarillo': (self.cfg.color_amarillo, (6, 2, 2, 2, 2, 2)),
+            'rosa': (self.cfg.color_rosa, (2, 6, 2, 2, 2, 2)),
+            'verde': (self.cfg.color_verde, (2, 2, 6, 2, 2, 2)),
+            'celeste': (self.cfg.color_celeste, (2, 2, 2, 6, 2, 2)),
+            'uva': (self.cfg.color_uva, (2, 2, 2, 2, 6, 2)),
+            'menta': (self.cfg.color_menta, (2, 2, 2, 2, 2, 6)),
         }
         entry = mapping.get(name)
         if entry is None:

@@ -23,8 +23,12 @@
   
   {% if objeto %}
   window.currentCaracter = "{{ objeto.nombre }}".split(' ').pop();
+  window.objeto_id = {{ objeto.id }};
+  window.tipo = "{{ tipo }}";
   {% else %}
   window.currentCaracter = null;
+  window.objeto_id = null;
+  window.tipo = null;
   {% endif %}
     </script>
     <script src="{% static 'airwrite/js/index.js' %}" defer></script>
@@ -159,6 +163,8 @@
                         <button class="color-option color-rosa" data-color="rosa" title="Rosa"></button>
                         <button class="color-option color-verde" data-color="verde" title="Verde"></button>
                         <button class="color-option color-celeste" data-color="celeste" title="Celeste"></button>
+                        <button class="color-option color-uva" data-color="uva" title="Uva"></button>
+                        <button class="color-option color-menta" data-color="menta" title="Menta"></button>
                     </div>
                 </div>
 

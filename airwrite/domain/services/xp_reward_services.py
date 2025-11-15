@@ -1,4 +1,4 @@
-from airwrite.domain.constants import XP_POR_DIFICULTAD
+from airwrite.domain.constants.xp_reward import XP_POR_DIFICULTAD
 
 def calcular_xp_ganado(dificultad: str) -> int:
     """
