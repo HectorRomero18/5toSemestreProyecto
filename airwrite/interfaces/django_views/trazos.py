@@ -40,8 +40,12 @@ _canvas_port = CanvasAdapter(_canvas_state)
 _cmd_port = CommandAdapter(_cmd_state)
 
 _cfg = DrawingConfig(
-    celeste_low=(0, 150, 120),
-    celeste_high=(10, 255, 255),
+    celeste_low=(105, 150, 40),
+    celeste_high=(130, 255, 150),
+    # azul_low=(105, 150, 40),
+    # azul_high=(130, 255, 150),
+    # rojo_low=(0, 120, 70),
+    # rojo_high=(10, 255, 255),
     color_celeste=(255, 113, 82),
     color_amarillo=(0, 0, 255),
     color_rosa=(128, 0, 255),

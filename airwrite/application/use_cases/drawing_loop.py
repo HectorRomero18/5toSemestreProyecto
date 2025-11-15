@@ -12,6 +12,10 @@ from airwrite.domain.ports.commands import CommandPort
 class DrawingConfig:
     celeste_low: np.ndarray
     celeste_high: np.ndarray
+    # azul_low: np.ndarray
+    # azul_high: np.ndarray
+    # rojo_low: np.ndarray
+    # rojo_high: np.ndarray
     color_celeste: tuple[int, int, int]
     color_amarillo: tuple[int, int, int]
     color_rosa: tuple[int, int, int]
@@ -87,6 +91,8 @@ class DrawingLoop:
 
         # Deteccion del marcador color celeste (optimizada para mejor deteccion)
         mask = cv2.inRange(frame_hsv, self.cfg.celeste_low, self.cfg.celeste_high)
+        # mask = cv2.inRange(frame_hsv, self.cfg.azul_low, self.cfg.azul_high)
+        # mask = cv2.inRange(frame_hsv, self.cfg.rojo_low, self.cfg.rojo_high)
         # Usar kernel pequeño para preservar detalles
         kernel = np.ones((3, 3), np.uint8)
         mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel, iterations=1)

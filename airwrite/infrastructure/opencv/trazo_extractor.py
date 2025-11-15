@@ -6,8 +6,8 @@ from airwrite.domain.services.generar_lista import generar_lista
 from airwrite.domain.services.evaluar_trazo import evaluar_trazo_por_contorno
 
 # Colores y parámetros
-celesteBajo = np.array([75, 185, 88], np.uint8)
-celesteAlto = np.array([112, 255, 255], np.uint8)
+azulBajo = np.array([90, 50, 50], np.uint8)
+azulAlto = np.array([130, 255, 255], np.uint8)
 colorDibujo = (255, 113, 82)
 colorPuntero = (255, 0, 0)
 fondo_color = (80, 130, 255)
@@ -55,7 +55,7 @@ def iniciar_practica(modo="letras"):
         frame = cv2.flip(frame, 1)
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
-        mask = cv2.inRange(hsv, celesteBajo, celesteAlto)
+        mask = cv2.inRange(hsv, azulBajo, azulAlto)
         mask = cv2.erode(mask, None, iterations=1)
         mask = cv2.dilate(mask, None, iterations=2)
         mask = cv2.medianBlur(mask, 7)
