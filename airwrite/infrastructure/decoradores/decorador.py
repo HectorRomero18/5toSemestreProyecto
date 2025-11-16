@@ -4,6 +4,7 @@ from functools import wraps
 from airwrite.infrastructure.models.letra import Letra
 from airwrite.infrastructure.models.silabas import Silaba
 from airwrite.infrastructure.models.numeros import Numero
+from airwrite.domain.services.bloquear import esta_bloqueada
 
 
 def requiere_desbloqueo(view_func):
@@ -21,10 +22,7 @@ def requiere_desbloqueo(view_func):
         # Caso: Letra
         if letra_id:
             objeto = get_object_or_404(Letra, id=letra_id)
-            desbloqueada = (
-                objeto.nombre in ["Letra A", "Letra B", "Letra C"] or
-                objeto in perfil.letras_desbloqueadas.all()
-            )
+            desbloqueada = not esta_bloqueada(request.user, objeto.nombre)
             tipo = "letra"
 
         # Caso: Sílaba

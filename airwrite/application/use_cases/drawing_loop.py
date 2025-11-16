@@ -184,10 +184,12 @@ class DrawingLoop:
         self.state.grosor_peque, self.state.grosor_medio, self.state.grosor_grande = ui
 
     def set_grosor(self, name: str) -> bool:
+        # Solo permitir el grosor 'grande'
+        if name != 'grande':
+            return False
+
         mapping = {
-            'peque': (9, (6, 1, 1)),
-            'medio': (13, (1, 6, 1)),
-            'grande': (22, (1, 1, 6)),
+            'grande': (23, (1, 1, 6)),
         }
 
         entry = mapping.get(name)

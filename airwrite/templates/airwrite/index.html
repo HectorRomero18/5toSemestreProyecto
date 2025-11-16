@@ -39,7 +39,12 @@
         <aside class="sidebar">
             <div class="logo">
                 <div class="logo-icon">
-                    <i class="fas fa-code"></i>
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(0,0)" fill="#FFFFFF">
+    <path d="M3 17.25V21H6.75L17.81 9.94L14.06 6.19L3 17.25Z"/>
+    <path d="M20.71 7.04C21.1 6.65 21.1 6 20.71 5.62L18.37 3.29C17.98 2.9 17.33 2.9 16.95 3.29L15.13 5.1L18.88 8.85L20.71 7.04Z"/>
+  </g>
+</svg>
                 </div>
                 <div class="logo-text">
                     <span class="main">AIRWRITE</span>
@@ -173,12 +178,6 @@
                     <span class="material-icons">edit</span>
                     </button>
                     <div id="grosorMenu" class="dropup-menu">
-                        <button class="grosor-option" data-grosor="peque" title="Peque">
-                          <span class="grosor-circle peque"></span>
-                        </button>
-                        <button class="grosor-option" data-grosor="medio" title="Medio">
-                            <span class="grosor-circle medio"></span>
-                        </button>
                         <button class="grosor-option" data-grosor="grande" title="Grande">
                             <span class="grosor-circle grande"></span>
                         </button>
@@ -314,6 +313,11 @@
   document.querySelectorAll('#grosorMenu .grosor-option').forEach(btn => {
     btn.addEventListener('click', () => {
       const grosor = btn.dataset.grosor;
+      // Solo permitir el grosor 'grande'
+      if (grosor !== 'grande') {
+        console.log("Solo se permite el grosor 'grande'");
+        return;
+      }
       if (!grosor) return;
       postSetGrosor(grosor);
 
