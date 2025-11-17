@@ -10,7 +10,7 @@ azulBajo = np.array([90, 50, 50], np.uint8)
 azulAlto = np.array([130, 255, 255], np.uint8)
 colorDibujo = (255, 113, 82)
 colorPuntero = (255, 0, 0)
-fondo_color = (80, 130, 255)
+fondo_color = (180, 160, 140)  # BGR
 BAND_DILATE = 6  # Reducido para mejor rendimiento
 STROKE_DILATE = 3  # Reducido para mejor rendimiento
 
