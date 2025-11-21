@@ -38,5 +38,6 @@ def esta_bloqueada(usuario, nombre: str) -> bool:
     
     if letra_anterior_obj in perfil.letras_practicadas.all():
         return False
+    
 
     return True
