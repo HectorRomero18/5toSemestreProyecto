@@ -630,6 +630,23 @@ function animarSumaXp(elemento, inicio, fin) {
 }
 
 // =======================
+// FUNCIÓN — Avanzar al siguiente nivel
+// =======================
+function avanzarSiguienteNivel() {
+  if (!window.objeto_id) {
+    console.warn("No hay objeto_id definido");
+    return;
+  }
+
+  // Asumir que el siguiente nivel es el siguiente ID
+  const nextId = window.objeto_id + 1;
+  const nextUrl = `/trazos/${nextId}/`;
+
+  console.log(`Avanzando al siguiente nivel: ${nextUrl}`);
+  window.location.href = nextUrl;
+}
+
+// =======================
 // BOTÓN VERIFICAR — Verificar trazo actual con SweetAlert
 // =======================
 document.addEventListener('DOMContentLoaded', () => {
@@ -684,23 +701,50 @@ document.addEventListener('DOMContentLoaded', () => {
             mensajeMotivacional = '¡Fantástico! Tu trazo es excelente. ¡Sigue así!';
           }
 
-          Swal.fire({
-            icon: icon,
-            title: title,
-            text: text,
-            html: `<p>${text}</p><p style="font-style: italic; margin-top: 10px;">${mensajeMotivacional}</p>`,
-            confirmButtonText: 'Aceptar',
-            confirmButtonColor: color,
-            background: '#f8f9fa',
-            customClass: {
-              popup: 'animated fadeInDown'
-            }
-          }).then(() => {
-            // Si score >=70, mostrar animación de estrella y sumar XP después de aceptar
-            if (score >= 70 && xp_ganado > 0) {
-              mostrarAnimacionEstrella(xp_ganado, nuevo_xp);
-            }
-          });
+          if (score >= 70) {
+            // Mostrar dos botones: Repetir nivel y Siguiente nivel
+            Swal.fire({
+              icon: icon,
+              title: title,
+              text: text,
+              html: `<p>${text}</p><p style="font-style: italic; margin-top: 10px;">${mensajeMotivacional}</p>`,
+              showCancelButton: true,
+              confirmButtonText: 'Siguiente nivel',
+              cancelButtonText: 'Repetir nivel',
+              confirmButtonColor: color,
+              cancelButtonColor: '#6c757d',
+              background: '#f8f9fa',
+              customClass: {
+                popup: 'animated fadeInDown'
+              }
+            }).then((result) => {
+              if (result.isConfirmed) {
+                // Siguiente nivel: avanzar al siguiente caracter
+                avanzarSiguienteNivel();
+              } else if (result.isDismissed) {
+                // Repetir nivel: no hacer nada, quedarse en el mismo
+                console.log("Repitiendo nivel actual");
+              }
+              // Mostrar animación de estrella y sumar XP en ambos casos
+              if (xp_ganado > 0) {
+                mostrarAnimacionEstrella(xp_ganado, nuevo_xp);
+              }
+            });
+          } else {
+            // Para scores < 70, mostrar solo el botón Aceptar
+            Swal.fire({
+              icon: icon,
+              title: title,
+              text: text,
+              html: `<p>${text}</p><p style="font-style: italic; margin-top: 10px;">${mensajeMotivacional}</p>`,
+              confirmButtonText: 'Aceptar',
+              confirmButtonColor: color,
+              background: '#f8f9fa',
+              customClass: {
+                popup: 'animated fadeInDown'
+              }
+            });
+          }
         } else {
           Swal.fire({
             icon: 'error',

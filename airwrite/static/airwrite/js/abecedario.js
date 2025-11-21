@@ -40,7 +40,7 @@ function createLetterCard(item) {
     </div>
   ` : '';
 
-  // Decide el botón de escribir según si está bloqueada
+  // El botón de escribir está disponible para todas las letras, pero con diferente título
   let escribirBtn = '';
   if (!item.bloqueada) {
     escribirBtn = `
@@ -52,7 +52,7 @@ function createLetterCard(item) {
     `;
   } else {
     escribirBtn = `
-      <button class="action-btn bloqueada" title="Bloqueada">
+      <button class="action-btn bloqueada" title="Escribir (Bloqueada)">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
@@ -121,12 +121,17 @@ function renderLetters() {
               playLetter(letter);
           } else if (title === 'Comprar') {
               window.location.href = '/tienda/'
-          } else if (title === 'Escribir') {
-              // Desbloqueada → abrir pantalla de escritura
+          } else if (title === 'Escribir' || title === 'Escribir (Bloqueada)') {
+              // Abrir pantalla de escritura (incluso para letras bloqueadas)
+              const isBlocked = title === 'Escribir (Bloqueada)';
+              const icon = isBlocked ? 'warning' : 'success';
+              const titleText = isBlocked ? `Escribir ${letter} (Bloqueada)` : `Escribir ${letter}`;
+              const text = isBlocked ? 'Esta letra está bloqueada, pero puedes practicar de todas formas.' : '¡Preparando pantalla de escritura!';
+
               Swal.fire({
-                icon: 'success',
-                title: `Escribir ${letter}`,
-                text: '¡Preparando pantalla de escritura!',
+                icon: icon,
+                title: titleText,
+                text: text,
                 showCancelButton: false,
                 confirmButtonText: 'Ir a la pantalla',
                 confirmButtonColor: '#3085d6', // color del botón
@@ -139,14 +144,6 @@ function renderLetters() {
                 }
             });
 
-          } else if (title === 'Bloqueada') {
-              // Letra bloqueada → mensaje SweetAlert
-              Swal.fire({
-                  icon: 'warning',
-                  title: `${letter} bloqueada`,
-                  text: 'Desbloquea o compra esta letra para poder usarla',
-                  confirmButtonText: 'Aceptar'
-              });
           }
       });
   });
@@ -176,22 +173,8 @@ async function playLetter(letter) {
     }
 }
 
-// Modificar el listener de botones "Escuchar"
-document.querySelectorAll('.action-btn').forEach(button => {
-    button.addEventListener('click', (e) => {
-        e.stopPropagation();
-        const title = button.getAttribute('title');
-        const letter = button.closest('.letter-card').querySelector('.letter-name').textContent;
-
-        if (title === 'Escuchar') {
-            playLetter(letter);
-        } else if (title === 'Comprar') {
-            alert(`Comprar ${letter}`);
-        } else if (title === 'Escribir') {
-            alert(`Abrir pantalla de escritura para ${letter}`);
-        }
-    });
-});
+// Este listener duplicado ya no es necesario ya que el anterior maneja todos los casos
+// Se puede eliminar o mantener por compatibilidad
 
 
 // Inicializar

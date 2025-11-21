@@ -84,7 +84,7 @@ def index(request, letra_id=None, numero_id=None, silaba_id=None, tipo='letra'):
     # Enable tracing mode for manual drawing control
     if objeto is not None:
         _loop.enable_tracing_mode()
-        _state.drawing_active = True  # Dibujo activo por defecto
+        _state.drawing_active = False  # Dibujo inactivo por defecto
 
         from airwrite.infrastructure.opencv.trazo_extractor import reiniciar_lienzo
         texto = objeto.nombre.split()[-1].upper()[-2:] if tipo == 'silaba' else objeto.nombre[-1].upper()

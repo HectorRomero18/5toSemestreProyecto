@@ -35,12 +35,17 @@ function renderSilabas() {
 
       if (title === 'Escuchar') {
         playSilaba(letter);
-      } else if (title === 'Escribir') {
-        // Desbloqueada → abrir pantalla de escritura
+      } else if (title === 'Escribir' || title === 'Escribir (Bloqueada)') {
+        // Abrir pantalla de escritura (incluso para sílabas bloqueadas)
+        const isBlocked = title === 'Escribir (Bloqueada)';
+        const icon = isBlocked ? 'warning' : 'success';
+        const titleText = isBlocked ? `Escribir ${letter} (Bloqueada)` : `Escribir ${letter}`;
+        const text = isBlocked ? 'Esta sílaba está bloqueada, pero puedes practicar de todas formas.' : '¡Preparando pantalla de escritura!';
+
         Swal.fire({
-          icon: 'success',
-          title: `Escribir ${letter}`,
-          text: '¡Preparando pantalla de escritura!',
+          icon: icon,
+          title: titleText,
+          text: text,
           showCancelButton: false,
           confirmButtonText: 'Ir a la pantalla',
           confirmButtonColor: '#3085d6', // color del botón
@@ -51,14 +56,6 @@ function renderSilabas() {
               // Redirige al hacer clic en el botón
               window.location.href= `/trazos/silaba/${letterId}/`;
           }
-        });
-      } else if (title === 'Bloqueada') {
-        // Letra bloqueada → mensaje SweetAlert
-        Swal.fire({
-            icon: 'warning',
-            title: `${letter} bloqueada`,
-            text: 'Desbloquea las letras que conforman esta silaba para poder usarla',
-            confirmButtonText: 'Aceptar'
         });
       }
     });
@@ -93,10 +90,10 @@ function createSilabaCard(item) {
     </div>
   ` : '';
 
-  // Botón según estado (bloqueada o desbloqueada)
+  // El botón de escribir está disponible para todas las sílabas, pero con diferente título
   const bloqueadaBtn = item.bloqueada
     ? `
-      <button class="action-btn bloqueada" title="Bloqueada">
+      <button class="action-btn bloqueada" title="Escribir (Bloqueada)">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
           <circle cx="12" cy="16" r="1"/>
