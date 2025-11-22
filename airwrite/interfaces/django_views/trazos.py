@@ -21,6 +21,7 @@ from airwrite.domain.constants.xp_reward import DIFICULTADES, CATEGORIAS_LETRAS
 import unicodedata
 from airwrite.domain.services.evaluar_trazo import evaluar_trazo_por_contorno
 from airwrite.domain.services.xp_reward_services import calcular_xp_ganado
+from airwrite.domain.services.bloquear import esta_bloqueada
 from airwrite.infrastructure.repositories.compra_letra import DjangoPerfilRepository
 from airwrite.infrastructure.models.PerfilUsuario import PerfilUsuario
 
@@ -136,7 +137,7 @@ def video_feed_canvas(request, tipo, objeto_id):
         desbloqueada = True  # Números siempre desbloqueados
     elif tipo == 'letra':
         objeto = get_object_or_404(Letra, id=objeto_id)
-        desbloqueada = (perfil and objeto in perfil.letras_desbloqueadas.all()) or objeto.nombre in no_bloqueadas
+        desbloqueada = not esta_bloqueada(request.user, objeto.nombre)
 
     elif tipo == 'silaba':
         objeto = get_object_or_404(Silaba, id=objeto_id)

@@ -3,6 +3,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const modules = JSON.parse(document.getElementById('modules-data').textContent);
   const compradas = JSON.parse(document.getElementById('compradas-data').textContent)
                         .map(l => l.toLowerCase());
+  const desbloqueadas = JSON.parse(document.getElementById('desbloqueadas-data').textContent)
+                        .map(l => l.toLowerCase());
 
   let currentFilter = 'all';
   const favorites = {};
@@ -20,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function isPurchased(item) {
     const key = getItemKey(item);
-    return key && compradas.includes(key);
+    return key && (compradas.includes(key) || desbloqueadas.includes(key));
   }
 
   const dificultadColors = {
