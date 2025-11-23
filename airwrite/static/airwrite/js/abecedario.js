@@ -61,7 +61,10 @@ function createLetterCard(item) {
     `;
   }
 
+  const practicadaBadge = item.practicada ? '<div class="practicada-badge">PRÁCTICADA</div>' : '';
+
   card.innerHTML = `
+    ${practicadaBadge}
     <div class="letter-display ${blockedClass}">
       <img src="${bg}" alt="${item.simbolo}" class="letter-bg" />
       <span class="letter-text">${item.simbolo}</span>

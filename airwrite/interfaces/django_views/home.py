@@ -34,5 +34,11 @@ class ModuleListView( LoginRequiredMixin, TemplateView):
 
 
         user_xp = perfil.xp if perfil else 0
-        context.update({'modules': modules, 'title': 'Module List', 'user': user, 'user_xp': user_xp})
+        context.update({'modules': modules, 
+                        'title': 'Module List', 
+                        'user': user, 'user_xp': user_xp, 
+                        'practicadas': perfil.letras_practicadas.all() if perfil else [],
+                        'compradas': perfil.user_id.letracompra_set.all()
+                                                            if perfil else []
+                        })
         return context

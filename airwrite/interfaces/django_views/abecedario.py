@@ -30,26 +30,26 @@ class AbecedarioListView(LoginRequiredMixin, TemplateView):
         user = self.request.user
 
         modules = use_case.execute(ListLetrasQuery(q=q))
-        
+
+        perfil = getattr(user, 'perfilusuario', None)
+
         # Convertir cada LetraEntity a dict
         modules_serializable = []
 
         for m in modules:
-            caracter_real = m.caracter[-1]  # toma solo la letra al final
-            # print("Caracter real:", caracter_real)
 
             modules_serializable.append({
                 'id': m.id,
                 'letter': m.caracter,
-                'bloqueada': esta_bloqueada(user, m.caracter),  
+                'bloqueada': esta_bloqueada(user, m.caracter),
                 'categoria': getattr(m, 'categoria', ''),
                 'dificultad': DIFICULTADES_DICT.get(m.dificultad, ''),
                 'price': getattr(m, 'price', 100),
-                'simbolo': m.caracter[-1]  # para mostrar solo la letra
+                'simbolo': m.caracter[-1],  # para mostrar solo la letra
+                'practicada': perfil.letras_practicadas.filter(id=m.id).exists() if perfil else False
             })
 
 
-        perfil = getattr(user, 'perfilusuario', None)
         user_xp = perfil.xp if perfil else 0
 
         context.update({
