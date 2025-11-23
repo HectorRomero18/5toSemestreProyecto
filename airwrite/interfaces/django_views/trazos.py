@@ -189,7 +189,7 @@ def video_feed_canvas(request, tipo, objeto_id):
                             cv2.FONT_HERSHEY_SIMPLEX, 1.2, (50, 50, 50), 3)
 
                 # Texto de dificultad (posición fija a la derecha)
-                cv2.putText(blank_canvas, f"Dificultad: {texto_sin_tilde}", (690, 200),
+                cv2.putText(blank_canvas, f"Dificultad: {texto_sin_tilde}", (440, 200),
                             cv2.FONT_HERSHEY_SIMPLEX, 1.2, color_dif, 3)
 
                 if tipo == 'letra':

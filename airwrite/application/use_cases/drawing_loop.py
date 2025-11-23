@@ -31,10 +31,10 @@ class DrawingState:
         self.x1: Optional[int] = None
         self.y1: Optional[int] = None
         self.color: tuple[int, int, int] = (255, 113, 82)
-        self.thickness: int = 5
+        self.thickness: int = 23
         # UI thickness boxes (for UI highlight)
         self.grosor_celeste, self.grosor_amarillo, self.grosor_rosa, self.grosor_verde, self.grosor_uva, self.grosor_menta = 6, 2, 2, 2, 2, 2
-        self.grosor_peque, self.grosor_medio, self.grosor_grande = 6, 1, 1
+        self.grosor_peque, self.grosor_medio, self.grosor_grande = 1, 1, 6
         self.tracing_mode: bool = False
         self.drawing_active: bool = False
         self.last_draw_time: float = 0.0

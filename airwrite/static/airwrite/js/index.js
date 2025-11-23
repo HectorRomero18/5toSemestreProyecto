@@ -259,6 +259,18 @@ function getCookie(name) {
   }
   return cookieValue;
 }
+
+function updateGrosorButtonColor() {
+  const grosorButton = document.getElementById('grosorButton');
+  if (grosorButton) {
+    if (dibujando) {
+      grosorButton.style.backgroundColor = '#28a745'; // Verde cuando está trazando
+    } else {
+      grosorButton.style.backgroundColor = '#dc3545'; // Rojo cuando no está trazando
+    }
+  }
+}
+
 const csrftoken = getCookie('csrftoken');
 
 let mediaRecorder;
@@ -318,35 +330,38 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// =======================
-// GROSOR DEL LÁPIZ
-// =======================
-document.addEventListener("DOMContentLoaded", () => {
-  const grosorButton = document.getElementById('grosorButton');
-  const grosorMenu = document.getElementById('grosorMenu');
+  // =======================
+  // GROSOR DEL LÁPIZ
+  // =======================
+  // Disabled grosor dropdown handling since only one grosor is allowed
+  
+  // document.addEventListener("DOMContentLoaded", () => {
+  //   const grosorButton = document.getElementById('grosorButton');
+  //   const grosorMenu = document.getElementById('grosorMenu');
 
-  if (grosorButton && grosorMenu) {
-    grosorButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      grosorMenu.classList.toggle('show');
-    });
+  //   if (grosorButton && grosorMenu) {
+  //     grosorButton.addEventListener('click', (e) => {
+  //       e.stopPropagation();
+  //       grosorMenu.classList.toggle('show');
+  //     });
 
-    document.addEventListener('click', () => {
-      grosorMenu.classList.remove('show');
-    });
+  //     document.addEventListener('click', () => {
+  //       grosorMenu.classList.remove('show');
+  //     });
 
-    grosorMenu.querySelectorAll('.grosor-option').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const selectedGrosor = btn.dataset.grosor;
-        console.log("Grosor seleccionado:", selectedGrosor);
-        grosorMenu.classList.remove('show');
-        // aquí puedes conectar con el canvas real
-      });
-    });
-  } else {
-    console.error("❌ Elementos del dropdown de grosor no encontrados");
-  }
-});
+  //     grosorMenu.querySelectorAll('.grosor-option').forEach(btn => {
+  //       btn.addEventListener('click', () => {
+  //         const selectedGrosor = btn.dataset.grosor;
+  //         console.log("Grosor seleccionado:", selectedGrosor);
+  //         grosorMenu.classList.remove('show');
+  //         // aquí puedes conectar con el canvas real
+  //       });
+  //     });
+  //   } else {
+  //     console.error("❌ Elementos del dropdown de grosor no encontrados");
+  //   }
+  // });
+  
 
 // =======================
 // TECLA “A” — alternar captura automática
@@ -357,6 +372,9 @@ document.addEventListener('keydown', (event) => {
     event.preventDefault();
     dibujando = !dibujando;
     console.log(dibujando ? "Captura de dibujo activada" : "Captura de dibujo detenida");
+
+    // Actualizar color del botón de grosor
+    updateGrosorButtonColor();
 
     // avisar al backend para alternar el modo de dibujo
     fetch(window.urls.toggle_drawing, {
@@ -476,6 +494,9 @@ function stopAutoCapture() {
 
 // Asegurar que la captura automática esté detenida al cargar la página
 stopAutoCapture();
+
+// Inicializar color del botón de grosor
+updateGrosorButtonColor();
 
 // =======================
 // FUNCIÓN — ENVIAR TRAZO
@@ -702,34 +723,76 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           if (score >= 70) {
-            // Mostrar dos botones: Repetir nivel y Siguiente nivel
-            Swal.fire({
-              icon: icon,
-              title: title,
-              text: text,
-              html: `<p>${text}</p><p style="font-style: italic; margin-top: 10px;">${mensajeMotivacional}</p>`,
-              showCancelButton: true,
-              confirmButtonText: 'Siguiente nivel',
-              cancelButtonText: 'Repetir nivel',
-              confirmButtonColor: color,
-              cancelButtonColor: '#6c757d',
-              background: '#f8f9fa',
-              customClass: {
-                popup: 'animated fadeInDown'
-              }
-            }).then((result) => {
-              if (result.isConfirmed) {
-                // Siguiente nivel: avanzar al siguiente caracter
-                avanzarSiguienteNivel();
-              } else if (result.isDismissed) {
-                // Repetir nivel: no hacer nada, quedarse en el mismo
-                console.log("Repitiendo nivel actual");
-              }
-              // Mostrar animación de estrella y sumar XP en ambos casos
-              if (xp_ganado > 0) {
-                mostrarAnimacionEstrella(xp_ganado, nuevo_xp);
-              }
-            });
+            // Definir max object ids para módulos
+            const maxObjectIds = {
+              letra: 26,
+              numero: 10,
+              silaba: 42
+            };
+
+            const currentId = parseInt(window.objeto_id, 10);
+            const tipo = window.tipo ? window.tipo.toLowerCase() : '';
+
+            console.log('DEBUG last level check:', { currentId, tipo, maxId: maxObjectIds[tipo] });
+
+            const isLastLevel = maxObjectIds.hasOwnProperty(tipo) && currentId === maxObjectIds[tipo];
+
+            if (isLastLevel) {
+              Swal.fire({
+                icon: icon,
+                title: title,
+                html: `<p>${text}</p><p style="font-style: italic; margin-top: 10px;">${mensajeMotivacional}</p>`,
+                showConfirmButton: true,
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Ir a Home',
+                denyButtonText: `Ir a ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`,
+                cancelButtonText: 'Repetir nivel',
+                confirmButtonColor: '#3085d6',
+                denyButtonColor: '#28a745',
+                cancelButtonColor: '#6c757d',
+                background: '#f8f9fa',
+                customClass: { popup: 'animated fadeInDown' }
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  window.location.href = '/';
+                } else if (result.isDenied) {
+                  let url = '/';
+                  if (tipo === 'letra') url = '/abecedario';
+                  else if (tipo === 'numero') url = '/numeros';
+                  else if (tipo === 'silaba') url = '/silaba';
+                  window.location.href = url;
+                } else if (result.isDismissed || result.isCancel) {
+                  console.log('Repitiendo nivel actual');
+                }
+                if (xp_ganado > 0) {
+                  mostrarAnimacionEstrella(xp_ganado, nuevo_xp);
+                }
+              });
+            } else {
+              Swal.fire({
+                icon: icon,
+                title: title,
+                text: text,
+                html: `<p>${text}</p><p style="font-style: italic; margin-top: 10px;">${mensajeMotivacional}</p>`,
+                showCancelButton: true,
+                confirmButtonText: 'Siguiente nivel',
+                cancelButtonText: 'Repetir nivel',
+                confirmButtonColor: color,
+                cancelButtonColor: '#6c757d',
+                background: '#f8f9fa',
+                customClass: { popup: 'animated fadeInDown' }
+              }).then((result) => {
+                if (result.isConfirmed) {
+                  avanzarSiguienteNivel();
+                } else if (result.isDismissed) {
+                  console.log('Repitiendo nivel actual');
+                }
+                if (xp_ganado > 0) {
+                  mostrarAnimacionEstrella(xp_ganado, nuevo_xp);
+                }
+              });
+            }
           } else {
             // Para scores < 70, mostrar solo el botón Aceptar
             Swal.fire({
