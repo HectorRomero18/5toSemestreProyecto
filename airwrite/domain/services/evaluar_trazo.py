@@ -2,8 +2,8 @@ import cv2
 import numpy as np
 
 # Tus valores originales, no se tocan
-BAND_DILATE = 6
-STROKE_DILATE = 3
+BAND_DILATE = 10
+STROKE_DILATE = 8
 
 def evaluar_trazo_por_contorno(imAux, base_canvas, modelo_gray,
                                band_dilate=BAND_DILATE, stroke_dilate=STROKE_DILATE):
@@ -48,57 +48,32 @@ def evaluar_trazo_por_contorno(imAux, base_canvas, modelo_gray,
     base_score = (covered_pixels / total_edge_pixels) * 100.0
     base_score = float(np.clip(base_score, 0.0, 100.0))
 
-    # 4) PENALIZACIÓN (DISTANCIA + TRAZO FUERA)
-
-    # -------- DISTANCIA --------
-    inv_edges = cv2.bitwise_not(model_edges)
-    dist_map = cv2.distanceTransform(inv_edges, cv2.DIST_L2, 5)
-
-    stroke_pixels = np.where(stroke_mask == 255)
-    dist_values = dist_map[stroke_pixels]
-
-    if len(dist_values) == 0:
-        avg_dist = 999
-    else:
-        avg_dist = float(np.mean(dist_values))
-
-    # 4.1 Penalización suavizada por distancia
-    if avg_dist <= 10:                 # ← Se aumentó la tolerancia a 10 px
-        dist_penalty = 0
-    elif avg_dist <= 25:
-        dist_penalty = ((avg_dist - 10) / 15) * 10   # max 10%
-    else:
-        dist_penalty = min(10 + (avg_dist - 25), 30)  # crece suave
-
-    # -------- TRAZO FUERA --------
+      # 4) PENALIZACIÓN ÚNICA: TRAZO FUERA (GRADUAL)
     allowed_zone = (model_band == 255).astype(np.uint8)
-    stroke_bin = (stroke_mask == 255).astype(np.uint8)
+    stroke_bin   = (stroke_mask == 255).astype(np.uint8)
 
     total_stroke = np.count_nonzero(stroke_bin)
 
     if total_stroke == 0:
         outside_ratio = 1.0
     else:
-        inside_stroke = np.count_nonzero(stroke_bin * allowed_zone)
+        inside_stroke  = np.count_nonzero(stroke_bin * allowed_zone)
         outside_stroke = total_stroke - inside_stroke
-        outside_ratio = outside_stroke / total_stroke
+        outside_ratio  = outside_stroke / total_stroke
 
-    # 4.2 Penalización por trazo fuera (ahora MUCHO más tolerante)
-    if outside_ratio < 0.30:                # ← antes era 0.20
+    # Modo estándar: gradual, equilibrado
+    if outside_ratio < 0.35:
         out_penalty = 0
-    elif outside_ratio < 0.50:
-        out_penalty = (outside_ratio - 0.30) * 30    # max ~6%
+    elif outside_ratio < 0.60:
+        out_penalty = (outside_ratio - 0.35) * (25 / 0.25)
     else:
-        out_penalty = min(6 + (outside_ratio - 0.50) * 60, 40)
+        out_penalty = 25 + (outside_ratio - 0.60) * (75 / 0.40)  # máx 45%
 
-    # -------- TOTAL PENALTY --------
-    total_penalty = dist_penalty + out_penalty
-    total_penalty = min(total_penalty, 80)  # límite más bajo
-
-    final_score = base_score - total_penalty
+    # 5) PUNTUACIÓN FINAL
+    final_score = base_score - out_penalty
     final_score = float(np.clip(final_score, 0.0, 100.0))
 
-    # 5) OVERLAY
+    # 6) OVERLAY
     overlay = base_canvas.copy()
     overlay[model_edges == 255] = (0, 0, 200)
     overlay[covered_on_edges == 255] = (0, 200, 0)

@@ -31,7 +31,7 @@ class DrawingState:
         self.x1: Optional[int] = None
         self.y1: Optional[int] = None
         self.color: tuple[int, int, int] = (255, 113, 82)
-        self.thickness: int = 23
+        self.thickness: int = 26
         # UI thickness boxes (for UI highlight)
         self.grosor_celeste, self.grosor_amarillo, self.grosor_rosa, self.grosor_verde, self.grosor_uva, self.grosor_menta = 6, 2, 2, 2, 2, 2
         self.grosor_peque, self.grosor_medio, self.grosor_grande = 1, 1, 6
@@ -189,7 +189,7 @@ class DrawingLoop:
             return False
 
         mapping = {
-            'grande': (23, (1, 1, 6)),
+            'grande': (26, (1, 1, 6)),
         }
 
         entry = mapping.get(name)
