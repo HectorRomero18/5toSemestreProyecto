@@ -789,28 +789,53 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
               });
             } else {
-              Swal.fire({
-                icon: icon,
-                title: title,
-                text: text,
-                html: `<p>${text}</p><p style="font-style: italic; margin-top: 10px;">${mensajeMotivacional}</p>`,
-                showCancelButton: true,
-                confirmButtonText: 'Siguiente nivel',
-                cancelButtonText: 'Repetir nivel',
-                confirmButtonColor: color,
-                cancelButtonColor: '#6c757d',
-                background: '#f8f9fa',
-                customClass: { popup: 'animated fadeInDown' }
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  avanzarSiguienteNivel();
-                } else if (result.isDismissed) {
-                  console.log('Repitiendo nivel actual');
-                }
-                if (xp_ganado > 0) {
-                  mostrarAnimacionEstrella(xp_ganado, nuevo_xp);
-                }
-              });
+              // Para el módulo "silaba" no mostramos "Siguiente nivel", mostramos "Ir a Silaba"
+              if (tipo === 'silaba') {
+                Swal.fire({
+                  icon: icon,
+                  title: title,
+                  html: `<p>${text}</p><p style="font-style: italic; margin-top: 10px;">${mensajeMotivacional}</p>`,
+                  showCancelButton: true,
+                  confirmButtonText: 'Ir a Silaba',
+                  cancelButtonText: 'Repetir nivel',
+                  confirmButtonColor: '#28a745',
+                  cancelButtonColor: '#6c757d',
+                  background: '#f8f9fa',
+                  customClass: { popup: 'animated fadeInDown' }
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    window.location.href = '/silaba';
+                  } else if (result.isDismissed) {
+                    console.log('Repitiendo nivel actual');
+                  }
+                  if (xp_ganado > 0) {
+                    mostrarAnimacionEstrella(xp_ganado, nuevo_xp);
+                  }
+                });
+              } else {
+                Swal.fire({
+                  icon: icon,
+                  title: title,
+                  text: text,
+                  html: `<p>${text}</p><p style="font-style: italic; margin-top: 10px;">${mensajeMotivacional}</p>`,
+                  showCancelButton: true,
+                  confirmButtonText: 'Siguiente nivel',
+                  cancelButtonText: 'Repetir nivel',
+                  confirmButtonColor: color,
+                  cancelButtonColor: '#6c757d',
+                  background: '#f8f9fa',
+                  customClass: { popup: 'animated fadeInDown' }
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    avanzarSiguienteNivel();
+                  } else if (result.isDismissed) {
+                    console.log('Repitiendo nivel actual');
+                  }
+                  if (xp_ganado > 0) {
+                    mostrarAnimacionEstrella(xp_ganado, nuevo_xp);
+                  }
+                });
+              }
             }
           } else {
             // Para scores < 70, mostrar solo el botón Aceptar
