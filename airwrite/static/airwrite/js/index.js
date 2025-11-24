@@ -653,19 +653,38 @@ function animarSumaXp(elemento, inicio, fin) {
 // =======================
 // FUNCIÓN — Avanzar al siguiente nivel
 // =======================
+// ...existing code...
 function avanzarSiguienteNivel() {
   if (!window.objeto_id) {
     console.warn("No hay objeto_id definido");
     return;
   }
 
-  // Asumir que el siguiente nivel es el siguiente ID
-  const nextId = window.objeto_id + 1;
-  const nextUrl = `/trazos/${nextId}/`;
+  const currentId = parseInt(window.objeto_id, 10);
+  if (isNaN(currentId)) {
+    console.warn("objeto_id no es un número válido:", window.objeto_id);
+    return;
+  }
 
-  console.log(`Avanzando al siguiente nivel: ${nextUrl}`);
+  const nextId = currentId + 1;
+  const tipo = window.tipo ? String(window.tipo).toLowerCase() : '';
+
+  let nextUrl;
+  // Para números y sílabas la ruta debe incluir el tipo: /trazos/numero/3/ o /trazos/silaba/3/
+  if (tipo === 'numero' || tipo === 'silaba') {
+    nextUrl = `/trazos/${tipo}/${nextId}/`;
+  } else if (tipo === 'letra') {
+    // Mantener compatibilidad con rutas de letras si tu backend usa /trazos/3/
+    nextUrl = `/trazos/${nextId}/`;
+  } else {
+    // Fallback: comportamiento por defecto (legacy)
+    nextUrl = `/trazos/${nextId}/`;
+  }
+
+  console.log(`Avanzando al siguiente nivel: ${nextUrl}`, { currentId, tipo, nextId });
   window.location.href = nextUrl;
 }
+// ...existing code...
 
 // =======================
 // BOTÓN VERIFICAR — Verificar trazo actual con SweetAlert
